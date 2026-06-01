@@ -20,6 +20,7 @@ release() {
     cmake   -S $SOURCE_DIRECTORY  \
             -B $RELEASE_DIRECTORY   \
             -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         && cmake --build $RELEASE_DIRECTORY/ -j
     rm -rf compile_commands.json
     ln -s $RELEASE_DIRECTORY/compile_commands.json ./compile_commands.json
@@ -43,6 +44,7 @@ debug() {
     cmake   -S $SOURCE_DIRECTORY  \
             -B $DEBUG_DIRECTORY   \
             -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         && cmake --build $DEBUG_DIRECTORY/ -j
     rm -rf compile_commands.json
     ln -s $DEBUG_DIRECTORY/compile_commands.json ./compile_commands.json

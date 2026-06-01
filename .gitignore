@@ -17,3 +17,6 @@ libs/
 
 # Target
 libkronknet.a
+
+test.c 
+a.out
