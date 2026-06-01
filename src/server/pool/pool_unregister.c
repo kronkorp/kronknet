@@ -17,13 +17,7 @@ int knPool_unregister(knPool *pool, int fd)
     }
     for (size_t i = 0; i < pool->count; ++i) {
         if (pool->pollfds[i].fd == fd) {
-            pool->pollfds[i] = pool->pollfds[pool->count - 1];
-            pool->pollfds[pool->count - 1] = (struct pollfd){
-                -1,
-                0,
-                0
-            };
-            return 0;
+            return knPool_unregisterOnIndex(pool, i);
         }
     }
     return -1;
@@ -40,5 +34,7 @@ int knPool_unregisterOnIndex(knPool *pool, size_t index)
         0,
         0
     };
+    pool->conns[index] = pool->conns[pool->count - 1];
+    pool->conns[pool->count - 1] = NULL;
     return 0;
 }

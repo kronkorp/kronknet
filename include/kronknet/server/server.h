@@ -9,7 +9,7 @@
     #include <sys/socket.h>
     #include <netinet/in.h>
     #include <stdbool.h>
-    #include "kronknet/server/pool/pool.h"
+    #include "pool/pool.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /**

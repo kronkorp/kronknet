@@ -36,20 +36,17 @@ int knServer_init(knServer *server, size_t port)
     server->running = true;
     server->logs = false;
     server->fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server->fd == -1) {
+    if (server->fd == -1)
         return -1;
-    }
     server->addr.sin_family = AF_INET;
     server->addr.sin_port = htons(port);
     server->addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (knServer_bind(server) == -1) {
+    if (knServer_bind(server) == -1)
         return -1;
-    }
-    if (listen(server->fd, SOMAXCONN) == -1) {
+    if (listen(server->fd, SOMAXCONN) == -1)
         return -1;
-    }
-    if (knPool_init(&server->pool) == -1) {
+    if (knPool_init(&server->pool) == -1)
         return -1;
-    }
-    return knPool_register(&server->pool, server->fd, POLLIN);
+    knPool_registerFd(&server->pool, server->fd, POLLIN);
+    return knPool_registerConnection(&server->pool, NULL);
 }

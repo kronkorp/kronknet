@@ -7,9 +7,11 @@
 #ifndef KRONKNET_POOL_H
     #define KRONKNET_POOL_H
     #include <stddef.h>
-#include <sys/socket.h>
+    #include <sys/socket.h>
     #include <netinet/in.h>
     #include <stdbool.h>
+
+typedef struct kronknet_connection_s knConnection;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -21,6 +23,7 @@
 typedef struct kronknet_pool_s {
 
     struct pollfd *pollfds;  //!< The array of poolfd
+    knConnection **conns;    //!< The connections
     size_t         size;     //!< The capacity of the pool
     size_t         count;    //!< The number of pollfd in the pool
 
@@ -38,9 +41,11 @@ typedef struct kronknet_pool_s {
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_register(knPool *pool, int fd, int events);
+int knPool_registerFd(knPool *pool, int fd, int events);
 ///////////////////////////////////////////////////////////////////////////////
 
+// TODO: Documentation
+int knPool_registerConnection(knPool *pool, knConnection *connection);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**

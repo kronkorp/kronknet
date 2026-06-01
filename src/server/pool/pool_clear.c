@@ -16,6 +16,9 @@ void knPool_clear(knPool *pool)
     if (pool->pollfds) {
         free(pool->pollfds);
     }
+    if (pool->conns) {
+        free(pool->conns);
+    }
     pool->count = 0;
     pool->size = 0;
 }
