@@ -50,6 +50,7 @@ int onDisconnectionCallback([[maybe_unused]] knServer *server, knConnection *con
     if (!player)
         return -1;
     printf("[%d] Guys i'm tired\n", player->x);
+    free(player);
     return 0;
 }
 

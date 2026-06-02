@@ -62,6 +62,9 @@ void knServer_kickAtIndex(knServer *server, size_t idx);
 
 bool knServer_isRunning(const knServer *server);
 
+void *knServer_getData(const knServer *server);
+void knServer_setData(knServer *server, void *data);
+
 void knServer_out(const knServer *server, const char *format, ...);
 void knServer_err(const knServer *server, const char *format, ...);
 void knServer_setLogging(knServer *server, bool shouldLog);

@@ -7,7 +7,7 @@
 #include "kronknet/connection/connection.h"
 #include <stdlib.h>
 
-void *knConnection_getData(knConnection *conn)
+void *knConnection_getData(const knConnection *conn)
 {
     if (!conn) {
         return NULL;
