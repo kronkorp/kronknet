@@ -180,7 +180,7 @@ Distributed under the MIT license. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@GauthierMalfilatre](https://www.linkedin.com/in/gauthier-malfilatre-648001339/) - gauthier.malfilatre@epitech.eu
+Gauthier Malfilatre - [@GauthierMalfilatre](https://www.linkedin.com/in/gauthier-malfilatre-648001339/) - gauthier.malfilatre@epitech.eu
 
 Project Link: [https://github.com/GauthierMalfilatre/kronknet](https://github.com/GauthierMalfilatre/kronknet)
 
