@@ -18,8 +18,8 @@ int knServer_receiveData(knServer *server, knConnection *conn)
     if (!server || !conn) {
         return KNEVTERR;
     }
-    char kronkbuffer[KNBUFFSIZ];
-    ssize_t reads = recv(conn->fd, kronkbuffer, sizeof(kronkbuffer), 0);
+    char kronkbuffer[KNBUFFSIZ] = {0};
+    ssize_t reads = recv(conn->fd, kronkbuffer, KNBUFFSIZ, 0);
     if (reads > 0) {
         knServer_out(server, "Connection [%d]: %*s", conn->fd, reads, kronkbuffer);
         if (server->onRead) {

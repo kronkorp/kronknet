@@ -28,10 +28,12 @@ static int __knServer_onPollin([[maybe_unused]] knServer *server, [[maybe_unused
         knServer_out(server, "Data received");
         switch (knServer_receiveData(server, server->pool.conns[*fdIdx])) {
             case KNEVTERR:
-                knServer_err(server, "Connection [%d]: Error while receiving data", server->pool.conns[*fdIdx]->fd); break;
+                knServer_err(server, "Connection [%d]: Error while receiving data", server->pool.conns[*fdIdx]->fd);
+                break;
             case KNEVTKICK:
                 knServer_kickAtIndex(server, *fdIdx);
-                (*fdIdx)--; break;
+                (*fdIdx)--;
+                break;
             default:
                 break;
         }
@@ -56,6 +58,9 @@ static int __knServer_processPoll(knServer *server)
 
 int knServer_runOnce(knServer *server, ssize_t timeoutMs)
 {
+    if (!server) {
+        return -1;
+    }
     server->status = poll(server->pool.pollfds, server->pool.count, timeoutMs);
     if (server->status == -1) {
         return -1;
