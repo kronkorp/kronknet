@@ -31,8 +31,8 @@ typedef struct kronknet_server_s {
     void              *data;     //!< Data like a struct given by the user
 
     knConnectionCb     onConnection;
-    knIoCb             onRead;
-    knIoCb             onWrite;
+    knReadCb           onRead;
+    knEventCb          onWrite;
     knConnectionCb     onDisconnection;
 
 } knServer;

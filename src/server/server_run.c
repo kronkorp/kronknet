@@ -4,6 +4,7 @@
 ** File description:
 ** Run the server. main loop.
 */
+#include "kronknet/server/callback/callback.h"
 #include "kronknet/server/server.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -18,7 +19,9 @@ static int __knServer_onPollin([[maybe_unused]] knServer *server, [[maybe_unused
 {
     if (server->pool.pollfds[*fdIdx].fd == server->fd) {
         knServer_out(server, "New connection request received");
-        knServer_accept(server);
+        if (knServer_accept(server) == -1) {
+            knServer_err(server, "Connection request declined");
+        }
     }
     return 0;
 }

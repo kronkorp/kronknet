@@ -18,5 +18,5 @@ libs/
 # Target
 libkronknet.a
 
-test.c 
-a.out
+# Test
+*.out
