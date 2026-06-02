@@ -22,7 +22,7 @@ int knServer_accept(knServer *server)
     if (!newConn) {
         return -1;
     }
-    if (knPool_registerFd(&server->pool, newConn->fd, POLLIN | POLLOUT) == -1 ||
+    if (knPool_registerFd(&server->pool, newConn->fd, POLLIN) == -1 ||
         knPool_registerConnection(&server->pool, newConn) == -1) {
             knServer_err(server, "Connection [%d]: failed to add to pool", newConn->fd);
             return -1;

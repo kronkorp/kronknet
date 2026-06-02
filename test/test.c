@@ -65,7 +65,7 @@ int main(void)
     // knServer_run(server);
     while (knServer_isRunning(server)) {
         knServer_runOnce(server, 2000);
-        // printf("gros caca %d\n", rand() % 255);
+        printf("Update game loop\n");
     }
     knServer_destroy(server);
     return 0;
