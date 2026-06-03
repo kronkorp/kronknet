@@ -4,6 +4,7 @@
 ** File description:
 ** Run the server. main loop.
 */
+#include "kronknet/errdef.h"
 #include "kronknet/server/callback/callback.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/server/server.h"
@@ -14,7 +15,7 @@
 
 static int __knServer_onPollout([[maybe_unused]] knServer *server, [[maybe_unused]] size_t fdIdx)
 {
-    return 0;
+    return KNEVTOK;
 }
 
 static int __knServer_onPollin([[maybe_unused]] knServer *server, [[maybe_unused]] size_t *fdIdx)
@@ -38,47 +39,47 @@ static int __knServer_onPollin([[maybe_unused]] knServer *server, [[maybe_unused
                 break;
         }
     }
-    return 0;
+    return KNEVTOK;
 }
 
 static int __knServer_processPoll(knServer *server)
 {
     for (size_t i = 0; i < server->pool.count; ++i) {
         if (server->pool.pollfds[i].revents & POLLIN
-            && __knServer_onPollin(server, &i) == -1) {
-                return -1;
+            && __knServer_onPollin(server, &i) != KNEVTOK) {
+                return KNEVTERR;
         }
         if (server->pool.pollfds[i].revents & POLLOUT
-            && __knServer_onPollout(server, i) == -1) {
-                return -1;
+            && __knServer_onPollout(server, i) != KNEVTOK) {
+                return KNEVTERR;
         }
     }
-    return 0;
+    return KNEVTOK;
 }
 
 int knServer_runOnce(knServer *server, ssize_t timeoutMs)
 {
     if (!server) {
-        return -1;
+        return KNEVTARGS;
     }
     server->status = poll(server->pool.pollfds, server->pool.count, timeoutMs);
     if (server->status == -1) {
-        return -1;
+        return KNEVTNET;
     }
     if (__knServer_processPoll(server) == -1) {
-        return -1;
+        return KNEVTERR;
     }
-    return 0;
+    return KNEVTOK;
 }
 
 int knServer_run(knServer *server)
 {
     if (!server) {
-        return -1;
+        return KNEVTARGS;
     }
     knServer_out(server, "Server running on port %d", ntohs(server->addr.sin_port));
     while (server->running) {
-        if (knServer_runOnce(server, -1) == -1) {
+        if (knServer_runOnce(server, -1) != KNEVTOK) {
             break;
         }
     }

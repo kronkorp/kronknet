@@ -4,6 +4,7 @@
 ** File description:
 ** Init the server
 */
+#include "kronknet/errdef.h"
 #include "kronknet/server/callback/callback.h"
 #include "kronknet/server/pool/pool.h"
 #include "kronknet/server/server.h"
@@ -22,13 +23,13 @@ static int __knServer_nonBlocking(int fd)
 
     flags = fcntl(fd, F_GETFL, 0);
     if (flags == -1) {
-        return -1;
+        return KNEVTNET;
     }
     flags = flags | O_NONBLOCK;
     if (fcntl(fd, F_SETFL, flags) == -1) {
-        return -1;
+        return KNEVTNET;
     }
-    return 0;
+    return KNEVTOK;
 }
 
 static int __knServer_bind(knServer *server)
@@ -37,13 +38,13 @@ static int __knServer_bind(knServer *server)
 
     if (setsockopt(server->fd, SOL_SOCKET, SO_REUSEADDR,
         &opt, sizeof(opt)) == -1) {
-        return -1;
+        return KNEVTNET;
     }
     if (bind(server->fd, (const struct sockaddr *)&server->addr,
         sizeof(server->addr)) == -1) {
-        return -1;
+        return KNEVTNET;
     }
-    return 0;
+    return KNEVTOK;
 }
 
 static void __knServer_basics(knServer *server)
@@ -59,30 +60,30 @@ static void __knServer_basics(knServer *server)
 int knServer_init(knServer *server, uint16_t port)
 {
     if (!server) {
-        return -1;
+        return KNEVTERR;
     }
     __knServer_basics(server);
     server->fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->fd == -1)
-        return -1;
-    if (__knServer_nonBlocking(server->fd)) {
+        return KNEVTNET;
+    if (__knServer_nonBlocking(server->fd) != KNEVTOK) {
         close(server->fd);
-        return -1;
+        return KNEVTNET;
     }
     server->addr.sin_family = AF_INET;
     server->addr.sin_port = htons(port);
     server->addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (__knServer_bind(server) == -1) {
+    if (__knServer_bind(server) != KNEVTOK) {
         close(server->fd);
-        return -1;
+        return KNEVTNET;
     }
     if (listen(server->fd, SOMAXCONN) == -1) {
         close(server->fd);
-        return -1;
+        return KNEVTNET;
     }
-    if (knPool_init(&server->pool) == -1) {
+    if (knPool_init(&server->pool) != KNEVTOK) {
         close(server->fd);
-        return -1;
+        return KNEVTERR;
     }
     knPool_registerFd(&server->pool, server->fd, POLLIN);
     return knPool_registerConnection(&server->pool, NULL);

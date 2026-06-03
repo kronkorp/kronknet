@@ -4,6 +4,7 @@
 ** File description:
 ** Receive data
 */
+#include "kronknet/errdef.h"
 #include "kronknet/server/callback/callback.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/server/server.h"
@@ -16,7 +17,7 @@
 int knServer_receiveData(knServer *server, knConnection *conn)
 {
     if (!server || !conn) {
-        return KNEVTERR;
+        return KNEVTARGS;
     }
     char kronkbuffer[KNBUFFSIZ] = {0};
     ssize_t reads = recv(conn->fd, kronkbuffer, KNBUFFSIZ, 0);

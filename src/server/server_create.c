@@ -4,6 +4,8 @@
 ** File description:
 ** Create the server
 */
+#include "kronknet/errdef.h"
+#include "kronknet/server/callback/callback.h"
 #include "kronknet/server/server.h"
 #include <stddef.h>
 #include <stdlib.h>
@@ -15,7 +17,7 @@ knServer *knServer_create(uint16_t port)
     if (!server) {
         return NULL;
     }
-    if (knServer_init(server, port) == -1) {
+    if (knServer_init(server, port) != KNEVTOK) {
         knServer_destroy(server);
         return NULL;
     }

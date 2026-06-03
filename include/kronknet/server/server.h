@@ -13,10 +13,6 @@
     #include "pool/pool.h"
 
     #define KNBUFFSIZ  8192
-    #define KNEVTOK    0
-    #define KNEVTERR  -1
-    #define KNEVTMEM  -2
-    #define KNEVTKICK -3
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
