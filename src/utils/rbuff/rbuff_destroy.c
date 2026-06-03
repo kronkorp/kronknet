@@ -8,11 +8,11 @@
 #include <errno.h>
 #include "stdlib.h"
 
-void isdrbuff_destroy(knRBuff *buff)
+void knRBuff_destroy(knRBuff *buff)
 {
     if (!buff) {
         return;
     }
-    isdrbuff_clean(buff);
+    knRBuff_clean(buff);
     free(buff);
 }

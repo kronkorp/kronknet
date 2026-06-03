@@ -7,7 +7,7 @@
 #include "kronknet/utils/rbuff/rbuff.h"
 #include "stdlib.h"
 
-void isdrbuff_clean(knRBuff *buff)
+void knRBuff_clean(knRBuff *buff)
 {
     if (buff->raw_buffer) {
         free(buff->raw_buffer);

@@ -7,7 +7,8 @@
 
 #ifndef KRONKNET_RBUFF_H
     #define KRONKNET_RBUFF_H
-    #include <stddef.h>
+    #include <stdbool.h>
+#include <stddef.h>
     #include <stdint.h>
     #include <sys/types.h>
 
@@ -36,10 +37,10 @@ typedef struct kronknet_ring_buffer_s {
 * @brief       Create an isildur ring buffer with the given size
 *
 * @param size  The size of the buffer. /!\Must be a power of 2/!\
-* @return      The allocated isdrbuff instance, or NULL if an error occurs.
+* @return      The allocated knRBuff instance, or NULL if an error occurs.
 */
 ///////////////////////////////////////////////////////////////////////////////
-knRBuff *isdrbuff_create(size_t size);
+knRBuff *knRBuff_create(size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -47,24 +48,24 @@ knRBuff *isdrbuff_create(size_t size);
 /**
 * @brief       Initialize an isildur ring buffer
 *
-* @param buff  The isdrbuff instance to initialize.
+* @param buff  The knRBuff instance to initialize.
 * @param size  The size of the buffer. /!\Must be a power of 2/!\
 * @return      0 on success, -1 otherwise, and errno set.
 */
 ///////////////////////////////////////////////////////////////////////////////
-int isdrbuff_init(knRBuff *buff, size_t size);
+int knRBuff_init(knRBuff *buff, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Destroy an allocated isdrbuff instance
+* @brief       Destroy an allocated knRBuff instance
 *
 * @param buff  The instance that will be destroy 
 * @return      Returns nothing.
 */
 ///////////////////////////////////////////////////////////////////////////////
-void isdrbuff_destroy(knRBuff *buff);
+void knRBuff_destroy(knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -76,31 +77,31 @@ void isdrbuff_destroy(knRBuff *buff);
 * @return      Returns nothing
 */
 ///////////////////////////////////////////////////////////////////////////////
-void isdrbuff_clean(knRBuff *buff);
+void knRBuff_clean(knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Get the remaining size in an isdrbuff 
+* @brief       Get the remaining size in an knRBuff 
 *
 * @param buff  The ring buffer to get remaining size
 * @return      The remaining size.
 */
 ///////////////////////////////////////////////////////////////////////////////
-size_t isdrbuff_remaining(const knRBuff *buff);
+size_t knRBuff_remaining(const knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Get the using size in an isdrbuff 
+* @brief       Get the using size in an knRBuff 
 *
 * @param buff  The ring buffer to get using size
 * @return      The using size.
 */
 ///////////////////////////////////////////////////////////////////////////////
-size_t isdrbuff_usage(const knRBuff *buff);
+size_t knRBuff_usage(const knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -114,7 +115,7 @@ size_t isdrbuff_usage(const knRBuff *buff);
 * @return      The size write on success, -1 otherwise
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t isdrbuff_push(knRBuff *buff, const uint8_t *src, size_t size);
+ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -128,7 +129,7 @@ ssize_t isdrbuff_push(knRBuff *buff, const uint8_t *src, size_t size);
 * @return      The size read on success, -1 otherwise
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t isdrbuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
+ssize_t knRBuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -146,7 +147,19 @@ ssize_t isdrbuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
 * @return      The size peeked on success, -1 otherwise (sets errno)
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t isdrbuff_peek(const knRBuff *buff, uint8_t *dest, size_t size);
+ssize_t knRBuff_peek(const knRBuff *buff, uint8_t *dest, size_t size);
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+* @brief       Check if the ring buffer is empty
+*
+* @param buff  The ring buffer
+* @return      Is the buffer empty
+*/
+///////////////////////////////////////////////////////////////////////////////
+bool knRBuff_isEmpty(const knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 #endif /* KRONKNET_RBUFF_H */

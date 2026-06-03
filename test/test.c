@@ -67,7 +67,7 @@ int onReadCallback([[maybe_unused]] knConnection *conn, const void *str, size_t 
     return 0;
 }
 
-int onDisconnectionCallback([[maybe_unused]] knServer *server, knConnection *conn)
+int onDisconnectionCallback(knServer *server, knConnection *conn)
 {
     Player *player = knConnection_getData(conn);
     World  *w      = knServer_getData(server);
@@ -101,7 +101,7 @@ int main(void)
     // knServer_run(server);
     while (knServer_isRunning(server)) {
         knServer_runOnce(server, 2000);
-        printf("Update game loop\n");
+        // printf("Update game loop\n");
         for (size_t i = 0; i < world.nplayers; ++i) {
             printf("Player with fd [%d] is alive!\n", world.players[i]->conn->fd);
         }

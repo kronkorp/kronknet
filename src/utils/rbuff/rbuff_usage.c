@@ -7,7 +7,7 @@
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stddef.h>
 
-size_t isdrbuff_usage(const knRBuff *buff)
+size_t knRBuff_usage(const knRBuff *buff)
 {
     if (!buff) {
         return 0;

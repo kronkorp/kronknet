@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include "errno.h"
 
-knRBuff *isdrbuff_create(size_t size)
+knRBuff *knRBuff_create(size_t size)
 {
     knRBuff *buff = calloc(1, sizeof(knRBuff));
 
@@ -18,7 +18,7 @@ knRBuff *isdrbuff_create(size_t size)
         errno = ENOMEM;
         return NULL;
     }
-    if (isdrbuff_init(buff, size) != 0) {
+    if (knRBuff_init(buff, size) != 0) {
         free(buff);
         return NULL;
     }
