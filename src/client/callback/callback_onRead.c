@@ -4,15 +4,16 @@
 ** File description:
 ** Set onRead callback
 */
+#include "kronknet/connection/connection.h"
 #include "kronknet/errdef.h"
 #include "kronknet/callback/callback.h"
-#include "kronknet/client/client.h"
+#include "kronknet/server/server.h"
 
-int knClient_onReadCallback(knClient *client, knClientReadCb callback)
+int knServer_onReadCallback(knServer *server, knReadCb callback)
 {
-    if (!client) {
+    if (!server) {
         return KNEVTARGS;
     }
-    client->onRead = callback;
+    server->onRead = callback;
     return KNEVTOK;
 }

@@ -4,15 +4,16 @@
 ** File description:
 ** Set onWrite callback
 */
+#include "kronknet/connection/connection.h"
 #include "kronknet/errdef.h"
 #include "kronknet/callback/callback.h"
-#include "kronknet/client/client.h"
+#include "kronknet/server/server.h"
 
-int knClient_onWriteCallback(knClient *client, knClientCb callback)
+int knServer_onWriteCallback(knServer *server, knEventCb callback)
 {
-    if (!client) {
+    if (!server) {
         return KNEVTARGS;
     }
-    client->onWrite = callback;
+    server->onWrite = callback;
     return KNEVTOK;
 }

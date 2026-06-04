@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void knServer_out(const knServer *server, const char *format, ...)
+[[gnu::hot]] void knServer_out(const knServer *server, const char *format, ...)
 {
     va_list ap;
 
