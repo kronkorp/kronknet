@@ -5,7 +5,7 @@
 ** Receive data
 */
 #include "kronknet/errdef.h"
-#include "kronknet/server/callback/callback.h"
+#include "kronknet/callback/callback.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/server/server.h"
 #include <asm-generic/errno-base.h>

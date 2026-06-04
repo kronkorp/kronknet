@@ -6,10 +6,10 @@
 */
 #include "kronknet/connection/connection.h"
 #include "kronknet/errdef.h"
-#include "kronknet/server/callback/callback.h"
+#include "kronknet/callback/callback.h"
 #include "kronknet/server/server.h"
 
-int knCallback_onDisconnection(knServer *server, knConnectionCb callback)
+int knServer_onDisconnectionCallback(knServer *server, knConnectionCb callback)
 {
     if (!server) {
         return KNEVTARGS;

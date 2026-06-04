@@ -13,14 +13,19 @@
 
 typedef struct kronknet_server_s     knServer;
 typedef struct kronknet_connection_s knConnection;
+typedef struct kronknet_client_s     knClient;
 
 typedef int (*knConnectionCb)(knServer *, knConnection *);
 typedef int (*knEventCb)(knConnection *);
 typedef int (*knReadCb)(knConnection *, const void *, size_t size);
 
-int knCallback_onConnection(knServer *server, knConnectionCb callback);
-int knCallback_onRead(knServer *server, knReadCb callback);
-int knCallback_onWrite(knServer *server, knEventCb callback);
-int knCallback_onDisconnection(knServer *server, knConnectionCb callback);
+int knServer_onConnectionCallback(knServer *server, knConnectionCb callback);
+int knServer_onReadCallback(knServer *server, knReadCb callback);
+int knServer_onWriteCallback(knServer *server, knEventCb callback);
+int knServer_onDisconnectionCallback(knServer *server, knConnectionCb callback);
+
+// int knClient_onAccept();
+// int knClient_onRead();
+// int knClient_onQuit();
 
 #endif /* KRONKNET_CALLBACK_H */

@@ -5,7 +5,7 @@
 ** Create the server
 */
 #include "kronknet/errdef.h"
-#include "kronknet/server/callback/callback.h"
+#include "kronknet/callback/callback.h"
 #include "kronknet/server/server.h"
 #include <stddef.h>
 #include <stdlib.h>

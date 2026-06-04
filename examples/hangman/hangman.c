@@ -1,7 +1,7 @@
 #include "kronknet/errdef.h"
 #include "kronknet/server/server.h"
 #include "kronknet/connection/connection.h"
-#include "kronknet/server/callback/callback.h"
+#include "kronknet/callback/callback.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -180,9 +180,9 @@ int main(void)
     knServer_setData(server, &game);
     knServer_setLogging(server, true); // Si tu as une fonction de log
 
-    knCallback_onConnection(server, &onConnectionCallback);
-    knCallback_onRead(server, &onReadCallback);
-    knCallback_onDisconnection(server, &onDisconnectionCallback);
+    knServer_onConnectionCallback(server, &onConnectionCallback);
+    knServer_onReadCallback(server, &onReadCallback);
+    knServer_onDisconnectionCallback(server, &onDisconnectionCallback);
 
     printf("Serveur Pendu demarre sur le port 4242...\n");
 

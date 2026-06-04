@@ -7,7 +7,7 @@
 #include "kronknet/errdef.h"
 #include "kronknet/server/server.h"
 #include "kronknet/connection/connection.h"
-#include "kronknet/server/callback/callback.h"
+#include "kronknet/callback/callback.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -94,9 +94,9 @@ int main(void)
     knServer_setData(server, &world);
 
     knServer_setLogging(server, true);
-    knCallback_onConnection(server, &onConnectionCallback);
-    knCallback_onRead(server, &onReadCallback);
-    knCallback_onDisconnection(server, &onDisconnectionCallback);
+    knServer_onConnectionCallback(server, &onConnectionCallback);
+    knServer_onReadCallback(server, &onReadCallback);
+    knServer_onDisconnectionCallback(server, &onDisconnectionCallback);
 
     // knServer_run(server);
     while (knServer_isRunning(server)) {
