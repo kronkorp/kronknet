@@ -20,5 +20,6 @@ libkronknet.a
 
 # Test
 *.out
-test/server
+test/server/server
+test/client/client
 ex_*

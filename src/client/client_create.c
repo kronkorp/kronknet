@@ -13,18 +13,15 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-knClient *knClient_create(const char *ip, uint16_t port)
+knClient *knClient_create()
 {
     knClient *client = NULL;
 
-    if (!ip || port == 0) {
-        return NULL;
-    }
     client = calloc(1, sizeof(knClient));
     if (!client) {
         return NULL;
     }
-    if (knClient_init(client, ip, port) != KNEVTOK) {
+    if (knClient_init(client) != KNEVTOK) {
         knClient_destroy(client);
         return NULL;
     }

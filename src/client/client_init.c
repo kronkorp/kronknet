@@ -8,7 +8,10 @@
 #include "kronknet/client/client.h"
 #include "kronknet/errdef.h"
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdbool.h>
 #include <stddef.h>
+#include <sys/poll.h>
 #include <sys/socket.h>
 
 static void __knClient_initStatic(knClient *client)
@@ -17,22 +20,16 @@ static void __knClient_initStatic(knClient *client)
     client->onRead = NULL;
     client->onWrite = NULL;
     client->onDisconnection = NULL;
+    client->running = true;
+    client->shouldLog = false;
+    client->fd = -1;
+    client->events = POLLIN;
 }
 
-int knClient_init(knClient *client, const char *ip, uint16_t port)
+int knClient_init(knClient *client)
 {
-    if (!client || !ip || port == 0) {
+    if (!client) {
         return KNEVTARGS;
-    }
-    client->fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (client->fd == -1) {
-        return KNEVTNET;
-    }
-    if (inet_pton(AF_INET, ip, &client->addr.sin_addr) != KNEVTOK) {
-        return KNEVTNET;
-    }
-    if (connect(client->fd, (struct sockaddr *)&client->addr, sizeof(client->addr)) != KNEVTOK) {
-        return KNEVTNET;
     }
     __knClient_initStatic(client);
     return KNEVTOK;
