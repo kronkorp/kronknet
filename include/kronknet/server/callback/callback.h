@@ -16,7 +16,7 @@ typedef struct kronknet_connection_s knConnection;
 
 typedef int (*knConnectionCb)(knServer *, knConnection *);
 typedef int (*knEventCb)(knConnection *);
-typedef int (*knReadCb)(knConnection *, const char *, size_t size);
+typedef int (*knReadCb)(knConnection *, const void *, size_t size);
 
 int knCallback_onConnection(knServer *server, knConnectionCb callback);
 int knCallback_onRead(knServer *server, knReadCb callback);

@@ -21,3 +21,4 @@ libkronknet.a
 # Test
 *.out
 test/server
+ex_*

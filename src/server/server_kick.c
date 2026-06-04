@@ -29,6 +29,7 @@ void knServer_kickAtIndex(knServer *server, size_t idx)
     if (server->onDisconnection) {
         server->onDisconnection(server, server->pool.conns[idx]);
     }
+    knServer_out(server, "Connection [%d]: Kicking...", server->pool.conns[idx]->fd);
     knConnection_destroy(server->pool.conns[idx]);
     knPool_unregisterAtIndex(&server->pool, idx);
 }

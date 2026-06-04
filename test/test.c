@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_PLAYER 4
 
@@ -51,17 +52,22 @@ int onConnectionCallback([[maybe_unused]] knServer *server, knConnection *conn)
     return KNEVTOK;
 }
 
-int onReadCallback([[maybe_unused]] knConnection *conn, const char *str, size_t n)
+int onReadCallback([[maybe_unused]] knConnection *conn, const void *str, size_t n)
 {
     Player *player = knConnection_getData(conn);
 
     if (!player)
         return -1;
-    printf("[%d] I received: %*s\n", player->x, (int)n, str);
+    int tmps = n + strlen("Bro really said: ") + 3;
+    char tmp[tmps] = {};
+    tmp[tmps - 1] = '\0';
+    printf("[%d] I received: %.*s\n", player->x, (int)n, (char *)str);
+    sprintf(tmp, "Bro really said: %.*s\r\n", (int)tmps, (char *)str);
+    knConnection_send(conn, tmp, tmps);
     return 0;
 }
 
-int onDisconnectionCallback([[maybe_unused]] knServer *server, knConnection *conn)
+int onDisconnectionCallback(knServer *server, knConnection *conn)
 {
     Player *player = knConnection_getData(conn);
     World  *w      = knServer_getData(server);
@@ -95,7 +101,7 @@ int main(void)
     // knServer_run(server);
     while (knServer_isRunning(server)) {
         knServer_runOnce(server, 2000);
-        printf("Update game loop\n");
+        // printf("Update game loop\n");
         for (size_t i = 0; i < world.nplayers; ++i) {
             printf("Player with fd [%d] is alive!\n", world.players[i]->conn->fd);
         }

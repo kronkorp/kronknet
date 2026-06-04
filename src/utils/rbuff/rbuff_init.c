@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include "errno.h"
 
-int isdrbuff_init(knRBuff *buff, size_t size)
+int knRBuff_init(knRBuff *buff, size_t size)
 {
     if (!buff || size == 0 || ((size & (size - 1)) != 0)) {
         errno = EINVAL;

@@ -50,6 +50,7 @@ int knPool_registerFd(knPool *pool, int fd, int events)
 }
 
 // FIXME: ensure capacity if needed.
+// FIXME: As now, this is ALWAYS called after register fd.
 int knPool_registerConnection(knPool *pool, knConnection *connection)
 {
     // size_t newCount = 0;
@@ -61,7 +62,11 @@ int knPool_registerConnection(knPool *pool, knConnection *connection)
     // if (__knPool_ensureCapacity(pool, newCount) == -1) {
     //     return -1;
     // }
+    // FIXME: Error handling
     pool->conns[pool->count - 1] = connection;
+    if (connection) {
+        connection->evtptr = &pool->pollfds[pool->count - 1].events;
+    }
     // pool->count = newCount;
     return KNEVTOK;
 }

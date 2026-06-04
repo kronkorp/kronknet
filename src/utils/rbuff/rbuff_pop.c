@@ -10,13 +10,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
-ssize_t isdrbuff_pop(knRBuff *buff, uint8_t *dest, size_t size)
+ssize_t knRBuff_pop(knRBuff *buff, uint8_t *dest, size_t size)
 {
     if (!buff || size == 0) {
         errno = EINVAL;
         return -1;
     }
-    if (size > isdrbuff_usage(buff)) {
+    if (size > knRBuff_usage(buff)) {
         errno = EAGAIN;
         return -1;
     }

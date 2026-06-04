@@ -23,6 +23,7 @@ int knServer_accept(knServer *server)
     if (!newConn) {
         return KNEVTERR;
     }
+    knServer_out(server, "Connection [%d] from %s:%d", newConn->ip, newConn->port);
     if (knPool_registerFd(&server->pool, newConn->fd, POLLIN) != KNEVTOK ||
         knPool_registerConnection(&server->pool, newConn) != KNEVTOK) {
             knServer_err(server, "Connection [%d]: failed to add to pool", newConn->fd);
@@ -34,7 +35,7 @@ int knServer_accept(knServer *server)
             case KNEVTOK:
                 break;
             default:
-                knServer_err(server, "Connection [%d]: Error on \"onConnection\" callback, kicking", newConn->fd);
+                knServer_err(server, "Connection [%d]: Error on \"onConnection\" callback", newConn->fd);
                 knServer_kick(server, newConn);
                 break;
         }

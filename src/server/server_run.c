@@ -8,13 +8,34 @@
 #include "kronknet/server/callback/callback.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/server/server.h"
+#include "kronknet/utils/rbuff/rbuff.h"
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/poll.h>
+#include <sys/socket.h>
 #include <sys/types.h>
 
 static int __knServer_onPollout([[maybe_unused]] knServer *server, [[maybe_unused]] size_t fdIdx)
 {
+    uint8_t tmp[KNBUFFSIZ];
+    knConnection *conn = server->pool.conns[fdIdx];
+
+    // FIXME: Peek -> consume
+    knServer_out(server, "Connection [%d]: Attempting to send sompe data", conn->fd);
+    knRBuff_pop(conn->out_buff, tmp, sizeof(tmp));
+    ssize_t sends = send(conn->fd, tmp, sizeof(tmp), MSG_NOSIGNAL);
+    if (sends > 0) {
+        knServer_out(server, "Connection [%d]: sent %zu bytes, remaining: %zu bytes.", conn->fd, (size_t)sends, knRBuff_remaining(conn->out_buff));
+        if (knRBuff_isEmpty(conn->out_buff)) {
+            knConnection_setEvents(server->pool.conns[fdIdx], POLLIN);
+            if (server->onWrite) {
+                server->onWrite(conn);
+            }
+        }
+    } else {
+        knServer_err(server, "Connection [%d]: Failed to send data, remaining: %zu bytes.", conn->fd, knRBuff_remaining(conn->out_buff));
+    }
     return KNEVTOK;
 }
 

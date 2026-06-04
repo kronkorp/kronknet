@@ -10,13 +10,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
-ssize_t isdrbuff_push(knRBuff *buff, const uint8_t *src, size_t size)
+ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size)
 {
     if (!buff || !src || size == 0) {
         errno = EINVAL;
         return -1;
     }
-    if (size > isdrbuff_remaining(buff)) {
+    if (size > knRBuff_remaining(buff)) {
         errno = ENOBUFS;
         return -1;
     }
