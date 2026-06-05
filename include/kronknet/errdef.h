@@ -6,6 +6,8 @@
 */
 #ifndef KRONKNET_ERRDEF_H
     #define KRONKNET_ERRDEF_H
+    #include <stdlib.h>
+    #include <stdio.h>
 
     #define KNEVTOK     0
     #define KNEVTERR   -1
@@ -13,5 +15,11 @@
     #define KNEVTKICK  -4
     #define KNEVTNET   -8
     #define KNEVTARGS -16
+
+    #define raise(msg)                                              \
+    do {                                                            \
+        fprintf(stderr, "%s: %u: %s\n", __FILE__, __LINE__, msg);   \
+        abort();                                                    \
+    } while (0)
 
 #endif /* KRONKNET_ERRDEF_H */
