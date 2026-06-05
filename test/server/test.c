@@ -5,6 +5,9 @@
 ** network library in C, for the zappy project
 */
 #include "kronknet/errdef.h"
+#include "kronknet/mkn/new.h"
+#include "kronknet/mkn/object.h"
+#include "kronknet/mkn/server.h"
 #include "kronknet/server/server.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/callback/callback.h"
@@ -88,24 +91,39 @@ int onDisconnectionCallback(knServer *server, knConnection *conn)
 
 int main(void)
 {
-    knServer *server = knServer_create(4242);
+    // knServer *server = knServer_create(4242);
     World     world = {{}, 0};
 
-    knServer_setData(server, &world);
+    // knServer_setData(server, &world);
 
-    knServer_setLogging(server, true);
-    knServer_onConnectionCallback(server, &onConnectionCallback);
-    knServer_onReadCallback(server, &onReadCallback);
-    knServer_onDisconnectionCallback(server, &onDisconnectionCallback);
+    // knServer_setLogging(server, true);
+    // knServer_onConnectionCallback(server, &onConnectionCallback);
+    // knServer_onReadCallback(server, &onReadCallback);
+    // knServer_onDisconnectionCallback(server, &onDisconnectionCallback);
 
     // knServer_run(server);
-    while (knServer_isRunning(server)) {
-        knServer_runOnce(server, 2000);
-        // printf("Update game loop\n");
-        for (size_t i = 0; i < world.nplayers; ++i) {
-            printf("Player with fd [%d] is alive!\n", world.players[i]->conn->fd);
-        }
-    }
-    knServer_destroy(server);
+    // while (knServer_isRunning(server)) {
+    //     knServer_runOnce(server, 2000);
+    //     // printf("Update game loop\n");
+    //     for (size_t i = 0; i < world.nplayers; ++i) {
+    //         printf("Player with fd [%d] is alive!\n", world.players[i]->conn->fd);
+    //     }
+    // }
+    // knServer_destroy(server);
+
+    mknObject *s = new(mknServer, 4242);
+
+    setLogging(s, true);
+    setData(s, &world);
+
+    onRead(s, &onReadCallback);
+    onConnect(s, &onConnectionCallback);
+    onDisconnect(s, &onDisconnectionCallback);
+
+    printf("aha: %s\n", str(s));
+
+    run(s);
+
+    delete(s);
     return 0;
 }

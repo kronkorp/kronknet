@@ -79,7 +79,7 @@ static int __knServer_processPoll(knServer *server)
     return KNEVTOK;
 }
 
-int knServer_runOnce(knServer *server, ssize_t timeoutMs)
+[[gnu::hot]] int knServer_runOnce(knServer *server, ssize_t timeoutMs)
 {
     if (!server) {
         return KNEVTARGS;

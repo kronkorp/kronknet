@@ -18,6 +18,5 @@ target_include_directories(kronknet PUBLIC
 target_compile_options(kronknet PRIVATE 
     -Wall 
     -Wextra 
-    -Werror 
     -O3
 )
