@@ -33,7 +33,7 @@ int knClient_receiveData(knClient *client)
         client->running = false;
         return KNEVTKICK;
     } else {
-        if (errno != EAGAIN || errno != EWOULDBLOCK) {
+        if (errno != EAGAIN && errno != EWOULDBLOCK) {
             knClient_err(client, "Connection lost");
             client->running = false;
             return KNEVTKICK;
