@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2026
-** ISILDUR
+** KRONKNET
 ** File description:
-** Push datas into isildur ring buffer
+** Push datas into KRONKNET ring buffer
 */
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <string.h>

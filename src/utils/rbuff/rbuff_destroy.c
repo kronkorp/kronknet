@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2026
-** ISILDUR
+** KRONKNET
 ** File description:
-** Destroy an isildur buffer
+** Destroy an KRONKNET buffer
 */
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <errno.h>

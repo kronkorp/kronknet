@@ -1,20 +1,19 @@
 /*
 ** EPITECH PROJECT, 2026
-** ISILDUR
+** KRONKNET
 ** File description:
-** Header file for isildur, a simple ring-buffer library in C.
+** Header file for KRONKNET, a simple ring-buffer library in C.
 */
-
 #ifndef KRONKNET_RBUFF_H
     #define KRONKNET_RBUFF_H
     #include <stdbool.h>
-#include <stddef.h>
+    #include <stddef.h>
     #include <stdint.h>
     #include <sys/types.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- * @struct  Isildur ring buffer structure. Store informations.
+ * @struct  KRONKNET ring buffer structure. Store informations.
  *
  * @note   Instead of doing '%' to know the position on the circular buffer,
  *         we can use '&' since the size will be a power of 2. 
@@ -34,7 +33,7 @@ typedef struct kronknet_ring_buffer_s {
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Create an isildur ring buffer with the given size
+* @brief       Create an KRONKNET ring buffer with the given size
 *
 * @param size  The size of the buffer. /!\Must be a power of 2/!\
 * @return      The allocated knRBuff instance, or NULL if an error occurs.
@@ -46,7 +45,7 @@ knRBuff *knRBuff_create(size_t size);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Initialize an isildur ring buffer
+* @brief       Initialize an KRONKNET ring buffer
 *
 * @param buff  The knRBuff instance to initialize.
 * @param size  The size of the buffer. /!\Must be a power of 2/!\
@@ -107,7 +106,7 @@ size_t knRBuff_usage(const knRBuff *buff);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Push data into isildur ring buffer
+* @brief       Push data into KRONKNET ring buffer
 *
 * @param buff  The ring buffer in which the data will be push
 * @param src   The ptr to the memory zone to copy into the ring buffer
@@ -121,7 +120,7 @@ ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Read data from an isildur ring buffer
+* @brief       Read data from an KRONKNET ring buffer
 *
 * @param buff  The ring buffer from which the datas will be pop
 * @param dest  The ptr to the memory zone to write the data
@@ -135,7 +134,7 @@ ssize_t knRBuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
-* @brief       Peek data from an isildur ring buffer without consuming it
+* @brief       Peek data from an KRONKNET ring buffer without consuming it
 *
 * @details     Copies 'size' bytes from the ring buffer into 'dest' without
 *              advancing the internal reader pointer. The data remains 
@@ -160,6 +159,20 @@ ssize_t knRBuff_peek(const knRBuff *buff, uint8_t *dest, size_t size);
 */
 ///////////////////////////////////////////////////////////////////////////////
 bool knRBuff_isEmpty(const knRBuff *buff);
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+* @brief       Find a specific sequence inside the ring buffer
+*
+* @param buff  The ring buffer
+* @param data  The data to find inside the buffer
+* @param size  The size of the data to cmp
+* @return      -1 is none is found, else the index of the beggining of data
+*/
+///////////////////////////////////////////////////////////////////////////////
+ssize_t knRBuff_find(const knRBuff *buff, const uint8_t *data, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 #endif /* KRONKNET_RBUFF_H */

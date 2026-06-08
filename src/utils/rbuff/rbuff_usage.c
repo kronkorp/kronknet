@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2026
-** ISILDUR
+** KRONKNET
 ** File description:
-** Get using space from the isildur ring buffer
+** Get using space from the KRONKNET ring buffer
 */
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stddef.h>

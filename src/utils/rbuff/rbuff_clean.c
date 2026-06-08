@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2026
-** ISILDUR
+** KRONKNET
 ** File description:
-** Clean an isildur buffer
+** Clean an KRONKNET buffer
 */
 #include "kronknet/utils/rbuff/rbuff.h"
 #include "stdlib.h"
