@@ -24,7 +24,7 @@ int knServer_receiveData(knServer *server, knConnection *conn)
     }
     ssize_t reads = recv(conn->fd, kronkbuffer, sizeof(kronkbuffer), 0);
     if (reads > 0) {
-        knServer_out(server, "Connection [%d]: %*s", conn->fd, reads, kronkbuffer);
+        knServer_out(server, "Connection [%d] sends %zd bytes", conn->fd, reads);
         if (server->onRead) {
             server->onRead(conn, kronkbuffer, reads);
         }
