@@ -93,7 +93,7 @@ static int __knServer_processPoll(knServer *server)
         return KNEVTERR;
     }
     for (int i = (int)server->pool.count - 1; i >= 1; --i) {
-        if (server->pool.conns[i]->disconnected) {
+        if (server->pool.conns[i] && server->pool.conns[i]->disconnected) {
             knServer_kickAtIndex(server, i);
         }
     }
