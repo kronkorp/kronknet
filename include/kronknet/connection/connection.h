@@ -55,4 +55,7 @@ void knConnection_setData(knConnection *conn, void *data);
 
 size_t knConnection_getId(const knConnection *conn);
 
+const char *knConnection_getIp(const knConnection *conn);
+uint16_t knConnection_getPort(const knConnection *conn);
+
 #endif /* KRONKNET_CONNECTION_H */
