@@ -8,6 +8,7 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/server/pool/pool.h"
 #include "kronknet/server/server.h"
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -44,6 +45,7 @@ static int __knServer_bind(knServer *server)
         sizeof(server->addr)) == -1) {
         return KNEVTNET;
     }
+    inet_ntop(AF_INET, &server->addr.sin_addr, server->ip, INET_ADDRSTRLEN);
     return KNEVTOK;
 }
 
@@ -59,9 +61,8 @@ static void __knServer_basics(knServer *server)
 
 int knServer_init(knServer *server, uint16_t port)
 {
-    if (!server) {
+    if (!server)
         return KNEVTERR;
-    }
     __knServer_basics(server);
     server->fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->fd == -1)

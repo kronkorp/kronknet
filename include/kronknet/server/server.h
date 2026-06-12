@@ -6,6 +6,7 @@
 */
 #ifndef KRONKNET_SERVER_H
     #define KRONKNET_SERVER_H
+    #include <stdint.h>
     #include <sys/socket.h>
     #include <netinet/in.h>
     #include <stdbool.h>
@@ -34,6 +35,7 @@ typedef struct kronknet_server_s {
     knReadCb           onRead;           //!< onRead callback
     knEventCb          onWrite;          //!< onWrite callback
     knConnectionCb     onDisconnection;  //!< onDisconnection callback
+    char               ip[INET_ADDRSTRLEN];  //!< The ip as a string
 
 } knServer;
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,5 +66,8 @@ void knServer_setData(knServer *server, void *data);
 void knServer_out(const knServer *server, const char *format, ...);
 void knServer_err(const knServer *server, const char *format, ...);
 void knServer_setLogging(knServer *server, bool shouldLog);
+
+const char *knServer_getIp(const knServer *server);
+uint16_t    knServer_getPort(const knServer *server);
 
 #endif /* KRONKNET_SERVER_H */
