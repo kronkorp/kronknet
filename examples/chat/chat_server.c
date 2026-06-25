@@ -33,7 +33,7 @@ static int __disconnectCb(
 )
 {
     printf(
-        "Connection lost from %s:%hu\n",
+        "Lost connection from %s:%hu\n",
         knConnection_getIp(connection),
         knConnection_getPort(connection)
     );

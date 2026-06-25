@@ -1,12 +1,21 @@
 // KRONKNET - CHAT EXEMPLE (client)
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
+#include <fcntl.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #define CHOK   0
 #define CHERR 84
+
+__attribute__((constructor)) static void set_stdin_nonblocking(void)
+{
+    fcntl(0, F_SETFL, O_NONBLOCK);
+}
 
 int main(
     int argc,
@@ -31,7 +40,13 @@ int main(
         return CHERR;
     }
     // NOTE: Run the client
-    knClient_run(client);
+    char buff[512];
+    while (knClient_isRunning(client)) {
+        knClient_runOnce(client, 15);
+        if (read(0, buff, sizeof(buff)) > 0) {
+            knClient_sendServer(client, buff, strlen(buff));
+        }
+    }
     // NOTE: Destroy client
     knClient_destroy(client);
     return CHOK;
