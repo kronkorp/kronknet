@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Set client data
+** et client data
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"

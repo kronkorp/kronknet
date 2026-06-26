@@ -17,7 +17,6 @@ typedef struct kronknet_server_s     knServer;
 typedef struct kronknet_connection_s knConnection;
 typedef struct kronknet_client_s     knClient;
 
-
 typedef int (*knConnectionCb)(knServer *, knConnection *);
 typedef int (*knEventCb)(knConnection *);
 typedef int (*knReadCb)(knConnection *, const void *, size_t size);

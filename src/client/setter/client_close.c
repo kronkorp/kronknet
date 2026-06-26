@@ -2,16 +2,16 @@
 ** EPITECH PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Set the logging, on or off for the client.
+** et client data
 */
+#include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
-#include <stdarg.h>
 #include <stdbool.h>
 
-void knClient_setLogging(knClient *client, bool shouldLog)
+void knClient_close(knClient *client)
 {
     if (!client) {
         return;
     }
-    client->shouldLog = shouldLog;
+    client->running = false;
 }

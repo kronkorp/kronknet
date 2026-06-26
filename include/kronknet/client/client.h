@@ -58,4 +58,6 @@ bool knClient_isRunning(knClient *client);
 void knClient_setData(knClient *client, void *data);
 void *knClient_getData(const knClient *client);
 
+void knClient_close(knClient *client);
+
 #endif /* KRONKNET_CLIENT_H */
