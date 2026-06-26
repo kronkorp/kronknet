@@ -6,16 +6,18 @@
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
-#include "kronknet/errdef.h"
-#include "kronknet/server/server.h"
+#include "kronknet/macros/errdef.h"
 #include <asm-generic/errno-base.h>
 #include <asm-generic/errno.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include "client.h"
 
-int knClient_receiveData(knClient *client)
+int knClient_receiveData(
+    knClient *client
+)
 {
     uint8_t kronkbuffer[KNBUFFSIZ] = {};
 
@@ -24,17 +26,17 @@ int knClient_receiveData(knClient *client)
     }
     ssize_t reads = recv(client->fd, kronkbuffer, KNBUFFSIZ, 0);
     if (reads > 0) {
-        knClient_out(client, "Received: %.*s", reads, kronkbuffer);
+        knInfo(client->logger, "Received: %.*s", reads, kronkbuffer);
         if (client->onRead) {
             client->onRead(client, kronkbuffer, reads);
         }
     } else if (reads == 0) {
-        knClient_err(client, "Connection lost");
+        knError(client->logger, "Connection lost");
         client->running = false;
         return KNEVTKICK;
     } else {
         if (errno != EAGAIN && errno != EWOULDBLOCK) {
-            knClient_err(client, "Connection lost");
+            knError(client->logger, "Connection lost");
             client->running = false;
             return KNEVTKICK;
         }

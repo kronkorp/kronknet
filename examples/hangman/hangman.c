@@ -1,4 +1,4 @@
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include "kronknet/server/server.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/callback/callback.h"
@@ -64,7 +64,7 @@ void reset_game(GameState *game)
 
 int onConnectionCallback(knServer *server, knConnection *conn)
 {
-    GameState *game = knServer_getData(server);
+    GameState *game = knServer_getUserPtr(server);
     if (!game || game->nplayers >= MAX_PLAYER) {
         return KNEVTKICK;
     }
@@ -77,7 +77,7 @@ int onConnectionCallback(knServer *server, knConnection *conn)
     player->conn = conn;
     player->id = game->player_id_counter++;
     player->game = game; 
-    knConnection_setData(conn, player);
+    knConnection_setUserPtr(conn, player);
 
     game->players[game->nplayers++] = player;
 
@@ -94,7 +94,7 @@ int onConnectionCallback(knServer *server, knConnection *conn)
 
 int onReadCallback(knConnection *conn, const void *str, size_t n)
 {
-    Player *player = knConnection_getData(conn);
+    Player *player = knConnection_getUserPtr(conn);
     if (!player || !player->game) return KNEVTKICK;
 
     GameState *game = player->game;
@@ -148,8 +148,8 @@ int onReadCallback(knConnection *conn, const void *str, size_t n)
 
 int onDisconnectionCallback(knServer *server, knConnection *conn)
 {
-    Player *player = knConnection_getData(conn);
-    GameState *game = knServer_getData(server);
+    Player *player = knConnection_getUserPtr(conn);
+    GameState *game = knServer_getUserPtr(server);
 
     if (!player || !game) return KNEVTOK;
 
@@ -177,7 +177,7 @@ int main(void)
     game.attempts_left = MAX_ATTEMPTS;
     game.player_id_counter = 1;
 
-    knServer_setData(server, &game);
+    knServer_setUserPtr(server, &game);
     knServer_setLogging(server, true); // Si tu as une fonction de log
 
     knServer_onConnectionCallback(server, &onConnectionCallback);

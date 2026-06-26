@@ -6,8 +6,11 @@
 */
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stddef.h>
+#include "rbuff.h"
 
-size_t knRBuff_usage(const knRBuff *buff)
+size_t knRBuff_usage(
+    const knRBuff *buff
+)
 {
     if (!buff) {
         return 0;

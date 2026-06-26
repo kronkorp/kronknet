@@ -6,7 +6,7 @@
 */
 #include "kronknet/mkn/object.h"
 #include "kronknet/mkn/new.h"
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 
 mknObject *new(const mknClass *class, ...)
 {

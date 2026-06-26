@@ -11,7 +11,7 @@ on:
 
 jobs:
   detect_build_system:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       has_make: ${{ steps.check_make.outputs.exists }}
       has_cmake: ${{ steps.check_cmake.outputs.exists }}
@@ -28,7 +28,7 @@ jobs:
     name: Check Make compilation
     needs: [detect_build_system]
     if: ${{ needs.detect_build_system.outputs.has_make == 'true' }}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: epitechcontent/epitest-docker
     steps:
@@ -40,10 +40,9 @@ jobs:
         run: make clean
       - name: Checking executables
         run: |
-          for file in ${{ vars.EXECUTABLES }}
-          do
-            if [ ! -x $file ]; then
-              echo ::error title=Executables not found or doesn\'t exist::$file doesn\'t exist !
+          for file in ${{ vars.EXECUTABLES }}; do
+            if [ ! -x "build/$file" ] && [ ! -f "build/$file" ]; then
+              echo "::error title=Artifact not found::$file does not exist or is invalid!"
               exit 84
             fi
           done
@@ -51,7 +50,7 @@ jobs:
   run_make_tests:
     name: Running Make tests
     needs: check_make_compilation
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: epitechcontent/epitest-docker
     steps:
@@ -67,7 +66,7 @@ jobs:
   check_cmake_compilation:
     name: Check CMake compilation
     needs: [detect_build_system]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: ${{ needs.detect_build_system.outputs.has_cmake == 'true' }}
     container:
       image: epitechcontent/epitest-docker
@@ -81,11 +80,10 @@ jobs:
           cmake --build build -- -j$(nproc)
       - name: Checking executables
         run: |
-          for file in ${{ vars.EXECUTABLES }}
-          do
-            if [ ! -x build/$file ]; then
-              echo ::error title=Executables not found or doesn\'t exist::$file doesn\'t exist !
-              exit 1
+          for file in ${{ vars.EXECUTABLES }}; do
+            if [ ! -x "build/$file" ] && [ ! -f "build/$file" ]; then
+              echo "::error title=Artifact not found::$file does not exist or is invalid!"
+              exit 84
             fi
           done
       - name: Clean build artifacts
@@ -94,7 +92,7 @@ jobs:
   run_cmake_tests:
     name: Running CMake tests
     needs: check_cmake_compilation
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: epitechcontent/epitest-docker
     steps:

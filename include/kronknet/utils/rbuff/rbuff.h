@@ -6,28 +6,17 @@
 */
 #ifndef KRONKNET_RBUFF_H
     #define KRONKNET_RBUFF_H
-    #include <stdbool.h>
+    #include "kronknet/macros/optimization.h"
+    #include "kronknet/macros/types.h"
     #include <stddef.h>
-    #include <stdint.h>
     #include <sys/types.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- * @struct  KRONKNET ring buffer structure. Store informations.
- *
- * @note   Instead of doing '%' to know the position on the circular buffer,
- *         we can use '&' since the size will be a power of 2. 
-*/
+ * @brief Declaration of shadow structure knRBuff
+ */
 ///////////////////////////////////////////////////////////////////////////////
-typedef struct kronknet_ring_buffer_s {
-
-    uint8_t *raw_buffer;  //!< The raw buffer (generic)
-    size_t   size;        //!< The size of the buffer
-    size_t   mask;        //!< The mask of the buffer to apply the binary and
-    size_t   reader;      //!< The index of the reader
-    size_t   writer;      //!< The index of the writer
-
-} knRBuff;
+typedef struct kronknet_ring_buffer_s knRBuff;
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -39,7 +28,7 @@ typedef struct kronknet_ring_buffer_s {
 * @return      The allocated knRBuff instance, or NULL if an error occurs.
 */
 ///////////////////////////////////////////////////////////////////////////////
-knRBuff *knRBuff_create(size_t size);
+KN_API knRBuff *knRBuff_create(size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -52,7 +41,7 @@ knRBuff *knRBuff_create(size_t size);
 * @return      0 on success, -1 otherwise, and errno set.
 */
 ///////////////////////////////////////////////////////////////////////////////
-int knRBuff_init(knRBuff *buff, size_t size);
+KN_API int knRBuff_init(knRBuff *buff, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -64,7 +53,7 @@ int knRBuff_init(knRBuff *buff, size_t size);
 * @return      Returns nothing.
 */
 ///////////////////////////////////////////////////////////////////////////////
-void knRBuff_destroy(knRBuff *buff);
+KN_API void knRBuff_destroy(knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -76,7 +65,7 @@ void knRBuff_destroy(knRBuff *buff);
 * @return      Returns nothing
 */
 ///////////////////////////////////////////////////////////////////////////////
-void knRBuff_clean(knRBuff *buff);
+KN_API void knRBuff_clean(knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -88,7 +77,7 @@ void knRBuff_clean(knRBuff *buff);
 * @return      The remaining size.
 */
 ///////////////////////////////////////////////////////////////////////////////
-size_t knRBuff_remaining(const knRBuff *buff);
+KN_API size_t knRBuff_remaining(const knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -100,7 +89,7 @@ size_t knRBuff_remaining(const knRBuff *buff);
 * @return      The using size.
 */
 ///////////////////////////////////////////////////////////////////////////////
-size_t knRBuff_usage(const knRBuff *buff);
+KN_API size_t knRBuff_usage(const knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -114,7 +103,7 @@ size_t knRBuff_usage(const knRBuff *buff);
 * @return      The size write on success, -1 otherwise
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size);
+KN_API ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -128,7 +117,7 @@ ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size);
 * @return      The size read on success, -1 otherwise
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t knRBuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
+KN_API ssize_t knRBuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -146,7 +135,7 @@ ssize_t knRBuff_pop(knRBuff *buff, uint8_t *dest, size_t size);
 * @return      The size peeked on success, -1 otherwise (sets errno)
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t knRBuff_peek(const knRBuff *buff, uint8_t *dest, size_t size);
+KN_API ssize_t knRBuff_peek(const knRBuff *buff, uint8_t *dest, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -158,7 +147,7 @@ ssize_t knRBuff_peek(const knRBuff *buff, uint8_t *dest, size_t size);
 * @return      Is the buffer empty
 */
 ///////////////////////////////////////////////////////////////////////////////
-bool knRBuff_isEmpty(const knRBuff *buff);
+KN_API knBool knRBuff_isEmpty(const knRBuff *buff);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -172,7 +161,7 @@ bool knRBuff_isEmpty(const knRBuff *buff);
 * @return      -1 is none is found, else the index of the beggining of data
 */
 ///////////////////////////////////////////////////////////////////////////////
-ssize_t knRBuff_find(const knRBuff *buff, const uint8_t *data, size_t size);
+KN_API ssize_t knRBuff_find(const knRBuff *buff, const uint8_t *data, size_t size);
 ///////////////////////////////////////////////////////////////////////////////
 
 #endif /* KRONKNET_RBUFF_H */

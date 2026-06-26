@@ -1,6 +1,6 @@
 #include "kronknet/client/client.h"
 #include "kronknet/callback/callback.h"
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <unistd.h>

@@ -4,8 +4,8 @@
 ** File description:
 ** Unregister an fd for the server's poll
 */
-#include "kronknet/errdef.h"
-#include "kronknet/server/pool/pool.h"
+#include "kronknet/macros/errdef.h"
+#include "pool.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

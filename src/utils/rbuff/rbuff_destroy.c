@@ -5,8 +5,8 @@
 ** Destroy an KRONKNET buffer
 */
 #include "kronknet/utils/rbuff/rbuff.h"
-#include <errno.h>
 #include "stdlib.h"
+#include "rbuff.h"
 
 void knRBuff_destroy(knRBuff *buff)
 {

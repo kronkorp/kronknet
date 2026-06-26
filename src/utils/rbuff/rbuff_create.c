@@ -4,13 +4,16 @@
 ** File description:
 ** Create a KRONKNET buffer
 */
+#include "rbuff.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "errno.h"
 
-knRBuff *knRBuff_create(size_t size)
+knRBuff *knRBuff_create(
+    size_t size
+)
 {
     knRBuff *buff = calloc(1, sizeof(knRBuff));
 

@@ -6,68 +6,40 @@
 */
 #ifndef KRONKNET_SERVER_H
     #define KRONKNET_SERVER_H
-    #include <stdint.h>
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-    #include <stdbool.h>
     #include "kronknet/callback/callback.h"
-    #include "pool/pool.h"
+    #include "kronknet/macros/types.h"
+    #include "kronknet/macros/optimization.h"
+    #include <stdio.h>
 
-    #define KNBUFFSIZ  8192
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- * @struct  server_s
- *
- * @brief   Server structure, containing necessary datas: pollfds, addr, ...
- */
-///////////////////////////////////////////////////////////////////////////////
-typedef struct kronknet_server_s {
-
-    bool               running;          //!< Is the server running
-    bool               logs;             //!< Is the server should produce logs
-    int                fd;               //!< The fd of the server socket
-    int                status;           //!< The status of the server, set on error
-    struct sockaddr_in addr;             //!< The address of the server
-    knPool             pool;             //!< The pool of pollfds to look on
-    void              *data;             //!< Data like a struct given by the user
-    knConnectionCb     onConnection;     //!< onConnection callback
-    knReadCb           onRead;           //!< onRead callback
-    knEventCb          onWrite;          //!< onWrite callback
-    knConnectionCb     onDisconnection;  //!< onDisconnection callback
-    char               ip[INET_ADDRSTRLEN];  //!< The ip as a string
-
-} knServer;
-///////////////////////////////////////////////////////////////////////////////
+typedef struct kronknet_server_s knServer;
 
 // TODO: Documentation
-knServer *knServer_create(uint16_t port);
-int knServer_init(knServer *server, uint16_t port);
+KN_API knServer* knServer_create(knPort port);
+KN_API int       knServer_init(knServer *server, uint16_t port);
+KN_API void      knServer_clear(knServer *server);
+KN_API void      knServer_destroy(knServer *server);
 
-void knServer_clear(knServer *server);
-void knServer_destroy(knServer *server);
+KN_API int knServer_runOnce(knServer *server, ssize_t timeoutMs);
+KN_API int knServer_run(knServer *server);
 
-int knServer_receiveData(knServer *server, knConnection *conn);
-int knServer_accept(knServer *server);
+KN_API knBool knServer_isRunning(const knServer *server);
+KN_API void knServer_stop(knServer *server);
 
-int knServer_runOnce(knServer *server, ssize_t timeoutMs);
-int knServer_run(knServer *server);
+KN_API void knServer_setLogLevel(knServer *server, knLogLevel level);
+KN_API void knServer_setLogOutput(knServer *server, FILE *output);
 
-void knServer_kick(knServer *server, knConnection *conn);
-void knServer_kickAtIndex(knServer *server, size_t idx);
+KN_API FILE*      knServer_getLogOutput(const knServer *server);
+KN_API knLogLevel knServer_getLogLevel(const knServer *server);
 
-void knServer_disconnect(knServer *server, knConnection *conn);
+KN_API void *knServer_getUserPtr(knServer *server);
+KN_API void  knServer_setUserPtr(knServer *server, void *data);
 
-bool knServer_isRunning(const knServer *server);
+KN_API const char* knServer_getIp(const knServer *server);
+KN_API knPort      knServer_getPort(const knServer *server);
 
-void *knServer_getData(const knServer *server);
-void knServer_setData(knServer *server, void *data);
-
-void knServer_out(const knServer *server, const char *format, ...);
-void knServer_err(const knServer *server, const char *format, ...);
-void knServer_setLogging(knServer *server, bool shouldLog);
-
-const char *knServer_getIp(const knServer *server);
-uint16_t    knServer_getPort(const knServer *server);
+KN_API int knServer_setOnConnect(knServer *server, knServer_OnConnect_t callback);
+KN_API int knServer_setOnRead(knServer *server, knServer_OnRead_t callback);
+KN_API int knServer_setOnWrite(knServer *server, knServer_OnWrite_t callback);
+KN_API int knServer_setOnDisconnect(knServer *server, knServer_OnConnect_t callback);
 
 #endif /* KRONKNET_SERVER_H */

@@ -9,8 +9,13 @@
 #include <errno.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "rbuff.h"
 
-ssize_t knRBuff_push(knRBuff *buff, const uint8_t *src, size_t size)
+ssize_t knRBuff_push(
+    knRBuff *buff,
+    const uint8_t *src,
+    size_t size
+)
 {
     if (!buff || !src || size == 0) {
         errno = EINVAL;

@@ -4,7 +4,7 @@
 ** File description:
 ** network library in C, for the zappy project
 */
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include "kronknet/mkn/new.h"
 #include "kronknet/mkn/object.h"
 #include "kronknet/mkn/server.h"
@@ -36,7 +36,7 @@ typedef struct World_s {
 
 int onConnectionCallback([[maybe_unused]] knServer *server, knConnection *conn)
 {
-    World  *w = knServer_getData(server);
+    World  *w = knServer_getUserPtr(server);
     Player *player;
 
     if (!w || w->nplayers >= MAX_PLAYER) {
@@ -48,7 +48,7 @@ int onConnectionCallback([[maybe_unused]] knServer *server, knConnection *conn)
     }
     player->conn = conn;
     player->x = rand() % 255;
-    knConnection_setData(conn, player);
+    knConnection_setUserPtr(conn, player);
     w->players[w->nplayers] = player;
     w->nplayers++;
     printf("[%d] Hello guys from callback!!\n", player->x);
@@ -57,7 +57,7 @@ int onConnectionCallback([[maybe_unused]] knServer *server, knConnection *conn)
 
 int onReadCallback([[maybe_unused]] knConnection *conn, const void *str, size_t n)
 {
-    Player *player = knConnection_getData(conn);
+    Player *player = knConnection_getUserPtr(conn);
 
     if (!player)
         return -1;
@@ -72,8 +72,8 @@ int onReadCallback([[maybe_unused]] knConnection *conn, const void *str, size_t 
 
 int onDisconnectionCallback(knServer *server, knConnection *conn)
 {
-    Player *player = knConnection_getData(conn);
-    World  *w      = knServer_getData(server);
+    Player *player = knConnection_getUserPtr(conn);
+    World  *w      = knServer_getUserPtr(server);
 
     if (!player || !w)
         return -1;
@@ -94,7 +94,7 @@ int main(void)
     // knServer *server = knServer_create(4242);
     World     world = {{}, 0};
 
-    // knServer_setData(server, &world);
+    // knServer_setUserPtr(server, &world);
 
     // knServer_setLogging(server, true);
     // knServer_onConnectionCallback(server, &onConnectionCallback);
@@ -114,7 +114,7 @@ int main(void)
     mknObject *s = new(mknServer, 4242);
 
     setLogging(s, true);
-    setData(s, &world);
+    setUserPtr(s, &world);
 
     onRead(s, &onReadCallback);
     onConnect(s, &onConnectionCallback);

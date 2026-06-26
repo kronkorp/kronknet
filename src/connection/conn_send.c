@@ -4,8 +4,8 @@
 ** File description:
 ** Send message to a connection
 */
-#include "kronknet/connection/connection.h"
-#include "kronknet/errdef.h"
+#include "connection.h"
+#include "kronknet/macros/errdef.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <asm-generic/errno-base.h>
 #include <asm-generic/errno.h>
@@ -16,7 +16,11 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-int knConnection_send(knConnection *conn, const void *data, size_t size)
+int knConnection_send(
+    knConnection *conn,
+    const void *data,
+    size_t size
+)
 {
     if (!conn || !data || size == 0) {
         return KNEVTARGS;

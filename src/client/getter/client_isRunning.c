@@ -6,8 +6,12 @@
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
+#include "../client.h"
+#include "kronknet/macros/types.h"
 
-bool knClient_isRunning(knClient *client)
+knBool knClient_isRunning(
+    knClient *client
+)
 {
     return (client && client->running);
 }

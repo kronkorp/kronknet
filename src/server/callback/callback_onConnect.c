@@ -2,17 +2,21 @@
 ** EPITECH PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Set onConnect callback (for client)
+** Set onConnect callback
 */
-#include "kronknet/client/client.h"
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include "kronknet/callback/callback.h"
+#include "kronknet/server/server.h"
+#include "../server.h"
 
-int knClient_onConnectionCallback(knClient *client, knClientCb callback)
+int knServer_setOnConnect(
+    knServer *server,
+    knServer_OnConnect_t callback
+)
 {
-    if (!client) {
+    if (!server) {
         return KNEVTARGS;
     }
-    client->onConnection = callback;
+    server->onConnection = callback;
     return KNEVTOK;
 }

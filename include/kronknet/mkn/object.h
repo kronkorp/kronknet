@@ -10,7 +10,7 @@
     #include <stdarg.h>
     #include <stdbool.h>
     #include <string.h>
-    #include "kronknet/errdef.h"
+    #include "kronknet/macros/errdef.h"
 
 // TODO: Documentation
 

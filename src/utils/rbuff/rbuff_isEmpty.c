@@ -7,8 +7,11 @@
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stddef.h>
 #include <stdint.h>
+#include "rbuff.h"
 
-bool knRBuff_isEmpty(const knRBuff *buff)
+knBool knRBuff_isEmpty(
+    const knRBuff *buff
+)
 {
     return knRBuff_usage(buff) == 0;
 }

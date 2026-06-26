@@ -1,7 +1,7 @@
 // KRONKNET - CHAT EXEMPLE (server)
 #include "kronknet/callback/callback.h"
 #include "kronknet/connection/connection.h"
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include "kronknet/server/server.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,7 +37,7 @@ static int __connectCb(
     knConnection *connection
 )
 {
-    struct ctx* data = (struct ctx*)knServer_getData(server);
+    struct ctx* data = (struct ctx*)knServer_getUserPtr(server);
     printf(
         "New connection from %s:%hu\n",
         knConnection_getIp(connection),
@@ -52,7 +52,7 @@ static int __connectCb(
         .lastmsg = {0},
         .hasmsg = false
     };
-    knConnection_setData(connection, &data->users[data->usrcount]);
+    knConnection_setUserPtr(connection, &data->users[data->usrcount]);
     data->usrcount++;
     return KNEVTOK;
 }
@@ -63,7 +63,7 @@ static int __disconnectCb(
     knConnection *connection
 )
 {
-    struct ctx* data = (struct ctx*)knServer_getData(server);
+    struct ctx* data = (struct ctx*)knServer_getUserPtr(server);
     printf(
         "Lost connection from %s:%hu\n",
         knConnection_getIp(connection),
@@ -84,7 +84,7 @@ static int __readCb(
     size_t length
 )
 {
-    struct usr* user = (struct usr*)knConnection_getData(connection);
+    struct usr* user = (struct usr*)knConnection_getUserPtr(connection);
     printf(
         "Received \"%.*s\" from %s:%hu\n",
         (int)length,
@@ -127,7 +127,7 @@ int main(
     // NOTE: Make the server able to log
     knServer_setLogging(server, true);
     // NOTE: Set the context as server data
-    knServer_setData(server, &context);
+    knServer_setUserPtr(server, &context);
     // NOTE: Set servers callback
     knServer_onConnectionCallback(server, &__connectCb);
     knServer_onDisconnectionCallback(server, &__disconnectCb);

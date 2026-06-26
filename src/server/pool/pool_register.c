@@ -5,14 +5,18 @@
 ** Register an fd for the server's pool
 */
 #include "kronknet/connection/connection.h"
-#include "kronknet/errdef.h"
-#include "kronknet/server/pool/pool.h"
+#include "kronknet/macros/errdef.h"
+#include "pool.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/poll.h>
+#include "../../connection/connection.h"
 
-static int __knPool_ensureCapacity(knPool *pool, size_t size)
+static int __knPool_ensureCapacity(
+    knPool *pool,
+    size_t size
+)
 {
     if (!pool) {
         return KNEVTARGS;
@@ -31,7 +35,12 @@ static int __knPool_ensureCapacity(knPool *pool, size_t size)
     return KNEVTOK;
 }
 
-int knPool_registerFd(knPool *pool, int fd, int events)
+int knPool_registerFd(
+    knPool *pool,
+    int fd,
+    knConnection *conn,
+    int events
+)
 {
     size_t new_count = 0;
 
@@ -45,28 +54,12 @@ int knPool_registerFd(knPool *pool, int fd, int events)
     }
     pool->pollfds[pool->count].fd = fd;
     pool->pollfds[pool->count].events = events;
+    pool->conns[pool->count - 1] = conn;
+    if (conn) {
+        if (conn) {
+            conn->evtptr = &pool->pollfds[pool->count - 1].events;
+        }
+    }
     pool->count = new_count;
-    return KNEVTOK;
-}
-
-// FIXME: ensure capacity if needed.
-// FIXME: As now, this is ALWAYS called after register fd.
-int knPool_registerConnection(knPool *pool, knConnection *connection)
-{
-    // size_t newCount = 0;
-
-    if (!pool) {
-        return KNEVTARGS;
-    }
-    // newCount = pool->count + 1;
-    // if (__knPool_ensureCapacity(pool, newCount) == -1) {
-    //     return -1;
-    // }
-    // FIXME: Error handling
-    pool->conns[pool->count - 1] = connection;
-    if (connection) {
-        connection->evtptr = &pool->pollfds[pool->count - 1].events;
-    }
-    // pool->count = newCount;
     return KNEVTOK;
 }

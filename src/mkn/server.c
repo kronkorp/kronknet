@@ -6,7 +6,7 @@
 */
 #include "kronknet/server/server.h"
 #include "kronknet/callback/callback.h"
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include "kronknet/mkn/object.h"
 #include "kronknet/mkn/server.h"
 #include <stdbool.h>
@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include "../server/server.h"
 
 typedef struct {
 
@@ -73,36 +74,36 @@ static int mknServer_runOnce(mknServerClass *thus, ssize_t timeout)
     return knServer_runOnce(thus->_server, timeout);
 }
 
-static int mknServer_onReadCb(mknServerClass *thus, knReadCb cb)
+static int mknServer_onReadCb(mknServerClass *thus, knServer_OnRead_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onReadCallback(thus->_server, cb);
+    return knServer_setOnRead(thus->_server, cb);
 }
 
-static int mknServer_onWriteCb(mknServerClass *thus, knEventCb cb)
+static int mknServer_onWriteCb(mknServerClass *thus, knServer_OnWrite_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onWriteCallback(thus->_server, cb);
+    return knServer_setOnWrite(thus->_server, cb);
 }
 
-static int mknServer_onConnectCb(mknServerClass *thus, knConnectionCb cb)
+static int mknServer_onConnectCb(mknServerClass *thus, knServer_OnConnect_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onConnectionCallback(thus->_server, cb);
+    return knServer_setOnConnect(thus->_server, cb);
 }
 
-static int mknServer_onDisconnectCb(mknServerClass *thus, knConnectionCb cb)
+static int mknServer_onDisconnectCb(mknServerClass *thus, knServer_OnDisconnect_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onDisconnectionCallback(thus->_server, cb);
+    return knServer_setOnDisconnect(thus->_server, cb);
 }
 
 static int mknServer_getPort(mknServerClass *thus)
@@ -123,11 +124,11 @@ static int mknServer_setLogging(mknServerClass *thus, ...)
     va_start(l, thus);
     bool c = va_arg(l, int);
     va_end(l);
-    knServer_setLogging(thus->_server, c);
+    knServer_setLogLevel(thus->_server, c);
     return KNEVTOK;
 }
 
-static int mknServer_setData(mknServerClass *thus, ...)
+static int mknServer_setUserPtr(mknServerClass *thus, ...)
 {
     va_list l;
 
@@ -135,7 +136,7 @@ static int mknServer_setData(mknServerClass *thus, ...)
         KN_PANIC("Bad parameter");
     }
     va_start(l, thus);
-    knServer_setData(thus->_server, va_arg(l, void *));
+    knServer_setUserPtr(thus->_server, va_arg(l, void *));
     va_end(l);
     return KNEVTOK;
 }
@@ -164,7 +165,7 @@ static const mknServerClass _description = {
         .__onDisconnect__ = (mkn_setCb_t)&mknServer_onDisconnectCb,
         .__port__         = (mkn_getInt_t)&mknServer_getPort,
         .__log__          = (mkn_set_t)&mknServer_setLogging,
-        .__data__         = (mkn_set_t)&mknServer_setData,
+        .__data__         = (mkn_set_t)&mknServer_setUserPtr,
     },
     ._server = NULL,
 };

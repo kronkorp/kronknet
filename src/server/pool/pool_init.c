@@ -5,13 +5,15 @@
 ** Init poolfd
 */
 #include "kronknet/connection/connection.h"
-#include "kronknet/errdef.h"
-#include "kronknet/server/pool/pool.h"
+#include "kronknet/macros/errdef.h"
+#include "pool.h"
 #include <stdlib.h>
 #include <sys/poll.h>
 #include <unistd.h>
 
-int knPool_init(knPool *pool)
+int knPool_init(
+    knPool *pool
+)
 {
     if (!pool) {
         return KNEVTARGS;

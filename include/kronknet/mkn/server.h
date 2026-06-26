@@ -40,7 +40,7 @@ struct mknServerContainer_s {
 #define onDisconnect(o, c)  (((mknServerContainer *)o)->__onDisconnect__(o, c))
 #define port(o)             (((mknServerContainer *)o)->__port__(o))
 #define setLogging(o, ...)  (((mknServerContainer *)o)->__log__(o, __VA_ARGS__))
-#define setData(o, ...)     (((mknServerContainer *)o)->__data__(o, __VA_ARGS__))
+#define setUserPtr(o, ...)     (((mknServerContainer *)o)->__data__(o, __VA_ARGS__))
 
 extern const mknClass *mknServer;
 

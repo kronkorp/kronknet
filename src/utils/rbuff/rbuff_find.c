@@ -7,8 +7,13 @@
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <string.h>
 #include <stddef.h>
+#include "rbuff.h"
 
-ssize_t knRBuff_find(const knRBuff *buff, const uint8_t *data, size_t size)
+ssize_t knRBuff_find(
+    const knRBuff *buff,
+    const uint8_t *data,
+    size_t size
+)
 {
     if (!buff || !data || size == 0) {
         return -1;

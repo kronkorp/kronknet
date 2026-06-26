@@ -9,6 +9,9 @@ file(GLOB_RECURSE KRONKNET_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
 )
 
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
+
 add_library(kronknet-obj OBJECT ${KRONKNET_SOURCES})
 
 target_include_directories(kronknet-obj

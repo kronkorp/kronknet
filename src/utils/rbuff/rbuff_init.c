@@ -4,6 +4,7 @@
 ** File description:
 ** Init a KRONKNET buffer
 */
+#include "rbuff.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -11,7 +12,10 @@
 #include <stdlib.h>
 #include "errno.h"
 
-int knRBuff_init(knRBuff *buff, size_t size)
+int knRBuff_init(
+    knRBuff *buff,
+    size_t size
+)
 {
     if (!buff || size == 0 || ((size & (size - 1)) != 0)) {
         errno = EINVAL;

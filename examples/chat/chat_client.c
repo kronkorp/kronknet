@@ -1,7 +1,7 @@
 // KRONKNET - CHAT EXEMPLE (client)
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
-#include "kronknet/errdef.h"
+#include "kronknet/macros/errdef.h"
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stddef.h>
