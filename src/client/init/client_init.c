@@ -11,22 +11,32 @@
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <sys/poll.h>
 #include <sys/socket.h>
+#include "../client.h"
+#include "kronknet/macros/types.h"
 
-static void __knClient_initStatic(knClient *client)
+static void __knClient_initStatic(
+    knClient *client
+)
 {
     client->onConnection = NULL;
     client->onRead = NULL;
     client->onWrite = NULL;
-    client->onDisconnection = NULL;
+    client->onDisconnect = NULL;
     client->running = true;
-    client->shouldLog = false;
     client->fd = -1;
     client->events = POLLIN;
+    client->logger = (knLoggerData){
+        .log_level = knLogNone,
+        .out = NULL,
+    };
 }
 
-int knClient_init(knClient *client)
+int knClient_init(
+    knClient *client
+)
 {
     if (!client) {
         return KNEVTARGS;

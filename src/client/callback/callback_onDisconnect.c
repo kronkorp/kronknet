@@ -7,12 +7,16 @@
 #include "kronknet/macros/errdef.h"
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
+#include "../client.h"
 
-int knClient_onDisconnectionCallback(knClient *client, knClientCb callback)
+int knClient_setOnDisconnect(
+    knClient *client,
+    knClient_OnDisconnect_t callback
+)
 {
     if (!client) {
         return KNEVTARGS;
     }
-    client->onDisconnection = callback;
+    client->onDisconnect = callback;
     return KNEVTOK;
 }

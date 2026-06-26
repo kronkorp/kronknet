@@ -7,57 +7,33 @@
 #ifndef KRONKNET_CLIENT_H
     #define KRONKNET_CLIENT_H
     #include "kronknet/callback/callback.h"
-    #include "kronknet/utils/rbuff/rbuff.h"
+    #include "kronknet/macros/optimization.h"
+    #include "kronknet/macros/types.h"
     #include <netinet/in.h>
-#include <stdbool.h>
+    #include <stdbool.h>
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- * @struct kronknet_client_s
- *
- * @brief  Client structure, containing necessary data to the client: fd, data
- */
-///////////////////////////////////////////////////////////////////////////////
-typedef struct kronknet_client_s {
+typedef struct kronknet_client_s knClient;
 
-    bool     shouldLog;       //!< Should the client produce log ?
-    bool     running;         //!< Is the client running ??
-    int      fd;              //!< The file descriptor of the client
-    void    *data;            //!< The user data ?
-    knRBuff *buff;            //!< The out buffer (when send is not possible)
-    short    events;          //!< The events
-    struct sockaddr_in addr;  //!< The address of the client
-    knClientCb         onConnection;
-    knClientReadCb     onRead;
-    knClientCb         onWrite;
-    knClientCb         onDisconnection;
+KN_API knClient *knClient_create(void);
+KN_API int knClient_init(knClient *client);
+KN_API void knClient_clear(knClient *client);
+KN_API void knClient_destroy(knClient *client);
+KN_API int knClient_connect(knClient *client, const char *ip, uint16_t port);
 
-} knClient;
-///////////////////////////////////////////////////////////////////////////////
+KN_API int knClient_runOnce(knClient *client, ssize_t timeout);
+KN_API int knClient_run(knClient *client);
 
-// TODO: Do doc
-knClient *knClient_create(void);
-int knClient_init(knClient *client);
-void knClient_clear(knClient *client);
-void knClient_destroy(knClient *client);
+KN_API knBool knClient_isRunning(knClient *client);
+KN_API void knClient_close(knClient *client);
 
-int knClient_runOnce(knClient *client, ssize_t timeout);
-int knClient_run(knClient *client);
-int knClient_receiveData(knClient *client);
+KN_API int knClient_sendServer(knClient *client, void *data, size_t size);
 
-void knClient_out(const knClient *client, const char *format, ...);
-void knClient_err(const knClient *client, const char *format, ...);
-void knClient_setLogging(knClient *server, bool shouldLog);
+KN_API void knClient_setUserPtr(knClient *client, void *data);
+KN_API void *knClient_getUserPtr(const knClient *client);
 
-int knClient_sendServer(knClient *client, void *data, size_t size);
-
-int knClient_connect(knClient *client, const char *ip, uint16_t port);
-
-bool knClient_isRunning(knClient *client);
-
-void knClient_setUserPtr(knClient *client, void *data);
-void *knClient_getUserPtr(const knClient *client);
-
-void knClient_close(knClient *client);
+KN_API int knClient_setOnConnect(knClient *client, knClient_OnConnect_t callback);
+KN_API int knClient_setOnRead(knClient *client, knClient_OnRead_t callback);
+KN_API int knClient_setOnWrite(knClient *client, knClient_OnWrite_t callback);
+KN_API int knClient_setOnDisconnect(knClient *client, knClient_OnDisconnect_t callback);
 
 #endif /* KRONKNET_CLIENT_H */

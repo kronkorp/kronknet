@@ -4,7 +4,6 @@
 ** File description:
 ** Set onConnect callback
 */
-#include "kronknet/connection/connection.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/callback/callback.h"
 #include "kronknet/server/server.h"
@@ -12,7 +11,7 @@
 
 int knServer_setOnConnect(
     knServer *server,
-    knConnectionCb callback
+    knServer_OnConnect_t callback
 )
 {
     if (!server) {

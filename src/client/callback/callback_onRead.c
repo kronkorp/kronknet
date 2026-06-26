@@ -7,8 +7,12 @@
 #include "kronknet/macros/errdef.h"
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
+#include "../client.h"
 
-int knClient_onReadCallback(knClient *client, knClientReadCb callback)
+int knClient_setOnRead(
+    knClient *client,
+    knClient_OnRead_t callback
+)
 {
     if (!client) {
         return KNEVTARGS;

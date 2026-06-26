@@ -6,7 +6,6 @@
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/macros/errdef.h"
-#include "kronknet/server/server.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <asm-generic/errno-base.h>
 #include <asm-generic/errno.h>
@@ -16,8 +15,13 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include "kronknet/client/client.h"
+#include "client.h"
 
-int knClient_sendServer(knClient *client, void *data, size_t size)
+int knClient_sendServer(
+    knClient *client,
+    void *data,
+    size_t size
+)
 {
     if (!client || !data || size == 0) {
         return KNEVTARGS;

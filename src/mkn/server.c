@@ -74,36 +74,36 @@ static int mknServer_runOnce(mknServerClass *thus, ssize_t timeout)
     return knServer_runOnce(thus->_server, timeout);
 }
 
-static int mknServer_onReadCb(mknServerClass *thus, knReadCb cb)
+static int mknServer_onReadCb(mknServerClass *thus, knServer_OnRead_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onReadCallback(thus->_server, cb);
+    return knServer_setOnRead(thus->_server, cb);
 }
 
-static int mknServer_onWriteCb(mknServerClass *thus, knEventCb cb)
+static int mknServer_onWriteCb(mknServerClass *thus, knServer_OnWrite_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onWriteCallback(thus->_server, cb);
+    return knServer_setOnWrite(thus->_server, cb);
 }
 
-static int mknServer_onConnectCb(mknServerClass *thus, knConnectionCb cb)
+static int mknServer_onConnectCb(mknServerClass *thus, knServer_OnConnect_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onConnectionCallback(thus->_server, cb);
+    return knServer_setOnConnect(thus->_server, cb);
 }
 
-static int mknServer_onDisconnectCb(mknServerClass *thus, knConnectionCb cb)
+static int mknServer_onDisconnectCb(mknServerClass *thus, knServer_OnDisconnect_t cb)
 {
     if (!thus) {
         KN_PANIC("Bad parameter");
     }
-    return knServer_onDisconnectionCallback(thus->_server, cb);
+    return knServer_setOnDisconnect(thus->_server, cb);
 }
 
 static int mknServer_getPort(mknServerClass *thus)

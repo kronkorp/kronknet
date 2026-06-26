@@ -7,10 +7,11 @@
 #include "kronknet/client/client.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/callback/callback.h"
+#include "../client.h"
 
-int knClient_onConnectionCallback(
+int knClient_setOnConnect(
     knClient *client,
-    knClientCb callback
+    knClient_OnConnect_t callback
 )
 {
     if (!client) {

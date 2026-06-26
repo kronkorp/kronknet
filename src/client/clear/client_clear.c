@@ -6,13 +6,15 @@
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
-#include "kronknet/macros/errdef.h"
 #include <arpa/inet.h>
 #include <stddef.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include "../client.h"
 
-void knClient_clear(knClient *client)
+void knClient_clear(
+    knClient *client
+)
 {
     if (!client) {
         return;

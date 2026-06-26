@@ -70,7 +70,7 @@ static void __knServer_basics(knServer *server)
     server->onConnection = NULL;
     server->onWrite = NULL;
     server->onRead = NULL;
-    server->onDisconnection = NULL;
+    server->onDisconnect = NULL;
     server->logger = (knLoggerData){
         .out = NULL,
         .log_level = knLogNone,

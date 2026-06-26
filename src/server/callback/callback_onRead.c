@@ -4,7 +4,6 @@
 ** File description:
 ** Set onRead callback
 */
-#include "kronknet/connection/connection.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/callback/callback.h"
 #include "kronknet/server/server.h"
@@ -12,7 +11,7 @@
 
 int knServer_setOnRead(
     knServer *server,
-    knReadCb callback)
+    knServer_OnRead_t callback)
 {
     if (!server) {
         return KNEVTARGS;

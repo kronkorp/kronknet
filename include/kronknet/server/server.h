@@ -37,4 +37,9 @@ KN_API void  knServer_setUserPtr(knServer *server, void *data);
 KN_API const char* knServer_getIp(const knServer *server);
 KN_API knPort      knServer_getPort(const knServer *server);
 
+KN_API int knServer_setOnConnect(knServer *server, knServer_OnConnect_t callback);
+KN_API int knServer_setOnRead(knServer *server, knServer_OnRead_t callback);
+KN_API int knServer_setOnWrite(knServer *server, knServer_OnWrite_t callback);
+KN_API int knServer_setOnDisconnect(knServer *server, knServer_OnConnect_t callback);
+
 #endif /* KRONKNET_SERVER_H */

@@ -2,17 +2,19 @@
 ** EPITECH PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Destroy client structure
+** et client data
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
-#include <stdlib.h>
+#include "../client.h"
 
-void knClient_destroy(knClient *client)
+void knClient_setUserPtr(
+    knClient *client,
+    void *user_ptr
+)
 {
     if (!client) {
         return;
     }
-    knClient_clear(client);
-    free(client);
+    client->user_ptr = user_ptr;
 }
