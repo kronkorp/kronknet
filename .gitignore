@@ -23,3 +23,8 @@ libkronknet.a
 test/server/server
 test/client/client
 ex_*
+
+# Doxygen
+html/
+latex/
+Doxyfile.bak

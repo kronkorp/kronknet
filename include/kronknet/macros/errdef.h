@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Errors and other defs
+** Error codes and utility macros.
 */
 #ifndef KRONKNET_ERRDEF_H
     #define KRONKNET_ERRDEF_H
@@ -17,7 +17,6 @@
     #include <stdio.h>
     #include <stdlib.h>
 
-    // FIXME: Change location
     #define KN_PANIC(msg) \
     do { \
         fprintf(stderr, "%s:%d: FATAL ERROR: %s\n", __FILE__, __LINE__, msg); \

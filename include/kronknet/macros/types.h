@@ -2,7 +2,7 @@
 ** FREE PROJECT, 2026
 ** KRONKNET
 ** File description:
-** macros/types.h for explicit types definitions
+** Explicit type definitions used across the public API.
 */
 #ifndef KRONKNET_MACROS_TYPES_H
     #define KRONKNET_MACROS_TYPES_H
@@ -10,27 +10,44 @@
 
     #define KNBUFFSIZ 8192
 
-    // NOTE: Bool definition
+    ///////////////////////////////////////////////////////////////////////////
+    /**
+     * @brief Boolean defintion
+     */
+    //////////////////////////////////////////////////////////////////////////
     typedef int knBool;
     #define knTrue  1
     #define knFalse 0
+    ///////////////////////////////////////////////////////////////////////////
 
-    // NOTE: port type definition
+
+    ///////////////////////////////////////////////////////////////////////////
+    /**
+     * @brief Port defintion
+    */
+    ///////////////////////////////////////////////////////////////////////////
     typedef unsigned short int knPort;
+    ///////////////////////////////////////////////////////////////////////////
 
-    // NOTE: Loging levels
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * @brief Log level definition
+     */
+    ///////////////////////////////////////////////////////////////////////////////
     typedef enum kronknet_log_level_e {
 
-        knLogTrace = 0,
-        knLogDebug,
-        knLogInfo,
-        knLogWarn,
-        knLogError,
-        knLogFatal,
-        // NOTE: Just log nothing...
-        knLogNone,
+        knLogTrace = 0,  //!< Level trace
+        knLogDebug,      //!< Level debug
+        knLogInfo,       //!< Level info
+        knLogWarn,       //!< Level warning
+        knLogError,      //!< Level error
+        knLogFatal,      //!< Level fatal
+
+        knLogNone,       //!< None, but useful to know enum size
 
     } knLogLevel;
+    ///////////////////////////////////////////////////////////////////////////
 
 
 #endif /* KRONKNET_MACROS_TYPES_H */

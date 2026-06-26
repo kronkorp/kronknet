@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Server def for MKN
+** Server object definition for the MKN layer.
 */
 #ifndef MKRONKNET_SERVER_H
     #define MKRONKNET_SERVER_H
@@ -17,6 +17,11 @@ typedef int (*mkn_setCb_t)(mknServerContainer *, int (*)());
 typedef int (*mkn_getInt_t)(mknServerContainer *);
 typedef int (*mkn_set_t)(mknServerContainer *, ...);
 
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief MKN wrapper around the server implementation.
+ */
+///////////////////////////////////////////////////////////////////////////////
 struct mknServerContainer_s {
 
     mknClass      base;

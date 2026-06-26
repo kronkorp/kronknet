@@ -2,13 +2,13 @@
 ** FREE PROJECT, 2026
 ** KRONKNET
 ** File description:
-** macros/optimisations.h for macros to avoid GCC extension
+** Portability macros for compiler-specific attributes.
 */
 
 #ifndef KRONKNET_MACROS_OPTIMIZATION_H
     #define KRONKNET_MACROS_OPTIMIZATION_H
 
-    // FIXME: When windows will be supported...
+    // FIXME: Add Windows support when the platform is targeted.
     // #if defined(_WIN32) || defined(__CYGWIN__)
     //     #ifdef KRONKNET_BUILD_DLL
     //         #define KN_API __declspec(dllexport)
