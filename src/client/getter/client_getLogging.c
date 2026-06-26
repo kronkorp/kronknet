@@ -14,7 +14,7 @@ knLogLevel knClient_getLogLevel(
 )
 {
     if (!client) {
-        return NULL;
+        return knLogNone;
     }
     return client->logger.log_level;
 }
