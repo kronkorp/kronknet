@@ -7,8 +7,8 @@
 #ifndef KRONKNET_HASHMAP_H
     #define KRONKNET_HASHMAP_H
     #include "kronknet/macros/optimization.h"
-#include <stddef.h>
-#include <stdint.h>
+    #include <stddef.h>
+    #include <stdint.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -18,13 +18,21 @@
 typedef struct kronknet_hashmap_s knMap;
 ///////////////////////////////////////////////////////////////////////////////
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * @brief  Define function ptr type to hash
  */
 ///////////////////////////////////////////////////////////////////////////////
 typedef uint64_t (*knMapHash)(uint64_t);
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief  Define function ptr to delete a data (on overwrite / destroy)
+ */
+///////////////////////////////////////////////////////////////////////////////
+typedef void (*knMapDeleter)(void *);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -68,19 +76,22 @@ KN_API void knMap_destroy(knMap* map);
 /**
  * @brief  Insert data into the knMap*
  *
- * @param map    The map to insert value
- * @param key    The key to hash
- * @param value  The value to insert
- * @return       -1 on error, 0 otherwise
+ * @param map     The map to insert value
+ * @param key     The key to hash
+ * @param value   The value to insert
+ * @param deleter How to delete value
+ * @return        -1 on error, 0 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-KN_API int knMap_insert(knMap* map, uint64_t key, void *value);
+KN_API int knMap_insert(knMap* map, uint64_t key, void *value, knMapDeleter deleter);
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Delete data from the knMap
+ *
+ * @note This function does not call deleter at all ! its up to you
  *
  * @param map  The map into delete
  * @param key  The key of the data to delete

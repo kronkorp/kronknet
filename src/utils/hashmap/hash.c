@@ -5,7 +5,6 @@
 ** Thomas Wang hash algorithm: https://gist.github.com/badboy/6267743
 */
 #include <stdint.h>
-#include "hashmap.h"
 
 uint64_t knMap_basicHash(
     uint64_t key
