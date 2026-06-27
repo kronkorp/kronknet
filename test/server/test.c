@@ -111,7 +111,7 @@ __attribute__((constructor)) void set_signal(void)
 
 int main(void)
 {
-    knServer *server = knServer_create(4242, knUDP);
+    knServer *server = knServer_create(4242, knTCP);
     World     world = {{}, 0};
 
     knServer_setUserPtr(server, &world);
@@ -124,7 +124,7 @@ int main(void)
     knServer_setLogLevel(server, knLogTrace);
     knServer_setLogOutput(server, stdout);
 
-    knServer_setConnectionTimeout(server, 3);
+    knServer_setConnectionTimeout(server, 4000);
 
     // knServer_run(server);
     while (knServer_isRunning(server) && keep_running) {

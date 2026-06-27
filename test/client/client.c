@@ -35,11 +35,11 @@ void set_stdin_nonblocking(void)
 
 int main(void)
 {
-    knClient *client = knClient_create(knUDP);
+    knClient *client = knClient_create(knTCP);
 
     if (!client)
         return 84;
-        
+
     knClient_setLogLevel(client, knLogTrace);
     knClient_setLogOutput(client, stdout);
     knClient_setOnConnect(client, &onConnectionCallback);
