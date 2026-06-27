@@ -20,7 +20,7 @@ int knServer_udpPollinHook(
 {
     struct sockaddr_in addr = {};
     socklen_t addr_len = sizeof(addr);
-    uint8_t buffer[KNBUFFSIZ];
+    uint8_t buffer[KNBUFFSIZ] = {0};
     knConnection *conn = NULL;
     ssize_t reads = recvfrom(server->fd, buffer, sizeof(buffer),
         0, (struct sockaddr *)&addr, &addr_len);
@@ -28,7 +28,7 @@ int knServer_udpPollinHook(
     if (reads < 0) {
         return KNEVTOK;
     }
-    uint64_t key = ((uint64_t)addr.sin_port << 32 | (uint64_t)addr.sin_port);
+    uint64_t key = ((uint64_t)addr.sin_addr.s_addr << 32 | (uint64_t)addr.sin_port);
     conn = knMap_search(server->on_udp.connections, key);
     if (!conn) {
         conn = knConnection_create(&addr, server->flags);

@@ -58,8 +58,8 @@ int main(void)
     while (knClient_isRunning(client)) {
         
         knClient_runOnce(client, 10);
+        memset(kbd_buffer, 0, sizeof(kbd_buffer));
         ssize_t n = read(STDIN_FILENO, kbd_buffer, sizeof(kbd_buffer) - 2);
-        
         if (n > 0) {
             if (kbd_buffer[n - 1] == '\n') {
                 kbd_buffer[n - 1] = '\r';

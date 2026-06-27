@@ -19,14 +19,12 @@ int knClient_receiveData(
     knClient *client
 )
 {
-    uint8_t kronkbuffer[KNBUFFSIZ] = {};
+    uint8_t kronkbuffer[KNBUFFSIZ] = {0};
 
     if (!client) {
         return KNEVTARGS;
     }
-    
     ssize_t reads = recv(client->fd, kronkbuffer, KNBUFFSIZ, 0);
-    
     if (reads > 0) {
         knInfo(client->logger, "Received: %.*s", (int)reads, kronkbuffer);
         if (client->onRead) {

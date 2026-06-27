@@ -72,6 +72,7 @@ int onReadCallback([[maybe_unused]] knConnection *conn, const void *str, size_t 
         return -1;
     int tmps = n + strlen("Bro really said: ") + 3;
     char tmp[tmps] = {};
+    memset(tmp, 0, tmps);
     tmp[tmps - 1] = '\0';
     printf("[%d] I received: %.*s\n", player->x, (int)n, (char *)str);
     sprintf(tmp, "Bro really said: %.*s\r\n", (int)tmps, (char *)str);
@@ -119,6 +120,11 @@ int main(void)
     knServer_setOnConnect(server, &onConnectionCallback);
     knServer_setOnRead(server, &onReadCallback);
     knServer_setOnDisconnect(server, &onDisconnectionCallback);
+
+    knServer_setLogLevel(server, knLogTrace);
+    knServer_setLogOutput(server, stdout);
+
+    knServer_setConnectionTimeout(server, 3);
 
     // knServer_run(server);
     while (knServer_isRunning(server) && keep_running) {
