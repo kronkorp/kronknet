@@ -7,6 +7,7 @@
 #include "kronknet/server/server.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include "../server.h"
 
 KN_API
 void knServer_destroy(

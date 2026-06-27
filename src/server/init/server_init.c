@@ -81,8 +81,6 @@ static void __knServer_basics(
     };
 }
 
-// FIXME: Init and clear don't needs to be exposed, since structure is opaque
-KN_API
 int knServer_init(
     knServer *server,
     knPort port,
