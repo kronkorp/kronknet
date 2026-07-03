@@ -12,6 +12,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/GauthierMalfilatre/Heracles
     GIT_TAG        main
 )
+
 FetchContent_MakeAvailable(heracles)
 
 file(GLOB_RECURSE KRONKNET_SOURCES 
@@ -31,8 +32,6 @@ target_include_directories(kronknet-obj
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-
-target_link_libraries(kronknet-obj PRIVATE heracles)
 
 target_compile_options(kronknet-obj PRIVATE
     -Wall
