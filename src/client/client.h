@@ -9,7 +9,6 @@
     #include "kronknet/callback/callback.h"
     #include "kronknet/macros/types.h"
     #include "kronknet/utils/rbuff/rbuff.h"
-    #include <netinet/in.h>
     #include "../utils/logger/logger.h"
 
 ///////////////////////////////////////////////////////////////////////////////

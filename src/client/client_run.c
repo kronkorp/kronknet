@@ -12,10 +12,6 @@
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include <netinet/in.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include "client.h"
 
 static int __knClient_onPollout(
@@ -29,7 +25,7 @@ static int __knClient_onPollout(
 
     knInfo(client->logger, "Attempting to send some data from ring buffer");
     knRBuff_peek(client->buff, kronkbuffer, usage);
-    ssize_t sends = send(client->fd, kronkbuffer, usage, MSG_NOSIGNAL);
+    ssize_t sends = send(client->fd, kronkbuffer, usage, KN_NOSIGNAL);
     if (sends > 0) {
         knRBuff_pop(client->buff, NULL, sends);
         knInfo(client->logger, "Sent %zu bytes, remaining: %zu bytes.", (size_t)sends, knRBuff_usage(client->buff));
@@ -61,7 +57,11 @@ int knClient_runOnce(
     if (!knRBuff_isEmpty(client->buff)) {
         p.events |= POLLOUT;
     }
-    status = poll(&p, 1, timeout);
+    #ifndef _WIN32
+        status = poll(&p, 1, timeout);
+    #else
+        status = WSAPoll(&p, 1, timeout);
+    #endif /* _WIN32 */
     if (status == -1) {
         return KNEVTNET;
     }

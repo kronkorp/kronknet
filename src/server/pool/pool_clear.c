@@ -7,7 +7,6 @@
 #include "pool.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
 #include "../../connection/connection.h"
 
 void knPool_clear(

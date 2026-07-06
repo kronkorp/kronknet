@@ -4,10 +4,7 @@
 ** File description:
 ** Server tcp pollin hook
 */
-#include <asm-generic/errno-base.h>
-#include <errno.h>
 #include <stddef.h>
-#include <sys/poll.h>
 #include "kronknet/macros/errdef.h"
 #include "../../server.h"
 #include "../../../connection/connection.h"

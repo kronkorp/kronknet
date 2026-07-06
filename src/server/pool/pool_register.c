@@ -11,7 +11,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/poll.h>
 #include "../../connection/connection.h"
 
 static int __knPool_ensureCapacity(

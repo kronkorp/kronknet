@@ -7,14 +7,9 @@
 #include "../../connection.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/utils/rbuff/rbuff.h"
-#include <asm-generic/errno-base.h>
-#include <asm-generic/errno.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 
 KN_API
 int knConnection_tcpSendHook(
@@ -25,7 +20,7 @@ int knConnection_tcpSendHook(
 {
     ssize_t written = 0;
     if (knRBuff_isEmpty(conn->out_buff)) {
-        written = send(conn->fd, data, size, MSG_NOSIGNAL);
+        written = send(conn->fd, data, size, KN_NOSIGNAL);
         if (written > 0) {
             if ((size_t)written == size) {
                 return KNEVTOK;

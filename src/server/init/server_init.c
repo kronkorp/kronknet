@@ -9,34 +9,38 @@
 #include "../pool/pool.h"
 #include "../server.h"
 #include "kronknet/macros/types.h"
-#include <arpa/inet.h>
 #include <kronknet/utils/hashmap/hashmap.h>
-#include <netinet/in.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include "../pool/pool.h"
 #include "../hooks/tcp/tcp.h"
 #include "../hooks/udp/udp.h"
+#include "kronknet/macros/platform.h"
 
 static int __knServer_nonBlocking(
     int fd
 )
 {
-    int flags;
+    #ifdef _WIN32
+        u_long mode = 1;
+        if (ioctlsocket(fd, FIONBIO, &mode) != 0) {
+            return -1;
+        }
+    #else
+        int flags;
 
-    flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
-        return KNEVTNET;
-    }
-    flags = flags | O_NONBLOCK;
-    if (fcntl(fd, F_SETFL, flags) == -1) {
-        return KNEVTNET;
-    }
+        flags = fcntl(fd, F_GETFL, 0);
+        if (flags == -1) {
+            return KNEVTNET;
+        }
+        flags = flags | O_NONBLOCK;
+        if (fcntl(fd, F_SETFL, flags) == -1) {
+            return KNEVTNET;
+        }
+    #endif /* _WIN32 */
     return KNEVTOK;
 }
 
@@ -45,17 +49,19 @@ static int __knServer_bind(
     knPort port
 )
 {
-    int opt = 1;
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
 
     server->addr.sin_family = AF_INET;
     server->addr.sin_port = htons(port);
     server->addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (setsockopt(server->fd, SOL_SOCKET, SO_REUSEADDR,
-        &opt, sizeof(opt)) == -1) {
-        return KNEVTNET;
-    }
+    #ifndef _WIN32
+        int opt = 1;
+        if (setsockopt(server->fd, SOL_SOCKET, SO_REUSEADDR,
+            &opt, sizeof(opt)) == -1) {
+            return KNEVTNET;
+        }
+    #endif /* _WIN32 */
     if (bind(server->fd, (const struct sockaddr *)&server->addr,
         sizeof(server->addr)) == -1) {
         return KNEVTNET;

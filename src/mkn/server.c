@@ -11,7 +11,6 @@
 #include "kronknet/mkn/server.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include <netinet/in.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include "../server/server.h"

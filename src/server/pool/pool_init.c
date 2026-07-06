@@ -8,7 +8,6 @@
 #include "kronknet/macros/errdef.h"
 #include "pool.h"
 #include <stdlib.h>
-#include <sys/poll.h>
 #include <unistd.h>
 
 int knPool_init(

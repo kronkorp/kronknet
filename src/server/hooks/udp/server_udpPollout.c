@@ -8,11 +8,8 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/macros/optimization.h"
-#include <netinet/in.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
 #include "kronknet/utils/hashmap/hashmap.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include "../../../connection/connection.h"
@@ -40,7 +37,7 @@ static void __pollout(
         return;
     knInfo(server->logger, "Client [%zu] (%s:%d): Attempting to send some data", conn->id, conn->ip, conn->port);
     knRBuff_peek(conn->out_buff, tmp, usage);
-    ssize_t sends = sendto(server->fd, tmp, usage, MSG_NOSIGNAL, (struct sockaddr *)&conn->addr, conn->addr_length);
+    ssize_t sends = sendto(server->fd, tmp, usage, KN_NOSIGNAL, (struct sockaddr *)&conn->addr, conn->addr_length);
     if (sends > 0) {
         knRBuff_pop(conn->out_buff, NULL, sends);
         knInfo(server->logger, "Client [%zu]: sent %zu bytes, remaining: %zu bytes.", conn->id, (size_t)sends, knRBuff_usage(conn->out_buff));

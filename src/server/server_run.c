@@ -13,9 +13,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 #include "server.h"
 
 KN_HOT
@@ -51,7 +48,11 @@ int knServer_runOnce(
         return KNEVTARGS;
     }
     // FIXME: Maybe epoll is better ?
-    status = poll(server->pool.pollfds, server->pool.count, timeoutMs);
+    #ifdef _WIN32
+        status = WSAPoll(server->pool.pollfds, (ULONG)server->pool.count, timeoutMs);
+    #else
+        status = poll(server->pool.pollfds, server->pool.count, timeoutMs);
+    #endif /* _WIN32 */
     if (status == -1) {
         return KNEVTNET;
     }

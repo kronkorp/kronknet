@@ -7,6 +7,7 @@
 #ifndef KRONKNET_MACROS_TYPES_H
     #define KRONKNET_MACROS_TYPES_H
     #include <stdint.h>
+    #include "platform.h"
 
     #define KNBUFFSIZ 8192
 

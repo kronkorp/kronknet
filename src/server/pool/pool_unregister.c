@@ -10,7 +10,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/poll.h>
 
 int knPool_unregister(
     knPool *pool,

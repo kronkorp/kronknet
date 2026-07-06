@@ -5,7 +5,6 @@
 ** Server tcp pollout hook
 */
 #include <stddef.h>
-#include <sys/poll.h>
 #include "kronknet/macros/errdef.h"
 #include "../../server.h"
 #include "../../../connection/connection.h"
@@ -22,7 +21,7 @@ int knServer_tcpPolloutHook(
 
     knInfo(server->logger, "Connection [%d]: Attempting to send some data", conn->id);
     knRBuff_peek(conn->out_buff, tmp, usage);
-    ssize_t sends = send(conn->fd, tmp, usage, MSG_NOSIGNAL);
+    ssize_t sends = send(conn->fd, tmp, usage, KN_NOSIGNAL);
     if (sends > 0) {
         knRBuff_pop(conn->out_buff, NULL, sends);
         knInfo(server->logger, "Connection [%d]: sent %zu bytes, remaining: %zu bytes.", conn->id, (size_t)sends, knRBuff_usage(conn->out_buff));

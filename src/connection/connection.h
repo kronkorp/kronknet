@@ -11,9 +11,7 @@
     #include "kronknet/utils/rbuff/rbuff.h"
     #include <stdbool.h>
     #include <stddef.h>
-    #include <netinet/in.h>
     #include <stdint.h>
-    #include <sys/socket.h>
 
 typedef int (*knConnection_sendHook)(knConnection *, const void *, size_t);
 

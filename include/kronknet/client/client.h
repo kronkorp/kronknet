@@ -9,7 +9,6 @@
     #include "kronknet/callback/callback.h"
     #include "kronknet/macros/optimization.h"
     #include "kronknet/macros/types.h"
-    #include <netinet/in.h>
     #include <stdbool.h>
 #include <stdio.h>
 

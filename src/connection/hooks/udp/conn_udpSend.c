@@ -7,14 +7,8 @@
 #include "../../connection.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/utils/rbuff/rbuff.h"
-#include <asm-generic/errno-base.h>
-#include <asm-generic/errno.h>
-#include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 
 KN_API
 int knConnection_udpSendHook(

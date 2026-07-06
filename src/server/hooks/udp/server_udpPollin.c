@@ -8,7 +8,6 @@
 #include "kronknet/macros/errdef.h"
 #include "kronknet/macros/optimization.h"
 #include <stddef.h>
-#include <sys/poll.h>
 #include "../../../connection/connection.h"
 #include "kronknet/utils/monotonic.h"
 #include "../../../server/server.h"

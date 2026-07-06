@@ -7,9 +7,9 @@
 #ifndef KRONKNET_POOL_H
     #define KRONKNET_POOL_H
     #include <stddef.h>
-    #include <sys/socket.h>
-    #include <netinet/in.h>
     #include <stdbool.h>
+    #include "kronknet/macros/platform.h"
+#include "kronknet/macros/types.h"
 
 typedef struct kronknet_connection_s knConnection;
 
@@ -41,7 +41,7 @@ typedef struct kronknet_pool_s {
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_registerFd(knPool *pool, int fd, knConnection *conn, int events);
+int knPool_registerFd(knPool *pool, knSocket fd, knConnection *conn, int events);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -54,7 +54,7 @@ int knPool_registerFd(knPool *pool, int fd, knConnection *conn, int events);
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_unregister(knPool *pool, int fd);
+int knPool_unregister(knPool *pool, knSocket fd);
 ///////////////////////////////////////////////////////////////////////////////
 
 

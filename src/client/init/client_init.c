@@ -7,13 +7,9 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
 #include "kronknet/macros/errdef.h"
-#include <arpa/inet.h>
-#include <netinet/in.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
 #include "../client.h"
 #include "kronknet/macros/types.h"
 
