@@ -1,4 +1,4 @@
-#include <heracles/heracles.h>
+#include <kronklab/kronklab.h>
 #include "kronknet/macros/types.h"
 #include <kronknet/utils/rbuff/rbuff.h>
 #include <stddef.h>
@@ -14,7 +14,7 @@ Test(ring_buffer, invalid_size)
 Test(ring_buffer, valid_size)
 {
     knRBuff *buff = knRBuff_create(256);
-    AssertExists(buff, "Buffer should be successfully created");
+    AssertNotNull(buff, "Buffer should be successfully created");
     knRBuff_destroy(buff);
 }
 

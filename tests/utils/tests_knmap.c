@@ -1,4 +1,5 @@
 #include <heracles/heracles.h>
+#include <kronklab/kronklab.h>
 #include "kronknet/utils/hashmap/hashmap.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -33,7 +34,7 @@ Test(hashmap, basic_hash_deterministic)
 Test(hashmap, create_destroy_empty)
 {
     knMap *map = knMap_create(knMap_basicHash, 32);
-    AssertExists(map, "La création de la map ne doit pas renvoyer NULL");
+    AssertNotNull(map, "La création de la map ne doit pas renvoyer NULL");
     knMap_destroy(map); 
 }
 
@@ -47,7 +48,7 @@ Test(hashmap, insert_and_search_success)
     AssertEq(res, 0, "L'insertion doit retourner 0 en cas de succès");
 
     void *found = knMap_search(map, key);
-    AssertExists(found, "La donnée insérée doit être trouvée");
+    AssertNotNull(found, "La donnée insérée doit être trouvée");
     AssertEq((char*)found, value, "Le pointeur retourné doit correspondre à la valeur insérée");
 
     knMap_destroy(map);
