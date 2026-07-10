@@ -8,12 +8,12 @@ endif()
 include(FetchContent)
 
 FetchContent_Declare(
-    heracles
-    GIT_REPOSITORY https://github.com/GauthierMalfilatre/Heracles
+    kronklab
+    GIT_REPOSITORY https://github.com/kronkorp/kronklab
     GIT_TAG        main
 )
 
-FetchContent_MakeAvailable(heracles)
+FetchContent_MakeAvailable(kronklab)
 
 file(GLOB_RECURSE KRONKNET_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
