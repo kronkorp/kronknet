@@ -1,6 +1,0 @@
-<map id="mknServerContainer_s" name="mknServerContainer_s">
-<area shape="rect" id="Node000001" title="MKN wrapper around the server implementation." alt="" coords="5,154,176,179"/>
-<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="130,148,155,145,178,146,196,153,203,166,200,175,194,181,173,188,145,188,116,182,118,177,146,183,172,183,191,177,196,172,197,167,192,157,177,151,155,150,130,153"/>
-<area shape="rect" id="Node000002" href="$structmkronknet__class__s.html" title=" " alt="" coords="17,5,164,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,45,93,154,88,154,88,45"/>
-</map>

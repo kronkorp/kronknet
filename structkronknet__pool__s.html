@@ -91,10 +91,10 @@ Collaboration diagram for kronknet_pool_s:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aa9652f34e33725246011a4c2efc15044" id="r_aa9652f34e33725246011a4c2efc15044"><td class="memItemLeft" align="right" valign="top"><a id="aa9652f34e33725246011a4c2efc15044" name="aa9652f34e33725246011a4c2efc15044"></a>
-struct pollfd *&#160;</td><td class="memItemRight" valign="bottom"><b>pollfds</b></td></tr>
-<tr class="memdesc:aa9652f34e33725246011a4c2efc15044"><td class="mdescLeft">&#160;</td><td class="mdescRight">The array of poolfd. <br /></td></tr>
-<tr class="separator:aa9652f34e33725246011a4c2efc15044"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02eba06ca5cea2798cb507b0652b0276" id="r_a02eba06ca5cea2798cb507b0652b0276"><td class="memItemLeft" align="right" valign="top"><a id="a02eba06ca5cea2798cb507b0652b0276" name="a02eba06ca5cea2798cb507b0652b0276"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>epollfd</b></td></tr>
+<tr class="memdesc:a02eba06ca5cea2798cb507b0652b0276"><td class="mdescLeft">&#160;</td><td class="mdescRight">The fd of epoll. <br /></td></tr>
+<tr class="separator:a02eba06ca5cea2798cb507b0652b0276"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2841b5a2819045b353407de7a939b058" id="r_a2841b5a2819045b353407de7a939b058"><td class="memItemLeft" align="right" valign="top"><a id="a2841b5a2819045b353407de7a939b058" name="a2841b5a2819045b353407de7a939b058"></a>
 <a class="el" href="structkronknet__connection__s.html">knConnection</a> **&#160;</td><td class="memItemRight" valign="bottom"><b>conns</b></td></tr>
 <tr class="memdesc:a2841b5a2819045b353407de7a939b058"><td class="mdescLeft">&#160;</td><td class="mdescRight">The connections. <br /></td></tr>
@@ -105,7 +105,7 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
 <tr class="separator:adb7c7caf76a6d893f8011f74951bf1c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae55be34f8afcb59eb37b74f77b53c396" id="r_ae55be34f8afcb59eb37b74f77b53c396"><td class="memItemLeft" align="right" valign="top"><a id="ae55be34f8afcb59eb37b74f77b53c396" name="ae55be34f8afcb59eb37b74f77b53c396"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
-<tr class="memdesc:ae55be34f8afcb59eb37b74f77b53c396"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of pollfd in the pool. <br /></td></tr>
+<tr class="memdesc:ae55be34f8afcb59eb37b74f77b53c396"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of fds in the pool. <br /></td></tr>
 <tr class="separator:ae55be34f8afcb59eb37b74f77b53c396"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>

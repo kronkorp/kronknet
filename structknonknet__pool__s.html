@@ -73,12 +73,13 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>pollfds pool struct, with size and capacity  
+<p>epoll pool struct, with the connections, size and capacity  
  <a href="structknonknet__pool__s.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="pool_8h_source.html">pool.h</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>pollfds pool struct, with size and capacity </p>
+<div class="textblock"><p>epoll pool struct, with the connections, size and capacity </p>
+<dl class="section note"><dt>Note</dt><dd>The server socket is registered with a NULL connection (epoll_event.data.ptr == NULL) </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/server/pool/<a class="el" href="pool_8h_source.html">pool.h</a></li>
 </ul>
