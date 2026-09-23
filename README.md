@@ -92,6 +92,8 @@ Key Features:
 
 - **O(1) Binding**: Dual-pointer (user_data) system for lookup-free interaction between the network engine and application entities.
 
+- **Multi-protocol support**: Currently, kronknet supports both TCP and UDP. In TCP mode, connections are stored in a dynamic array, whereas in UDP mode, they are kept in a hash table, offering O(1) lookup complexity in most cases.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 

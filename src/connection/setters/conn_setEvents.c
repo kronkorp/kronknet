@@ -6,15 +6,25 @@
 */
 #include "../connection.h"
 #include "kronknet/macros/errdef.h"
+#include "kronknet/macros/types.h"
+#include <stddef.h>
+#include <sys/epoll.h>
 
 int knConnection_setEvents(
     knConnection *conn,
-    short int events
+    uint32_t events
 )
 {
+    struct epoll_event ev;
+
     if (!conn) {
         return KNEVTARGS;
     }
-    *(conn->evtptr) = events;
+    // NOTE: In UDP, conn->fd is the server socket, so data.ptr stays NULL
+    ev.events = events;
+    ev.data.ptr = (conn->flags & knUDP) ? NULL : conn;
+    if (epoll_ctl(conn->epollfd, EPOLL_CTL_MOD, conn->fd, &ev) == -1) {
+        return KNEVTNET;
+    }
     return KNEVTOK;
 }

@@ -4,8 +4,10 @@
 ** File description:
 ** Thomas Wang hash algorithm: https://gist.github.com/badboy/6267743
 */
+#include "kronknet/macros/optimization.h"
 #include <stdint.h>
 
+KN_API
 uint64_t knMap_basicHash(
     uint64_t key
 )
