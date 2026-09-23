@@ -51,3 +51,10 @@ install(TARGETS kronknet-static kronknet-shared
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/kronknet
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+option(BUILD_TESTS "Build the unit tests (run them with ctest)" OFF)
+
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
