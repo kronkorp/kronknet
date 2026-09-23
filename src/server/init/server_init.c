@@ -15,7 +15,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -77,6 +77,7 @@ static void __knServer_basics(
 {
     server->flags = flags;
     server->running = true;
+    server->pool.epollfd = -1;
     server->onConnection = NULL;
     server->onWrite = NULL;
     server->onRead = NULL;
@@ -126,18 +127,23 @@ int knServer_init(
     }
     if (flags & knTCP) type = SOCK_STREAM;
     else if (flags & knUDP) type = SOCK_DGRAM;
+
     server->fd = socket(AF_INET, type, 0);
-    if (server->fd == -1)
+
+    if (server->fd == -1) {
         return KNEVTNET;
+    }
 
     if (__knServer_nonBlocking(server->fd) != KNEVTOK) {
         close(server->fd);
         return KNEVTNET;
     }
+
     if (__knServer_bind(server, port) != KNEVTOK) {
         close(server->fd);
         return KNEVTNET;
     }
+
     if (type == SOCK_STREAM) {
         if (listen(server->fd, SOMAXCONN) == -1) {
             close(server->fd);
@@ -149,12 +155,21 @@ int knServer_init(
         close(server->fd);
         return KNEVTERR;
     }
+
     if (server->flags & knUDP) {
         server->on_udp.connections = knMap_create(knMap_basicHash, 8);
         if (!server->on_udp.connections) {
+            knPool_clear(&server->pool);
             close(server->fd);
             return KNEVTMEM;
         }
     }
-    return knPool_registerFd(&server->pool, server->fd, NULL, POLLIN);
+
+    // NOTE: The server is registered with a NULL connection (data.ptr)
+    if (knPool_registerFd(&server->pool, server->fd, NULL, EPOLLIN) != KNEVTOK) {
+        knPool_clear(&server->pool);
+        close(server->fd);
+        return KNEVTNET;
+    }
+    return KNEVTOK;
 }

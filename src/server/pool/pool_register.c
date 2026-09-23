@@ -11,7 +11,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
 #include "../../connection/connection.h"
 
 static int __knPool_ensureCapacity(
@@ -23,10 +23,6 @@ static int __knPool_ensureCapacity(
         return KNEVTARGS;
     }
     while (pool->size < size) {
-        pool->pollfds = realloc(pool->pollfds, sizeof(struct pollfd) * pool->size * 2);
-        if (pool->pollfds == NULL)
-            return KNEVTMEM;
-        memset(&pool->pollfds[pool->size], 0, sizeof(struct pollfd) * pool->size);
         pool->conns = realloc(pool->conns, sizeof(knConnection *) * pool->size * 2);
         if (pool->conns == NULL)
             return KNEVTMEM;
@@ -40,10 +36,14 @@ int knPool_registerFd(
     knPool *pool,
     knSocket fd,
     knConnection *conn,
-    int events
+    uint32_t events
 )
 {
     size_t new_count = 0;
+    struct epoll_event ev = {
+        .events = events,
+        .data.ptr = conn,
+    };
 
     if (!pool || fd == -1) {
         return KNEVTARGS;
@@ -53,14 +53,34 @@ int knPool_registerFd(
     if (err != KNEVTOK) {
         return err;
     }
-    pool->pollfds[pool->count].fd = fd;
-    pool->pollfds[pool->count].events = events;
+    if (epoll_ctl(pool->epollfd, EPOLL_CTL_ADD, fd, &ev) == -1) {
+        return KNEVTNET;
+    }
     pool->conns[pool->count] = conn;
     if (conn) {
-        if (conn) {
-            conn->evtptr = &pool->pollfds[pool->count].events;
-        }
+        conn->epollfd = pool->epollfd;
     }
     pool->count = new_count;
+    return KNEVTOK;
+}
+
+int knPool_modifyFd(
+    knPool *pool,
+    knSocket fd,
+    knConnection *conn,
+    uint32_t events
+)
+{
+    struct epoll_event ev = {
+        .events = events,
+        .data.ptr = conn,
+    };
+
+    if (!pool || fd == -1) {
+        return KNEVTARGS;
+    }
+    if (epoll_ctl(pool->epollfd, EPOLL_CTL_MOD, fd, &ev) == -1) {
+        return KNEVTNET;
+    }
     return KNEVTOK;
 }

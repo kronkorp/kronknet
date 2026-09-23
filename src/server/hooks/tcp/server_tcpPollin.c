@@ -7,7 +7,7 @@
 #include <asm-generic/errno-base.h>
 #include <errno.h>
 #include <stddef.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
 #include "kronknet/macros/errdef.h"
 #include "../../server.h"
 #include "../../../connection/connection.h"
@@ -26,8 +26,9 @@ static int __knServer_accept(
     if (!newConn)
         return KNEVTERR;
     knInfo(server->logger, "Connection [%d] from %s:%d", newConn->fd, newConn->ip, newConn->port);
-    if (knPool_registerFd(&server->pool, newConn->fd, newConn, POLLIN) != KNEVTOK) {
+    if (knPool_registerFd(&server->pool, newConn->fd, newConn, EPOLLIN) != KNEVTOK) {
             knError(server->logger, "Connection [%d]: failed to add to pool", newConn->fd);
+            knConnection_destroy(newConn);
             return KNEVTERR;
     }
     knInfo(server->logger, "Connection [%d]: added to pool", newConn->fd);
@@ -76,24 +77,23 @@ static int __knServer_receiveData(
 
 int knServer_tcpPollinHook(
     knServer* server,
-    size_t *idx
+    knConnection *conn
 )
 {
-    if (server->pool.pollfds[*idx].fd == server->fd) {
+    if (!conn) {
         knInfo(server->logger, "New connection request received");
         if (__knServer_accept(server) != KNEVTOK) {
             knError(server->logger, "Connection request declined");
         }
     } else {
         knInfo(server->logger, "Data received");
-        switch (__knServer_receiveData(server, server->pool.conns[*idx])) {
+        switch (__knServer_receiveData(server, conn)) {
             case KNEVTERR:
-                knError(server->logger, "Connection [%d]: Error while receiving data", server->pool.conns[*idx]->id);
+                knError(server->logger, "Connection [%d]: Error while receiving data", conn->id);
                 break;
             case KNEVTKICK:
-                knServer_kickAtIndex(server, *idx);
-                (*idx)--;
-                break;
+                knServer_kick(server, conn);
+                return KNEVTKICK;
             default:
                 break;
         }

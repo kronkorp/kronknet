@@ -32,6 +32,7 @@ static void __knConnection_statics(
 
     conn->addr_length = sizeof(conn->addr);
     conn->fd = -1;
+    conn->epollfd = -1;
     conn->port = ntohs(conn->addr.sin_port);
     conn->id = id++;
     conn->last_data = monotonic();
