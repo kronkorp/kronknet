@@ -2,11 +2,12 @@
 ** FREE PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Pool of pollfds struct definition
+** Pool of epoll watched fds struct definition
 */
 #ifndef KRONKNET_POOL_H
     #define KRONKNET_POOL_H
     #include <stddef.h>
+    #include <stdint.h>
     #include <sys/socket.h>
     #include <netinet/in.h>
     #include <stdbool.h>
@@ -17,15 +18,18 @@ typedef struct kronknet_connection_s knConnection;
 /**
  * @struct  knonknet_pool_s
  *
- * @brief   pollfds pool struct, with size and capacity
+ * @brief   epoll pool struct, with the connections, size and capacity
+ *
+ * @note    The server socket is registered with a NULL connection
+ *          (epoll_event.data.ptr == NULL)
  */
 ///////////////////////////////////////////////////////////////////////////////
 typedef struct kronknet_pool_s {
 
-    struct pollfd *pollfds;  //!< The array of poolfd
+    int            epollfd;  //!< The fd of epoll
     knConnection **conns;    //!< The connections
     size_t         size;     //!< The capacity of the pool
-    size_t         count;    //!< The number of pollfd in the pool
+    size_t         count;    //!< The number of fds in the pool
 
 } knPool;
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,11 +41,27 @@ typedef struct kronknet_pool_s {
  *
  * @param pool    The pool in which [fd] will be register
  * @param fd      The file descriptor to register
- * @param events  The events of [fd]
+ * @param conn    The connection of [fd] (NULL for the server)
+ * @param events  The epoll events of [fd]
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_registerFd(knPool *pool, int fd, knConnection *conn, int events);
+int knPool_registerFd(knPool *pool, int fd, knConnection *conn, uint32_t events);
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief         Modify the watched events of [fd] inside [pool]
+ *
+ * @param pool    The pool in which [fd] is registered
+ * @param fd      The file descriptor to modify
+ * @param conn    The connection of [fd] (NULL for the server)
+ * @param events  The new epoll events of [fd]
+ * @return        0 on success, -1 otherwise
+ */
+///////////////////////////////////////////////////////////////////////////////
+int knPool_modifyFd(knPool *pool, int fd, knConnection *conn, uint32_t events);
 ///////////////////////////////////////////////////////////////////////////////
 
 

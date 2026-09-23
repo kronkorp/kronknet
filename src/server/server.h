@@ -10,29 +10,35 @@
     #include "kronknet/macros/types.h"
     #include <stdbool.h>
     #include <stddef.h>
-#include <stdint.h>
+    #include <stdint.h>
     #include "kronknet/utils/hashmap/hashmap.h"
     #include "pool/pool.h"
     #include "kronknet/macros/types.h"
     #include "../utils/logger/logger.h"
 
+    #define KN_MAX_EVENTS 1024  //!< Max events returned by one epoll_wait
+
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Declararion of pollin hook
  *
- * @note  idx does not serve in UDP mode
+ * @note  conn is the epoll data.ptr: NULL means the server socket.
+ *        conn does not serve in UDP mode
+ * @return KNEVTKICK if conn has been kicked (and destroyed)
  */
 ///////////////////////////////////////////////////////////////////////////////
-typedef int (*knServer_onPollinHook)(knServer *server, size_t *idx);
+typedef int (*knServer_onPollinHook)(knServer *server, knConnection *conn);
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Declaration of pollout hook
+ *
+ * @note  conn does not serve in UDP mode
  */
 ///////////////////////////////////////////////////////////////////////////////
-typedef int (*knServer_onPolloutHook)(knServer *server, size_t *idx);
+typedef int (*knServer_onPolloutHook)(knServer *server, knConnection *conn);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -58,7 +64,7 @@ typedef void (*knServer_onDestructionHook)(knServer *server);
 /**
  * @struct  server_s
  *
- * @brief   Server structure, containing necessary datas: pollfds, addr, ...
+ * @brief   Server structure, containing necessary datas: epoll pool, addr, ...
  */
 ///////////////////////////////////////////////////////////////////////////////
 typedef struct kronknet_server_s {
@@ -67,15 +73,19 @@ typedef struct kronknet_server_s {
     knBool                  running;              //!< Is the server running
     knSocket                fd;                   //!< The fd of the server socket
     struct sockaddr_in      addr;                 //!< The address of the server
-    knPool                  pool;                 //!< The pool of pollfds to look on
+    knPool                  pool;                 //!< The epoll pool of fds to look on
     void*                   user_ptr;             //!< Data like a struct given by the user
+
     knServer_OnConnect_t    onConnection;         //!< onConnection callback
     knServer_OnRead_t       onRead;               //!< onRead callback
     knServer_OnWrite_t      onWrite;              //!< onWrite callback
     knServer_OnDisconnect_t onDisconnect;         //!< onDisconnect callback
+
     char                    ip[INET_ADDRSTRLEN];  //!< The ip as a string
+
     knLoggerData            logger;               //!< The logger data
     uint64_t                connection_timeout;   //!< The max seconds the connections can rest withoud sending data (default: UDP = 30,000, TCP = 180,000)
+
     union {
 
         struct {} on_tcp;  //!< Specific on TCP (maybe later were gonna add smth)

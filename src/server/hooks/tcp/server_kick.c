@@ -31,12 +31,16 @@ void knServer_kickAtIndex(
     size_t idx
 )
 {
-    if (!server || idx == 0)
+    knConnection *conn;
+
+    if (!server || idx == 0 || idx >= server->pool.count)
         return;
+    conn = server->pool.conns[idx];
     if (server->onDisconnect) {
-        server->onDisconnect(server, server->pool.conns[idx]);
+        server->onDisconnect(server, conn);
     }
-    knInfo(server->logger, "Connection [%d]: Kicking...", server->pool.conns[idx]->fd);
-    knConnection_destroy(server->pool.conns[idx]);
+    knInfo(server->logger, "Connection [%d]: Kicking...", conn->fd);
+    // NOTE: Unregister before destroy, epoll needs the fd to be still open
     knPool_unregisterAtIndex(&server->pool, idx);
+    knConnection_destroy(conn);
 }
