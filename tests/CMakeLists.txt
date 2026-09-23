@@ -11,7 +11,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(kronklab)
 
-file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.c)
+# NOTE: Build kronknet from this repository, not the installed one
+if(NOT TARGET kronknet)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_BINARY_DIR}/kronknet)
+endif()
+
+file(GLOB_RECURSE SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/network/*.c
+)
 
 add_executable(kronknet_tests ${SOURCES})
 
