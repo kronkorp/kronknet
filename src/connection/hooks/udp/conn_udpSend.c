@@ -32,9 +32,5 @@ int knConnection_udpSendHook(
     if (written == -1 && errno != EAGAIN && errno != EWOULDBLOCK) {
         return KNEVTKICK;
     }
-    if (knRBuff_push(conn->out_buff, data + written, remaining) == -1) {
-        return KNEVTERR;
-    }
-    knConnection_setEvents(conn, EPOLLOUT | EPOLLIN);
     return KNEVTOK;
 }
