@@ -23,27 +23,14 @@ int knConnection_udpSendHook(
     size_t size
 )
 {
-    ssize_t written = 0;
-    if (knRBuff_isEmpty(conn->out_buff)) {
-        written = sendto(conn->fd, data, size, 0, (struct sockaddr *)&conn->addr, conn->addr_length);
-        if (written > 0) {
-            if ((size_t)written == size) {
-                return KNEVTOK;
-            }
-        } else if (written == -1) {
-            if (errno != EAGAIN && errno != EWOULDBLOCK) {
-                return KNEVTKICK;
-            }
-            written = 0;
-        }
-    }
-    size_t remaining = size - written;
-    if (knRBuff_remaining(conn->out_buff) < remaining) {
+    // A datagram is sent whole, now, or not at all. It is never kept in the out buffer to be sent
+    // later: the buffer is flushed in a single sendto(), which would glue it to the datagrams kept
+    // after it, and the peer would receive them as one. When the socket is full the datagram is
+    // dropped: UDP can lose it anyway, and what is built on UDP deals with that.
+    ssize_t written = sendto(conn->fd, data, size, 0, (struct sockaddr *)&conn->addr, conn->addr_length);
+
+    if (written == -1 && errno != EAGAIN && errno != EWOULDBLOCK) {
         return KNEVTKICK;
     }
-    if (knRBuff_push(conn->out_buff, data + written, remaining) == -1) {
-        return KNEVTERR;
-    }
-    knConnection_setEvents(conn, POLLOUT | POLLIN);
     return KNEVTOK;
 }

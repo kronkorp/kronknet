@@ -29,6 +29,14 @@ int knClient_sendServer(
     }
     ssize_t written = 0;
     const uint8_t *byte_ptr = (const uint8_t *)data;
+    if (client->flags & knUDP) {
+        // A datagram is sent whole, now, or dropped when the socket is full (see knConnection_udpSendHook)
+        written = send(client->fd, data, size, MSG_NOSIGNAL);
+        if (written == -1 && errno != EAGAIN && errno != EWOULDBLOCK) {
+            return KNEVTKICK;
+        }
+        return KNEVTOK;
+    }
     if (knRBuff_isEmpty(client->buff)) {
         written = send(client->fd, data, size, MSG_NOSIGNAL);
         if (written > 0) {
