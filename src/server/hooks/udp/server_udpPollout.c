@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
 #include <sys/socket.h>
 #include "kronknet/utils/hashmap/hashmap.h"
 #include "kronknet/utils/rbuff/rbuff.h"
@@ -59,7 +59,7 @@ static void __pollout(
 
 int knServer_udpPolloutHook(
     knServer* server,
-    size_t *idx KN_UNUSED
+    knConnection *evtconn KN_UNUSED
 )
 {
     knPolloutContext ctx = { .server = server, .packets_remaining = false };
@@ -69,7 +69,7 @@ int knServer_udpPolloutHook(
     }
     knMap_foreach(server->on_udp.connections, &__pollout, &ctx);
     if (!ctx.packets_remaining) {
-        server->pool.pollfds[0].events = POLLIN;
+        knPool_modifyFd(&server->pool, server->fd, NULL, EPOLLIN);
     }
     return KNEVTOK;
 }

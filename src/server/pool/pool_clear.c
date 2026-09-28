@@ -7,7 +7,7 @@
 #include "pool.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
+#include <unistd.h>
 #include "../../connection/connection.h"
 
 void knPool_clear(
@@ -17,14 +17,16 @@ void knPool_clear(
     if (!pool) {
         return;
     }
-    if (pool->pollfds) {
-        free(pool->pollfds);
-    }
     if (pool->conns) {
         for (size_t i = 0; i < pool->count; ++i){
             knConnection_destroy(pool->conns[i]);
         }
         free(pool->conns);
+        pool->conns = NULL;
+    }
+    if (pool->epollfd != -1) {
+        close(pool->epollfd);
+        pool->epollfd = -1;
     }
     pool->count = 0;
     pool->size = 0;

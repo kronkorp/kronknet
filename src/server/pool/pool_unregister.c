@@ -2,7 +2,7 @@
 ** FREE PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Unregister an fd for the server's poll
+** Unregister an fd for the server's epoll
 */
 #include "kronknet/macros/errdef.h"
 #include "kronknet/macros/types.h"
@@ -10,7 +10,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
+#include "../../connection/connection.h"
 
 int knPool_unregister(
     knPool *pool,
@@ -21,7 +22,7 @@ int knPool_unregister(
         return KNEVTERR;
     }
     for (size_t i = 0; i < pool->count; ++i) {
-        if (pool->pollfds[i].fd == fd) {
+        if (pool->conns[i] && pool->conns[i]->fd == fd) {
             return knPool_unregisterAtIndex(pool, i);
         }
     }
@@ -36,13 +37,11 @@ int knPool_unregisterAtIndex(
     if (!pool || index == -1UL || index >= pool->count) {
         return KNEVTERR;
     }
-    pool->pollfds[index] = pool->pollfds[pool->count - 1];
-    pool->pollfds[pool->count - 1] = (struct pollfd){
-        -1,
-        0,
-        0
-    };
+    if (pool->conns[index] && pool->conns[index]->fd != -1) {
+        epoll_ctl(pool->epollfd, EPOLL_CTL_DEL, pool->conns[index]->fd, NULL);
+    }
     pool->conns[index] = pool->conns[pool->count - 1];
     pool->conns[pool->count - 1] = NULL;
+    pool->count--;
     return KNEVTOK;
 }

@@ -8,14 +8,13 @@
 #include "kronknet/macros/errdef.h"
 #include "kronknet/macros/optimization.h"
 #include <stddef.h>
-#include <sys/poll.h>
 #include "../../../connection/connection.h"
 #include "kronknet/utils/monotonic.h"
 #include "../../../server/server.h"
 
 int knServer_udpPollinHook(
     knServer* server,
-    size_t *idx KN_UNUSED
+    knConnection *evtconn KN_UNUSED
 )
 {
     struct sockaddr_in addr = {};
@@ -32,10 +31,10 @@ int knServer_udpPollinHook(
     conn = knMap_search(server->on_udp.connections, key);
     if (!conn) {
         conn = knConnection_create(&addr, server->flags);
-        conn->fd = server->fd;
-        conn->evtptr = &server->pool.pollfds[0].events;
         if (!conn)
             return KNEVTMEM;
+        conn->fd = server->fd;
+        conn->epollfd = server->pool.epollfd;
         if (knMap_insert(server->on_udp.connections, key,
             conn, (knMapDeleter)&knConnection_destroy) == -1)
             return KNEVTERR;

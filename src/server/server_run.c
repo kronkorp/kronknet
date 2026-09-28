@@ -13,25 +13,37 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include "server.h"
 
 KN_HOT
-static int __knServer_processPoll(
-    knServer *server
+static int __knServer_processEvents(
+    knServer *server,
+    const struct epoll_event *events,
+    int nfds
 )
 {
-    for (size_t i = 0; i < server->pool.count; ++i) {
-        if (server->pool.pollfds[i].revents & POLLIN &&
-            server->onPollinHook &&
-            server->onPollinHook(server, &i) != KNEVTOK) {
-            return KNEVTERR;
+    knConnection *conn;
+    int status;
+
+    for (int i = 0; i < nfds; ++i) {
+        // NOTE: NULL means the server socket
+        conn = events[i].data.ptr;
+        if (events[i].events & (EPOLLIN | EPOLLHUP | EPOLLERR) &&
+            server->onPollinHook) {
+            status = server->onPollinHook(server, conn);
+            if (status == KNEVTKICK) {
+                continue;
+            }
+            if (status != KNEVTOK) {
+                return KNEVTERR;
+            }
         }
-        if (server->pool.pollfds[i].revents & POLLOUT &&
+        if (events[i].events & EPOLLOUT &&
             server->onPolloutHook &&
-            server->onPolloutHook(server, &i) != KNEVTOK) {
+            server->onPolloutHook(server, conn) != KNEVTOK) {
             return KNEVTERR;
         }
     }
@@ -45,17 +57,17 @@ int knServer_runOnce(
     ssize_t timeoutMs
 )
 {
-    int status;
+    struct epoll_event events[KN_MAX_EVENTS];
+    int nfds;
 
     if (!server) {
         return KNEVTARGS;
     }
-    // FIXME: Maybe epoll is better ?
-    status = poll(server->pool.pollfds, server->pool.count, timeoutMs);
-    if (status == -1) {
+    nfds = epoll_wait(server->pool.epollfd, events, KN_MAX_EVENTS, (int)timeoutMs);
+    if (nfds == -1) {
         return KNEVTNET;
     }
-    if (__knServer_processPoll(server) != KNEVTOK) {
+    if (__knServer_processEvents(server, events, nfds) != KNEVTOK) {
         return KNEVTERR;
     }
     if (server->onCleanupHook) {

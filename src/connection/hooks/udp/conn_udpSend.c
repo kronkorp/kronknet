@@ -12,7 +12,7 @@
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
+#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
@@ -32,5 +32,6 @@ int knConnection_udpSendHook(
     if (written == -1 && errno != EAGAIN && errno != EWOULDBLOCK) {
         return KNEVTKICK;
     }
+    knConnection_setEvents(conn, EPOLLOUT | EPOLLIN);
     return KNEVTOK;
 }

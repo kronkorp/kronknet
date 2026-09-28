@@ -8,8 +8,8 @@
     #define KRONKNET_SERVER_TCP_H
     #include "kronknet/callback/callback.h"
 
-int knServer_tcpPolloutHook(knServer* server, size_t *idx);
-int knServer_tcpPollinHook(knServer* server, size_t *idx);
+int knServer_tcpPolloutHook(knServer* server, knConnection *conn);
+int knServer_tcpPollinHook(knServer* server, knConnection *conn);
 void knServer_tcpCleanupHook(knServer* server);
 
 #endif /* KRONKNET_SERVER_TCP_H */

@@ -97,11 +97,13 @@ jobs:
       image: epitechcontent/epitest-docker
     steps:
       - uses: actions/checkout@v4
-      - name: Check compilation
-        timeout-minutes: 2
+      - name: Build tests
+        timeout-minutes: 5
         run: |
-          cmake -S . -B build
+          cmake -S . -B build -DBUILD_TESTS=ON
           cmake --build build --parallel
-          ctest --test-dir build --output-on-failure
+      - name: Run tests
+        timeout-minutes: 3
+        run: ctest --test-dir build --output-on-failure
       - name: Cleaning
         run: rm -rf build

@@ -39,7 +39,7 @@ typedef struct kronknet_connection_s {
     void                 *user_ptr;            //!< The user datas (eg User struct ...)
     knRBuff              *out_buff;            //!< The out buffer    
     knConnection_sendHook sendHook;            //!< The send hook
-    short int            *evtptr;              //!< The ptr to the events in the pool
+    int                   epollfd;             //!< The epoll fd of the server pool
     union {
         struct {} on_udp;  //!< On UDP datas
         struct {} on_tcp;  //!< On tcp datas
@@ -54,6 +54,6 @@ void knConnection_destroy(knConnection *conn);
 
 knConnection *knConnection_create(const struct sockaddr_in* addr, knFlags flags);
 
-int knConnection_setEvents(knConnection *conn, short int events);
+int knConnection_setEvents(knConnection *conn, uint32_t events);
 
 #endif /* KRONKNET_CONNECTION_IMPL_H */

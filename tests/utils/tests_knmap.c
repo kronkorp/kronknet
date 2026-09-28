@@ -1,4 +1,3 @@
-#include <heracles/heracles.h>
 #include <kronklab/kronklab.h>
 #include "kronknet/utils/hashmap/hashmap.h"
 #include <stddef.h>
