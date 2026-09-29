@@ -1,5 +1,8 @@
 #include "net_utils.h"
+// NOTE: The server is opaque: this test looks at its epoll
+#include "../../src/server/server.h"
 #include <stdio.h>
+#include <sys/epoll.h>
 
 Test(udp_server, create_destroy)
 {
@@ -133,6 +136,28 @@ Test(udp_server, active_client_is_not_removed)
     }
     AssertEq(g_net.disconnects, 0, "An active client should never be removed");
     AssertEq(g_net.connects, 1, "An active client should keep its connection");
+    close(fd);
+    knServer_destroy(server);
+}
+
+// A datagram is sent whole, now, and nothing is kept: there is nothing to wait for the socket to be
+// writable for, so sending must not ask epoll to say so (the socket is nearly always writable: each
+// datagram would wake the server up for nothing, and take the pollout hook through all its connections)
+Test(udp_server, send_does_not_arm_epollout)
+{
+    knServer *server = net_server(42209, knUDP);
+    int fd = net_udpClient();
+    struct epoll_event events[4];
+    char buf[16];
+
+    g_net.echo = knFalse;   // this test sends by hand
+    net_udpSend(fd, 42209, "hi", 2);
+    NET_PUMP_UNTIL(server, g_net.reads == 1);
+    AssertEq(epoll_wait(server->pool.epollfd, events, 4, 0), 0, "Nothing to report once the datagram was read");
+    AssertEq(knConnection_send(g_net.conns[0], "pong", 4), KNEVTOK, "The server should send a datagram");
+    AssertEq(epoll_wait(server->pool.epollfd, events, 4, 0), 0, "Sending should not make epoll wake the server up");
+    AssertEq(recv(fd, buf, sizeof(buf), 0), (ssize_t)4, "The datagram should arrive");
+    AssertEq(memcmp(buf, "pong", 4), 0, "and be the one that was sent");
     close(fd);
     knServer_destroy(server);
 }
