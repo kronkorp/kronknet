@@ -6,13 +6,11 @@
 */
 #include "../../connection.h"
 #include "kronknet/macros/errdef.h"
-#include "kronknet/utils/rbuff/rbuff.h"
 #include <asm-generic/errno-base.h>
 #include <asm-generic/errno.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
@@ -32,6 +30,6 @@ int knConnection_udpSendHook(
     if (written == -1 && errno != EAGAIN && errno != EWOULDBLOCK) {
         return KNEVTKICK;
     }
-    knConnection_setEvents(conn, EPOLLOUT | EPOLLIN);
+    // (Nothing is kept, so there is nothing to wait for the socket to be writable for: EPOLLOUT is not armed)
     return KNEVTOK;
 }
