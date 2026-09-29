@@ -23,4 +23,6 @@ void knClient_clear(
         close(client->fd);
         client->fd = -1;
     }
+    knRBuff_destroy(client->buff);
+    client->buff = NULL;
 }
