@@ -44,5 +44,12 @@ int knClient_init(
     }
     __knClient_initStatic(client);
     client->flags = flags;
+    // Where what the socket cannot take waits (knClient_sendServer). A datagram is never kept: UDP has none.
+    if (!(flags & knUDP)) {
+        client->buff = knRBuff_create(KNBUFFSIZ);
+        if (!client->buff) {
+            return KNEVTMEM;
+        }
+    }
     return KNEVTOK;
 }
