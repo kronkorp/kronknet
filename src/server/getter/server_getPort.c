@@ -9,7 +9,7 @@
 #include "kronknet/server/server.h"
 #include <stdint.h>
 #include "../server.h"
-#include "../../platform/socket.h"
+#include "../../utils/address/address.h"
 
 KN_API
 knPort knServer_getPort(
@@ -18,5 +18,5 @@ knPort knServer_getPort(
 {
     if (!server)
         return 0;
-    return ntohs(server->addr.sin_port);
+    return knAddr_getPort(&server->addr);
 }

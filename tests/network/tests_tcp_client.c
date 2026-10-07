@@ -172,3 +172,52 @@ Test(tcp_client, drained_client_waits)
     close(listener);
     knClient_destroy(client);
 }
+
+Test(tcp_client, connect_ipv6)
+{
+    int listener = socket(AF_INET6, SOCK_STREAM, 0);
+    knClient *client = knClient_create(knTCP);
+    struct sockaddr_in6 addr = {0};
+    int yes = 1;
+    char buffer[8] = {0};
+    size_t received = 0;
+    ssize_t got;
+    int peer;
+    timestamp start;
+
+    AssertGe(listener, 0, "The test server socket should be created (does the host have IPv6?)");
+    setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+    addr.sin6_family = AF_INET6;
+    addr.sin6_port = htons(CLIENT_PORT + 2);
+    addr.sin6_addr = in6addr_loopback;
+    AssertEq(bind(listener, (struct sockaddr *)&addr, sizeof(addr)), 0, "The test server should bind [::1]");
+    AssertEq(listen(listener, 4), 0, "The test server should listen");
+    AssertNotNull(client, "TCP client creation should succeed");
+    AssertEq(knClient_connect(client, "::1", CLIENT_PORT + 2), KNEVTOK, "Connect to an IPv6 should succeed");
+    AssertEq(knClient_sendServer(client, "kronk", 5), KNEVTOK, "The client should take what it is given");
+
+    peer = accept(listener, NULL, NULL);
+    AssertGe(peer, 0, "The server should accept the client");
+    start = kl_monotonic();
+    while (received < 5 && kl_monotonic() - start < 5000) {
+        knClient_runOnce(client, 5);
+        got = recv(peer, buffer + received, sizeof(buffer) - received, MSG_DONTWAIT);
+        received += got > 0 ? (size_t)got : 0;
+    }
+    AssertEq(received, 5, "What the client sent should arrive");
+    AssertEq(memcmp(buffer, "kronk", 5), 0, "intact");
+    close(peer);
+    close(listener);
+    knClient_destroy(client);
+}
+
+Test(tcp_client, connect_needs_an_ip)
+{
+    knClient *client = knClient_create(knTCP);
+
+    AssertNotNull(client, "TCP client creation should succeed");
+    AssertEq(knClient_connect(client, "kronk.invalid", CLIENT_PORT), KNEVTNET, "A host name is not resolved");
+    AssertEq(knClient_connect(client, "::1::2", CLIENT_PORT), KNEVTNET, "A malformed IPv6 should be refused");
+    AssertEq(knClient_connect(client, "256.0.0.1", CLIENT_PORT), KNEVTNET, "A malformed IPv4 should be refused");
+    knClient_destroy(client);
+}

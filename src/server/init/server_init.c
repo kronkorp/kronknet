@@ -14,6 +14,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "../../platform/socket.h"
+#include "../../utils/address/address.h"
 #include "../hooks/tcp/tcp.h"
 #include "../hooks/udp/udp.h"
 
@@ -29,29 +30,47 @@ static int __knServer_abort(
     return err;
 }
 
-static int __knServer_bind(
+// NOTE: One IPv6 socket that takes IPv4 too (dual-stack), so that one server serves both.
+//       A host that has no IPv6 gets an IPv4 socket, as before IPv6 was supported
+static int __knServer_open(
     knServer *server,
+    int type,
     knPort port
 )
 {
-    struct sockaddr_in addr;
-    socklen_t len = sizeof(addr);
+    server->fd = knSocket_open(AF_INET6, type);
+    if (server->fd != KN_INVALID_SOCKET) {
+        if (knSocket_setDualStack(server->fd) == KNEVTOK) {
+            knAddr_any(&server->addr, AF_INET6, port);
+            return KNEVTOK;
+        }
+        knSocket_close(server->fd);
+    }
+    server->fd = knSocket_open(AF_INET, type);
+    if (server->fd == KN_INVALID_SOCKET) {
+        return KNEVTNET;
+    }
+    knAddr_any(&server->addr, AF_INET, port);
+    return KNEVTOK;
+}
 
-    server->addr.sin_family = AF_INET;
-    server->addr.sin_port = htons(port);
-    server->addr.sin_addr.s_addr = htonl(INADDR_ANY);
+static int __knServer_bind(
+    knServer *server
+)
+{
+    knAddr bound;
+
     if (knSocket_setReuseAddr(server->fd) != KNEVTOK) {
         return KNEVTNET;
     }
-    if (bind(server->fd, (const struct sockaddr *)&server->addr,
-        sizeof(server->addr)) == -1) {
+    if (bind(server->fd, &server->addr.any, server->addr.len) == -1) {
         return KNEVTNET;
     }
-    if (getsockname(server->fd, (struct sockaddr *)&addr, &len) == -1) {
+    bound.len = sizeof(bound.v6);
+    if (getsockname(server->fd, &bound.any, &bound.len) == -1) {
         return KNEVTNET;
     }
-    if (inet_ntop(AF_INET, &addr.sin_addr, server->ip,
-        INET_ADDRSTRLEN) == NULL) {
+    if (knAddr_toIp(&bound, server->ip, sizeof(server->ip)) != KNEVTOK) {
         return KNEVTNET;
     }
     return KNEVTOK;
@@ -116,13 +135,11 @@ int knServer_init(
     if (flags & knTCP) type = SOCK_STREAM;
     else if (flags & knUDP) type = SOCK_DGRAM;
 
-    server->fd = knSocket_open(type);
-
-    if (server->fd == KN_INVALID_SOCKET) {
+    if (__knServer_open(server, type, port) != KNEVTOK) {
         return KNEVTNET;
     }
 
-    if (__knServer_bind(server, port) != KNEVTOK) {
+    if (__knServer_bind(server) != KNEVTOK) {
         return __knServer_abort(server, KNEVTNET);
     }
 

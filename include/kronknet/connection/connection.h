@@ -67,7 +67,9 @@ KN_API size_t knConnection_getId(const knConnection *conn);
  * @brief Get the remote IP address for a connection.
  *
  * @param conn The connection to inspect.
- * @return The remote IP address string.
+ * @return The remote IP address string, IPv4 or IPv6. An IPv4 client is given
+ *         as IPv4 ("127.0.0.1"), not as the IPv6 the server sees
+ *         ("::ffff:127.0.0.1").
  */
 ///////////////////////////////////////////////////////////////////////////////
 KN_API const char *knConnection_getIp(const knConnection *conn);

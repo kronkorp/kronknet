@@ -1,8 +1,11 @@
 #include "net_utils.h"
-// NOTE: The server is opaque: this test looks at its poller
+// NOTE: The server is opaque: this test looks at its poller, and at its connections
 #include "../../src/server/server.h"
 #include <stdio.h>
+#include "../../src/connection/connection.h"
 #include "../../src/platform/poller.h"
+#include "../../src/server/hooks/udp/udp.h"
+#include "../../src/utils/address/address.h"
 
 Test(udp_server, create_destroy)
 {
@@ -159,5 +162,124 @@ Test(udp_server, send_does_not_arm_epollout)
     AssertEq(recv(fd, buf, sizeof(buf), 0), (ssize_t)4, "The datagram should arrive");
     AssertEq(memcmp(buf, "pong", 4), 0, "and be the one that was sent");
     close(fd);
+    knServer_destroy(server);
+}
+
+Test(udp_server, ipv6_echo)
+{
+    knServer *server = net_server(42210, knUDP);
+    int fd = net_udpClient6();
+    char buf[16] = {0};
+
+    net_udpSend6(fd, 42210, "ping6", 5);
+    AssertEq(net_udpRecv(server, fd, buf, sizeof(buf)), (ssize_t)5, "Echo should be 5 bytes");
+    AssertEq(memcmp(buf, "ping6", 5), 0, "Echoed datagram should match");
+    AssertEq(g_net.connects, 1, "First datagram should create a connection");
+    AssertStrEq(knConnection_getIp(g_net.conns[0]), "::1", "Connection ip should be the IPv6 loopback");
+    close(fd);
+    knServer_destroy(server);
+}
+
+Test(udp_server, ipv4_and_ipv6_peers)
+{
+    knServer *server = net_server(42211, knUDP);
+    int fd4 = net_udpClient();
+    int fd6 = net_udpClient6();
+    char buf[16];
+
+    net_udpSend(fd4, 42211, "four", 4);
+    AssertEq(net_udpRecv(server, fd4, buf, sizeof(buf)), (ssize_t)4, "The IPv4 peer should get its echo");
+    AssertEq(memcmp(buf, "four", 4), 0, "Echoed datagram should match");
+    net_udpSend6(fd6, 42211, "six", 3);
+    AssertEq(net_udpRecv(server, fd6, buf, sizeof(buf)), (ssize_t)3, "The IPv6 peer should get its echo");
+    AssertEq(memcmp(buf, "six", 3), 0, "Echoed datagram should match");
+    AssertEq(g_net.connects, 2, "Each peer should have its own connection");
+    AssertStrEq(knConnection_getIp(g_net.conns[0]), "127.0.0.1", "An IPv4 peer is shown as IPv4, not as ::ffff:127.0.0.1");
+    AssertStrEq(knConnection_getIp(g_net.conns[1]), "::1", "An IPv6 peer is shown as IPv6");
+    close(fd4);
+    close(fd6);
+    knServer_destroy(server);
+}
+
+//! An IPv6 peer of 2001:db8::/64, made by hand: the loopback has a single IPv6
+static knAddr same_key_peer(uint64_t iid, uint16_t port)
+{
+    static const uint8_t prefix[8] = {0x20, 0x01, 0x0d, 0xb8, 0, 0, 0, 0};
+    knAddr addr = {0};
+
+    addr.v6.sin6_family = AF_INET6;
+    addr.v6.sin6_port = port;
+    memcpy(addr.v6.sin6_addr.s6_addr, prefix, sizeof(prefix));
+    memcpy(addr.v6.sin6_addr.s6_addr + 8, &iid, sizeof(iid));
+    addr.len = sizeof(addr.v6);
+    return addr;
+}
+
+//! Three peers of the same /64 whose addresses make up for their ports: knAddr_hash gives them the same key
+static void same_key_peers(knAddr addrs[3])
+{
+    addrs[0] = same_key_peer(0x1234, 0x1111);
+    addrs[1] = same_key_peer(0x1234 ^ 0x1111 ^ 0x2222, 0x2222);
+    addrs[2] = same_key_peer(0x1234 ^ 0x1111 ^ 0x3333, 0x3333);
+    for (int i = 1; i < 3; ++i) {
+        AssertEq(knAddr_hash(&addrs[i]), knAddr_hash(&addrs[0]), "Peer %d should have the key of peer 0 (what this test is built on)", i);
+        Assert(!knAddr_equal(&addrs[i], &addrs[0]), "Peer %d should not be peer 0", i);
+    }
+}
+
+// Two IPv6 peers can get the same key in the map of the connections: each must keep its own
+Test(udp_server, same_key_peers)
+{
+    knServer *server = knServer_create(42212, knUDP);
+    knAddr addrs[3];
+    knConnection *conns[3];
+
+    AssertNotNull(server, "UDP server creation should succeed");
+    same_key_peers(addrs);
+    for (int i = 0; i < 3; ++i) {
+        conns[i] = knConnection_create(&addrs[i], knUDP);
+        AssertNotNull(conns[i], "Connection creation should succeed");
+        AssertEq(knServer_udpAdd(server, conns[i]), KNEVTOK, "Connection %d should be added", i);
+    }
+    for (int i = 0; i < 3; ++i) {
+        AssertEq(knServer_udpFind(server, &addrs[i]), conns[i], "Peer %d should find its own connection", i);
+    }
+
+    knServer_udpRemove(server, conns[1]);
+    knConnection_destroy(conns[1]);
+    AssertNull(knServer_udpFind(server, &addrs[1]), "A removed peer should not be found");
+    AssertEq(knServer_udpFind(server, &addrs[0]), conns[0], "Removing a connection after the first keeps the first");
+    AssertEq(knServer_udpFind(server, &addrs[2]), conns[2], "and the one after it");
+
+    knServer_udpRemove(server, conns[0]);
+    knConnection_destroy(conns[0]);
+    AssertNull(knServer_udpFind(server, &addrs[0]), "A removed peer should not be found");
+    AssertEq(knServer_udpFind(server, &addrs[2]), conns[2], "Removing the first connection of a key keeps the next one");
+
+    // NOTE: conns[2] is still there: the server destroys it
+    knServer_destroy(server);
+}
+
+Test(udp_server, same_key_timeout)
+{
+    knServer *server = net_server(42213, knUDP);
+    knAddr addrs[3];
+    knConnection *conns[3];
+
+    same_key_peers(addrs);
+    knServer_setConnectionTimeout(server, 1000);
+    for (int i = 0; i < 3; ++i) {
+        conns[i] = knConnection_create(&addrs[i], knUDP);
+        AssertNotNull(conns[i], "Connection creation should succeed");
+        AssertEq(knServer_udpAdd(server, conns[i]), KNEVTOK, "Connection %d should be added", i);
+    }
+    // NOTE: The first and the last connections of the key have been idle since the clock started
+    conns[0]->last_data = 0;
+    conns[2]->last_data = 0;
+    AssertEq(knServer_runOnce(server, 0), KNEVTOK, "runOnce should succeed");
+    AssertEq(g_net.disconnects, 2, "Both idle peers should be removed");
+    AssertNull(knServer_udpFind(server, &addrs[0]), "The first idle peer should be gone");
+    AssertEq(knServer_udpFind(server, &addrs[1]), conns[1], "The active peer should stay");
+    AssertNull(knServer_udpFind(server, &addrs[2]), "The last idle peer should be gone");
     knServer_destroy(server);
 }

@@ -43,10 +43,11 @@ static int __knSocket_nonBlocking(
 }
 
 knSocket knSocket_open(
+    int family,
     int type
 )
 {
-    knSocket fd = socket(AF_INET, type, 0);
+    knSocket fd = socket(family, type, 0);
 
     if (fd == KN_INVALID_SOCKET) {
         return KN_INVALID_SOCKET;
@@ -60,11 +61,13 @@ knSocket knSocket_open(
 
 knSocket knSocket_accept(
     knSocket listener,
-    struct sockaddr_in *addr
+    knAddr *addr
 )
 {
-    int len = sizeof(*addr);
-    knSocket fd = accept(listener, (struct sockaddr *)addr, &len);
+    knSocket fd;
+
+    addr->len = (int)sizeof(addr->v6);
+    fd = accept(listener, &addr->any, &addr->len);
 
     if (fd == KN_INVALID_SOCKET) {
         return KN_INVALID_SOCKET;
@@ -93,6 +96,19 @@ int knSocket_setReuseAddr(
     knSocket fd KN_UNUSED
 )
 {
+    return KNEVTOK;
+}
+
+// NOTE: Windows makes an IPv6 socket IPv6-only by default
+int knSocket_setDualStack(
+    knSocket fd
+)
+{
+    DWORD opt = 0;
+
+    if (setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (const char *)&opt, sizeof(opt)) == SOCKET_ERROR) {
+        return KNEVTNET;
+    }
     return KNEVTOK;
 }
 
@@ -165,24 +181,23 @@ ssize_t knSocket_sendTo(
     knSocket fd,
     const void *data,
     size_t size,
-    const struct sockaddr_in *addr
+    const knAddr *addr
 )
 {
-    return sendto(fd, (const char *)data, __knSocket_length(size), 0,
-        (const struct sockaddr *)addr, (int)sizeof(*addr));
+    return sendto(fd, (const char *)data, __knSocket_length(size), 0, &addr->any, addr->len);
 }
 
 ssize_t knSocket_recvFrom(
     knSocket fd,
     void *buff,
     size_t size,
-    struct sockaddr_in *addr
+    knAddr *addr
 )
 {
     int length = __knSocket_length(size);
-    int len = sizeof(*addr);
 
-    return __knSocket_received(recvfrom(fd, (char *)buff, length, 0, (struct sockaddr *)addr, &len), length);
+    addr->len = (int)sizeof(addr->v6);
+    return __knSocket_received(recvfrom(fd, (char *)buff, length, 0, &addr->any, &addr->len), length);
 }
 
 knBool knSocket_wouldBlock(void)

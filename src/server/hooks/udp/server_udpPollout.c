@@ -22,14 +22,11 @@ typedef struct {
 
 } knPolloutContext;
 
-static void __pollout(
-    uint64_t key KN_UNUSED,
-    void* value,
-    void* arg
+static void __pollout_conn(
+    knConnection *conn,
+    knPolloutContext *ctx
 )
 {
-    knConnection *conn = (knConnection *)value;
-    knPolloutContext *ctx = (knPolloutContext *)arg;
     knServer* server = ctx->server;
     uint8_t tmp[KNBUFFSIZ] = {0};
     size_t usage = knRBuff_usage(conn->out_buff);
@@ -52,6 +49,18 @@ static void __pollout(
     } else {
         knError(server->logger, "Client [%zu]: Failed to send data.", conn->id);
         ctx->packets_remaining = true;
+    }
+}
+
+// NOTE: value is the first connection of its key, the others follow it (see knServer_udpFind)
+static void __pollout(
+    uint64_t key KN_UNUSED,
+    void* value,
+    void* arg
+)
+{
+    for (knConnection *conn = (knConnection *)value; conn; conn = conn->udp_next) {
+        __pollout_conn(conn, (knPolloutContext *)arg);
     }
 }
 

@@ -27,7 +27,7 @@ typedef struct kronknet_client_s {
     void*                   user_ptr;      //!< The user data ?
     knRBuff*                buff;          //!< The out buffer (when send is not possible)
     uint32_t                events;        //!< The events (KN_POLL*)
-    struct sockaddr_in      addr;          //!< The address of the client
+    knAddr                  addr;          //!< The address of the server
     knClient_OnConnect_t    onConnection;  //!< The callback when the client is connected
     knClient_OnRead_t       onRead;        //!< The callback when the client receive data
     knClient_OnWrite_t      onWrite;       //!< The callback when the client has drained his internal buffer
