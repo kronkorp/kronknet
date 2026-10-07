@@ -19,6 +19,7 @@
         #include <ws2tcpip.h>
     #else
         #include <arpa/inet.h>
+        #include <netdb.h>
         #include <netinet/in.h>
         #include <sys/socket.h>
     #endif /* _WIN32 */
@@ -27,6 +28,26 @@
     #define KN_POLLOUT 0x02  //!< Writable
     #define KN_POLLERR 0x04  //!< Error (reported even when not asked for)
     #define KN_POLLHUP 0x08  //!< Hung up (reported even when not asked for)
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief   An IPv4 or an IPv6 address, with its port
+ *
+ * @note    any.sa_family says which one. Before the socket API writes one
+ *          (accept, recvfrom, getsockname), len is the room there is: the
+ *          size of the biggest, sizeof(v6)
+ */
+///////////////////////////////////////////////////////////////////////////////
+typedef struct kronknet_addr_s {
+
+    union {
+        struct sockaddr     any;  //!< What the socket API takes
+        struct sockaddr_in  v4;   //!< When any.sa_family is AF_INET
+        struct sockaddr_in6 v6;   //!< When any.sa_family is AF_INET6
+    };
+    socklen_t len;                //!< The size of the address in use
+
+} knAddr;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -48,14 +69,15 @@ void knSocket_cleanup(void);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- * @brief   Open a non-blocking IPv4 socket
+ * @brief   Open a non-blocking socket
  *
- * @param   type The type of the socket (SOCK_STREAM, SOCK_DGRAM)
+ * @param   family The family of the socket (AF_INET, AF_INET6)
+ * @param   type   The type of the socket (SOCK_STREAM, SOCK_DGRAM)
  *
  * @return  The socket, or KN_INVALID_SOCKET
  */
 ///////////////////////////////////////////////////////////////////////////////
-knSocket knSocket_open(int type);
+knSocket knSocket_open(int family, int type);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -67,7 +89,7 @@ knSocket knSocket_open(int type);
  * @return  The socket, or KN_INVALID_SOCKET
  */
 ///////////////////////////////////////////////////////////////////////////////
-knSocket knSocket_accept(knSocket listener, struct sockaddr_in *addr);
+knSocket knSocket_accept(knSocket listener, knAddr *addr);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -85,6 +107,16 @@ void knSocket_close(knSocket fd);
  */
 ///////////////////////////////////////////////////////////////////////////////
 int knSocket_setReuseAddr(knSocket fd);
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief   Let an IPv6 socket take IPv4 too (dual-stack): an IPv4 peer comes
+ *          as an IPv4-mapped address, ::ffff:a.b.c.d
+ *
+ * @return  KNEVTOK, or KNEVTNET
+ */
+///////////////////////////////////////////////////////////////////////////////
+int knSocket_setDualStack(knSocket fd);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -111,8 +143,8 @@ int knSocket_ignorePortUnreachable(knSocket fd);
 ///////////////////////////////////////////////////////////////////////////////
 ssize_t knSocket_send(knSocket fd, const void *data, size_t size);
 ssize_t knSocket_recv(knSocket fd, void *buff, size_t size);
-ssize_t knSocket_sendTo(knSocket fd, const void *data, size_t size, const struct sockaddr_in *addr);
-ssize_t knSocket_recvFrom(knSocket fd, void *buff, size_t size, struct sockaddr_in *addr);
+ssize_t knSocket_sendTo(knSocket fd, const void *data, size_t size, const knAddr *addr);
+ssize_t knSocket_recvFrom(knSocket fd, void *buff, size_t size, knAddr *addr);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**

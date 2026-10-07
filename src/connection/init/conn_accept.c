@@ -18,7 +18,7 @@ knConnection *knConnection_accept(
 {
     knConnection *conn;
     knSocket fd;
-    struct sockaddr_in addr;
+    knAddr addr;
 
     fd = knSocket_accept(server->fd, &addr);
     if (fd == KN_INVALID_SOCKET) {

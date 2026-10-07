@@ -152,6 +152,16 @@ static inline struct sockaddr_in net_loopback(knPort port)
     return addr;
 }
 
+static inline struct sockaddr_in6 net_loopback6(knPort port)
+{
+    struct sockaddr_in6 addr = {0};
+
+    addr.sin6_family = AF_INET6;
+    addr.sin6_port = htons(port);
+    addr.sin6_addr = in6addr_loopback;
+    return addr;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * @brief   Connect a TCP client to 127.0.0.1:[port]
@@ -179,13 +189,40 @@ static inline int net_tcpClient(knPort port)
     return net_tcpClientBuf(port, 0);
 }
 
-static inline int net_udpClient(void)
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief   Connect a TCP client to [::1]:[port]
+ */
+///////////////////////////////////////////////////////////////////////////////
+static inline int net_tcpClient6(knPort port)
 {
-    int fd = socket(AF_INET, SOCK_DGRAM, 0);
+    struct sockaddr_in6 addr = net_loopback6(port);
+    int fd = socket(AF_INET6, SOCK_STREAM, 0);
+
+    Assert(fd != -1, "IPv6 client socket creation should succeed (does the host have IPv6?)");
+    net_setRecvTimeout(fd, 1000);
+    Assert(connect(fd, (struct sockaddr *)&addr, sizeof(addr)) == 0,
+        "IPv6 client should connect to [::1]:%d", port);
+    return fd;
+}
+
+static inline int net_udpClientOf(int family)
+{
+    int fd = socket(family, SOCK_DGRAM, 0);
 
     Assert(fd != -1, "UDP client socket creation should succeed");
     net_setRecvTimeout(fd, 1000);
     return fd;
+}
+
+static inline int net_udpClient(void)
+{
+    return net_udpClientOf(AF_INET);
+}
+
+static inline int net_udpClient6(void)
+{
+    return net_udpClientOf(AF_INET6);
 }
 
 static inline void net_udpSend(int fd, knPort port, const void *data, size_t size)
@@ -194,6 +231,14 @@ static inline void net_udpSend(int fd, knPort port, const void *data, size_t siz
 
     AssertEq(sendto(fd, data, size, 0, (struct sockaddr *)&addr, sizeof(addr)),
         (ssize_t)size, "UDP client should send the whole datagram");
+}
+
+static inline void net_udpSend6(int fd, knPort port, const void *data, size_t size)
+{
+    struct sockaddr_in6 addr = net_loopback6(port);
+
+    AssertEq(sendto(fd, data, size, 0, (struct sockaddr *)&addr, sizeof(addr)),
+        (ssize_t)size, "UDP client should send the whole datagram to [::1]:%d", port);
 }
 
 static inline void net_send(int fd, const void *data, size_t size)

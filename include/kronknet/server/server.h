@@ -25,6 +25,9 @@ typedef struct kronknet_server_s knServer;
 /**
  * @brief Create a new server instance.
  *
+ * @note  The server takes IPv4 and IPv6 clients: it listens on every address,
+ *        on a dual-stack socket. On a host without IPv6, it takes IPv4 only.
+ *
  * @param port  The port to bind to.
  * @param flags The flags to create the server with
  * @return The allocated server, or NULL on failure.
@@ -169,7 +172,8 @@ KN_API void  knServer_setUserPtr(knServer *server, void *user_ptr);
  * @brief Get the IP address the server is bound to.
  *
  * @param server The server to inspect.
- * @return The bound IP address string.
+ * @return The bound IP address string: "::" (every IPv6 and IPv4 address),
+ *         or "0.0.0.0" on a host without IPv6.
  */
 ///////////////////////////////////////////////////////////////////////////////
 KN_API const char* knServer_getIp(const knServer *server);

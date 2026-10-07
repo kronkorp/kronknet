@@ -73,7 +73,7 @@ typedef struct kronknet_server_s {
     knFlags                 flags;                //!< The flags given at creation
     knBool                  running;              //!< Is the server running
     knSocket                fd;                   //!< The fd of the server socket
-    struct sockaddr_in      addr;                 //!< The address of the server
+    knAddr                  addr;                 //!< The address of the server (:: when dual-stack)
     knPool                  pool;                 //!< The pool of sockets to look on
     void*                   user_ptr;             //!< Data like a struct given by the user
 
@@ -82,7 +82,7 @@ typedef struct kronknet_server_s {
     knServer_OnWrite_t      onWrite;              //!< onWrite callback
     knServer_OnDisconnect_t onDisconnect;         //!< onDisconnect callback
 
-    char                    ip[INET_ADDRSTRLEN];  //!< The ip as a string
+    char                    ip[INET6_ADDRSTRLEN]; //!< The ip as a string
 
     knLoggerData            logger;               //!< The logger data
     uint64_t                connection_timeout;   //!< The max seconds the connections can rest withoud sending data (default: UDP = 30,000, TCP = 180,000)

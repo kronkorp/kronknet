@@ -9,6 +9,7 @@
 #include "kronknet/connection/connection.h"
 #include "kronknet/server/server.h"
 #include "../../platform/socket.h"
+#include "../../utils/address/address.h"
 #include <kronknet/macros/types.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -28,7 +29,8 @@ static void __knConnection_statics(
 
     conn->fd = KN_INVALID_SOCKET;
     conn->poller = NULL;
-    conn->port = ntohs(conn->addr.sin_port);
+    conn->udp_next = NULL;
+    conn->port = knAddr_getPort(&conn->addr);
     conn->id = id++;
     conn->last_data = monotonic();
     conn->disconnected = false;
@@ -47,7 +49,7 @@ static void __knConnection_hooks(
 }
 
 knConnection *knConnection_create(
-    const struct sockaddr_in* addr,
+    const knAddr* addr,
     knFlags flags
 )
 {
@@ -59,7 +61,7 @@ knConnection *knConnection_create(
     conn->addr = *addr;
     __knConnection_statics(conn);
     __knConnection_hooks(conn);
-    inet_ntop(AF_INET, &conn->addr.sin_addr, conn->ip, INET_ADDRSTRLEN);
+    knAddr_toIp(&conn->addr, conn->ip, sizeof(conn->ip));
     conn->out_buff = knRBuff_create(KNBUFFSIZ);
     if (!conn->out_buff) {
         knConnection_destroy(conn);

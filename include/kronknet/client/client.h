@@ -47,8 +47,12 @@ KN_API void knClient_destroy(knClient *client);
 /**
  * @brief Connect a client to a remote server.
  *
+ * @note  Host names are not resolved: ip must be an IP (or "localhost",
+ *        which is 127.0.0.1).
+ *
  * @param client The client to use.
- * @param ip The server IP address.
+ * @param ip The server IP address, IPv4 or IPv6 ("127.0.0.1", "::1",
+ *           "fe80::1%eth0").
  * @param port The server port.
  * @return 0 on success, -1 on failure.
  */

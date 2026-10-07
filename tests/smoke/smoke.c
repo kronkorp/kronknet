@@ -2,7 +2,8 @@
 ** FREE PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Smoke test: a client and a server talk, in TCP then in UDP. Only the public
+** Smoke test: a client and a server talk, in TCP then in UDP, over IPv4 then
+** over IPv6 (the server takes both). Only the public
 ** API, no kronklab (it needs fork()): it runs on every platform.
 */
 #include "kronknet/client/client.h"
@@ -38,11 +39,11 @@ static int smoke_collect(knClient *client, const void *data, size_t size)
 
 // The client sends right after knClient_connect, while the connection may
 // still be being made: what it sends must wait for it, not be lost
-static int smoke_run(knServer *server, knClient *client, knPort port)
+static int smoke_run(knServer *server, knClient *client, const char *ip, knPort port)
 {
     timestamp start;
 
-    if (knClient_connect(client, "127.0.0.1", port) != KNEVTOK) {
+    if (knClient_connect(client, ip, port) != KNEVTOK) {
         return 0;
     }
     if (knClient_sendServer(client, SMOKE_MESSAGE, strlen(SMOKE_MESSAGE)) != KNEVTOK) {
@@ -58,7 +59,7 @@ static int smoke_run(knServer *server, knClient *client, knPort port)
         && memcmp(g_received, SMOKE_MESSAGE, g_receivedSize) == 0;
 }
 
-static int smoke(const char *name, knFlags flags, knPort port)
+static int smoke(const char *name, knFlags flags, const char *ip, knPort port)
 {
     knServer *server = knServer_create(port, flags);
     knClient *client = knClient_create(flags);
@@ -68,9 +69,9 @@ static int smoke(const char *name, knFlags flags, knPort port)
     if (server && client) {
         knServer_setOnRead(server, &smoke_echo);
         knClient_setOnRead(client, &smoke_collect);
-        ok = smoke_run(server, client, port);
+        ok = smoke_run(server, client, ip, port);
     }
-    printf("%s echo on port %d: %s\n", name, port, ok ? "ok" : "FAILED");
+    printf("%s echo with %s on port %d: %s\n", name, ip, port, ok ? "ok" : "FAILED");
     knClient_destroy(client);
     knServer_destroy(server);
     return ok;
@@ -81,7 +82,9 @@ int main(int argc, char **argv)
     knPort port = (argc > 1) ? (knPort)atoi(argv[1]) : 42900;
     int ok = 1;
 
-    ok &= smoke("TCP", knTCP, port);
-    ok &= smoke("UDP", knUDP, (knPort)(port + 1));
+    ok &= smoke("TCP", knTCP, "127.0.0.1", port);
+    ok &= smoke("UDP", knUDP, "127.0.0.1", (knPort)(port + 1));
+    ok &= smoke("TCP", knTCP, "::1", (knPort)(port + 2));
+    ok &= smoke("UDP", knUDP, "::1", (knPort)(port + 3));
     return ok ? 0 : 1;
 }

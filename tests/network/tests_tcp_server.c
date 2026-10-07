@@ -326,3 +326,50 @@ Test(tcp_server, destroy_closes_clients)
         close(fds[i]);
     }
 }
+
+Test(tcp_server, ipv6_accept)
+{
+    knServer *server = net_server(42118, knTCP);
+    int fd = net_tcpClient6(42118);
+    struct sockaddr_in6 local = {0};
+    socklen_t len = sizeof(local);
+
+    NET_PUMP_UNTIL(server, g_net.connects == 1);
+    getsockname(fd, (struct sockaddr *)&local, &len);
+    AssertEq(knConnection_getPort(g_net.conns[0]), ntohs(local.sin6_port),
+        "Connection port should be the client's port");
+    AssertStrEq(knConnection_getIp(g_net.conns[0]), "::1", "Connection ip should be the IPv6 loopback");
+    close(fd);
+    knServer_destroy(server);
+}
+
+Test(tcp_server, ipv6_echo)
+{
+    knServer *server = net_server(42119, knTCP);
+    int fd = net_tcpClient6(42119);
+    const char msg[] = "hello kronknet, over IPv6";
+    char buf[sizeof(msg)] = {0};
+
+    NET_PUMP_UNTIL(server, g_net.connects == 1);
+    net_send(fd, msg, sizeof(msg));
+    net_recvAll(server, fd, buf, sizeof(msg));
+    AssertEq(memcmp(buf, msg, sizeof(msg)), 0, "Echoed data should match");
+    close(fd);
+    knServer_destroy(server);
+}
+
+// One server takes IPv4 and IPv6 clients: its socket is dual-stack
+Test(tcp_server, dual_stack)
+{
+    knServer *server = net_server(42120, knTCP);
+    int fd4 = net_tcpClient(42120);
+    int fd6 = net_tcpClient6(42120);
+
+    AssertStrEq(knServer_getIp(server), "::", "The server should be bound to every address, IPv4 and IPv6");
+    NET_PUMP_UNTIL(server, g_net.connects == 2);
+    AssertStrEq(knConnection_getIp(g_net.conns[0]), "127.0.0.1", "An IPv4 client is shown as IPv4, not as ::ffff:127.0.0.1");
+    AssertStrEq(knConnection_getIp(g_net.conns[1]), "::1", "An IPv6 client is shown as IPv6");
+    close(fd4);
+    close(fd6);
+    knServer_destroy(server);
+}
