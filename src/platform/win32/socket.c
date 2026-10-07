@@ -6,7 +6,13 @@
 */
 #include "../socket.h"
 #include "kronknet/macros/errdef.h"
+#include "kronknet/macros/optimization.h"
 #include <limits.h>
+
+// NOTE: In <mstcpip.h> with MSVC, in <mswsock.h> with MinGW
+#ifndef SIO_UDP_CONNRESET
+    #define SIO_UDP_CONNRESET _WSAIOW(IOC_VENDOR, 12)
+#endif
 
 // NOTE: Winsock counts who uses it: each WSAStartup needs its WSACleanup
 int knSocket_startup(void)
@@ -80,13 +86,25 @@ void knSocket_close(
     }
 }
 
+// NOTE: Windows already lets a port be bound again while its old connections are in TIME_WAIT.
+//       Its SO_REUSEADDR is something else: it lets a socket bind a port another socket is
+//       listening on, and take its connections
 int knSocket_setReuseAddr(
+    knSocket fd KN_UNUSED
+)
+{
+    return KNEVTOK;
+}
+
+int knSocket_ignorePortUnreachable(
     knSocket fd
 )
 {
-    BOOL opt = TRUE;
+    BOOL report = FALSE;
+    DWORD bytes = 0;
 
-    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const char *)&opt, sizeof(opt)) == SOCKET_ERROR) {
+    if (WSAIoctl(fd, SIO_UDP_CONNRESET, &report, sizeof(report),
+        NULL, 0, &bytes, NULL, NULL) == SOCKET_ERROR) {
         return KNEVTNET;
     }
     return KNEVTOK;
@@ -111,13 +129,28 @@ ssize_t knSocket_send(
     return send(fd, (const char *)data, __knSocket_length(size), 0);
 }
 
+// NOTE: A datagram bigger than the buffer: POSIX gives what fits, Windows gives the same
+//       but calls it an error (WSAEMSGSIZE). Say what POSIX says
+static ssize_t __knSocket_received(
+    int received,
+    int length
+)
+{
+    if (received == SOCKET_ERROR && WSAGetLastError() == WSAEMSGSIZE) {
+        return length;
+    }
+    return received;
+}
+
 ssize_t knSocket_recv(
     knSocket fd,
     void *buff,
     size_t size
 )
 {
-    return recv(fd, (char *)buff, __knSocket_length(size), 0);
+    int length = __knSocket_length(size);
+
+    return __knSocket_received(recv(fd, (char *)buff, length, 0), length);
 }
 
 ssize_t knSocket_sendTo(
@@ -138,9 +171,10 @@ ssize_t knSocket_recvFrom(
     struct sockaddr_in *addr
 )
 {
+    int length = __knSocket_length(size);
     int len = sizeof(*addr);
 
-    return recvfrom(fd, (char *)buff, __knSocket_length(size), 0, (struct sockaddr *)addr, &len);
+    return __knSocket_received(recvfrom(fd, (char *)buff, length, 0, (struct sockaddr *)addr, &len), length);
 }
 
 knBool knSocket_wouldBlock(void)

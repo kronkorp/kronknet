@@ -130,6 +130,8 @@ int knServer_init(
         if (listen(server->fd, SOMAXCONN) == -1) {
             return __knServer_abort(server, KNEVTNET);
         }
+    } else if (knSocket_ignorePortUnreachable(server->fd) != KNEVTOK) {
+        return __knServer_abort(server, KNEVTNET);
     }
 
     if (knPool_init(&server->pool) != KNEVTOK) {

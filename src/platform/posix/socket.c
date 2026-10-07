@@ -6,6 +6,7 @@
 */
 #include "../socket.h"
 #include "kronknet/macros/errdef.h"
+#include "kronknet/macros/optimization.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -84,6 +85,13 @@ int knSocket_setReuseAddr(
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
         return KNEVTNET;
     }
+    return KNEVTOK;
+}
+
+int knSocket_ignorePortUnreachable(
+    knSocket fd KN_UNUSED
+)
+{
     return KNEVTOK;
 }
 

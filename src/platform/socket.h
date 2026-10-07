@@ -78,7 +78,8 @@ void knSocket_close(knSocket fd);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- * @brief   Let a server bind its port again right after it stopped
+ * @brief   Let a server bind its port again right after it stopped, while
+ *          its old connections are still in TIME_WAIT
  *
  * @return  KNEVTOK, or KNEVTNET
  */
@@ -87,9 +88,23 @@ int knSocket_setReuseAddr(knSocket fd);
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
+ * @brief   Do not fail a UDP server socket when a peer is gone
+ *
+ * @note    A datagram sent to a port nobody listens on is answered by an ICMP
+ *          port unreachable. Linux reports nothing on a socket that is not
+ *          connected; Windows fails its next recvfrom() (WSAECONNRESET)
+ *
+ * @return  KNEVTOK, or KNEVTNET
+ */
+///////////////////////////////////////////////////////////////////////////////
+int knSocket_ignorePortUnreachable(knSocket fd);
+
+///////////////////////////////////////////////////////////////////////////////
+/**
  * @brief   send() / recv() / sendto() / recvfrom(), the way POSIX does them
  *
- * @note    A peer that is gone makes them fail, never raises SIGPIPE
+ * @note    A peer that is gone makes them fail, never raises SIGPIPE.
+ *          A datagram bigger than the buffer is cut to fit it
  *
  * @return  The number of bytes, or -1 (see knSocket_wouldBlock)
  */
