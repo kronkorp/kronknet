@@ -1,11 +1,13 @@
 <map id="kronknet_pool_s" name="kronknet_pool_s">
-<area shape="rect" id="Node000001" title=" " alt="" coords="31,181,161,207"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="34,185,163,211"/>
 <area shape="rect" id="Node000002" href="$structkronknet__poller__s.html" title=" " alt="" coords="5,5,144,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,44,89,118,97,181,92,181,84,119,75,45"/>
-<area shape="rect" id="Node000003" href="$structkronknet__connection__s.html" title=" " alt="" coords="141,93,313,119"/>
-<area shape="poly" id="edge5_Node000003_Node000002" title=" " alt="" coords="108,35,207,91,205,95,106,40"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="199,128,115,183,112,179,196,124"/>
-<area shape="poly" id="edge4_Node000003_Node000003" title=" " alt="" coords="327,98,339,106,331,113,313,116,313,111,329,108,334,106,325,103"/>
-<area shape="rect" id="Node000004" href="$structkronknet__ring__buffer__s.html" title=" " alt="" coords="168,5,339,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="248,44,233,94,228,92,243,43"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,44,100,185,94,186,75,45"/>
+<area shape="rect" id="Node000003" href="$structkronknet__connection__s.html" title=" " alt="" coords="146,95,318,121"/>
+<area shape="poly" id="edge6_Node000003_Node000002" title=" " alt="" coords="109,35,213,93,210,98,106,40"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="205,130,118,187,115,183,202,126"/>
+<area shape="poly" id="edge5_Node000003_Node000003" title=" " alt="" coords="333,100,345,108,336,116,319,118,318,113,334,111,339,108,330,104"/>
+<area shape="rect" id="Node000004" href="$structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="168,5,299,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="236,44,235,95,230,95,230,44"/>
+<area shape="rect" id="Node000005" href="$structkronknet__ring__buffer__s.html" title=" " alt="" coords="323,5,493,31"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="374,39,256,98,254,93,372,34"/>
 </map>

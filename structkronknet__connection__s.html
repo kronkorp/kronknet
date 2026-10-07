@@ -80,12 +80,14 @@ Collaboration diagram for kronknet_connection_s:</div>
 <div class="dyncontent">
 <div class="center"><img src="structkronknet__connection__s__coll__graph.png" border="0" usemap="#akronknet__connection__s_coll__map" alt="Collaboration graph"/></div>
 <map name="akronknet__connection__s_coll__map" id="akronknet__connection__s_coll__map">
-<area shape="rect" title=" " alt="" coords="94,93,266,119"/>
-<area shape="poly" title=" " alt="" coords="281,98,293,106,284,113,267,116,266,111,282,108,287,106,278,103"/>
-<area shape="rect" href="structkronknet__ring__buffer__s.html" title=" " alt="" coords="5,5,176,31"/>
-<area shape="poly" title=" " alt="" coords="114,38,169,91,166,95,111,42"/>
-<area shape="rect" href="structkronknet__poller__s.html" title=" " alt="" coords="200,5,339,31"/>
-<area shape="poly" title=" " alt="" coords="249,42,194,95,191,91,246,38"/>
+<area shape="rect" title=" " alt="" coords="159,95,331,121"/>
+<area shape="poly" title=" " alt="" coords="346,100,358,108,350,116,332,118,331,113,348,111,353,108,343,104"/>
+<area shape="rect" href="structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="5,5,136,31"/>
+<area shape="poly" title=" " alt="" coords="107,34,224,93,221,98,104,39"/>
+<area shape="rect" href="structkronknet__ring__buffer__s.html" title=" " alt="" coords="160,5,331,31"/>
+<area shape="poly" title=" " alt="" coords="248,44,248,95,243,95,243,44"/>
+<area shape="rect" href="structkronknet__poller__s.html" title=" " alt="" coords="355,5,493,31"/>
+<area shape="poly" title=" " alt="" coords="390,39,270,98,268,93,387,34"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -107,18 +109,18 @@ knFlags&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b></td></tr
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
 <tr class="memdesc:afa11eb69d799c2a28bf64f408db322db"><td class="mdescLeft">&#160;</td><td class="mdescRight">The id of the connection ( !same as fd ) <br /></td></tr>
 <tr class="separator:afa11eb69d799c2a28bf64f408db322db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace1de196dbf485b1756a1b4c4f0dd654" id="r_ace1de196dbf485b1756a1b4c4f0dd654"><td class="memItemLeft" align="right" valign="top"><a id="ace1de196dbf485b1756a1b4c4f0dd654" name="ace1de196dbf485b1756a1b4c4f0dd654"></a>
-struct sockaddr_in&#160;</td><td class="memItemRight" valign="bottom"><b>addr</b></td></tr>
-<tr class="memdesc:ace1de196dbf485b1756a1b4c4f0dd654"><td class="mdescLeft">&#160;</td><td class="mdescRight">The actual addr. <br /></td></tr>
-<tr class="separator:ace1de196dbf485b1756a1b4c4f0dd654"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01ebf7007186a06252c362d71dd87e28" id="r_a01ebf7007186a06252c362d71dd87e28"><td class="memItemLeft" align="right" valign="top"><a id="a01ebf7007186a06252c362d71dd87e28" name="a01ebf7007186a06252c362d71dd87e28"></a>
+<a class="el" href="structkronknet__addr__s.html">knAddr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>addr</b></td></tr>
+<tr class="memdesc:a01ebf7007186a06252c362d71dd87e28"><td class="mdescLeft">&#160;</td><td class="mdescRight">The actual addr. <br /></td></tr>
+<tr class="separator:a01ebf7007186a06252c362d71dd87e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad573658a54ef4566cbcb126ddef79e79" id="r_ad573658a54ef4566cbcb126ddef79e79"><td class="memItemLeft" align="right" valign="top"><a id="ad573658a54ef4566cbcb126ddef79e79" name="ad573658a54ef4566cbcb126ddef79e79"></a>
 knPort&#160;</td><td class="memItemRight" valign="bottom"><b>port</b></td></tr>
 <tr class="memdesc:ad573658a54ef4566cbcb126ddef79e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">The port using by the connection. <br /></td></tr>
 <tr class="separator:ad573658a54ef4566cbcb126ddef79e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab99d99d0c9505725589add5e035703f4" id="r_ab99d99d0c9505725589add5e035703f4"><td class="memItemLeft" align="right" valign="top"><a id="ab99d99d0c9505725589add5e035703f4" name="ab99d99d0c9505725589add5e035703f4"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>ip</b> [INET_ADDRSTRLEN]</td></tr>
-<tr class="memdesc:ab99d99d0c9505725589add5e035703f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The well-formated ip adrr. <br /></td></tr>
-<tr class="separator:ab99d99d0c9505725589add5e035703f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c73c4ecc0c8d10a51085abe44f2d8a7" id="r_a9c73c4ecc0c8d10a51085abe44f2d8a7"><td class="memItemLeft" align="right" valign="top"><a id="a9c73c4ecc0c8d10a51085abe44f2d8a7" name="a9c73c4ecc0c8d10a51085abe44f2d8a7"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>ip</b> [INET6_ADDRSTRLEN]</td></tr>
+<tr class="memdesc:a9c73c4ecc0c8d10a51085abe44f2d8a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The well-formated ip adrr. <br /></td></tr>
+<tr class="separator:a9c73c4ecc0c8d10a51085abe44f2d8a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf4c66c6623f2c8b413bb70899ab7d89" id="r_adf4c66c6623f2c8b413bb70899ab7d89"><td class="memItemLeft" align="right" valign="top"><a id="adf4c66c6623f2c8b413bb70899ab7d89" name="adf4c66c6623f2c8b413bb70899ab7d89"></a>
 uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>last_data</b></td></tr>
 <tr class="memdesc:adf4c66c6623f2c8b413bb70899ab7d89"><td class="mdescLeft">&#160;</td><td class="mdescRight">The last time (ms) <br /></td></tr>
@@ -140,6 +142,10 @@ knConnection_sendHook&#160;</td><td class="memItemRight" valign="bottom"><b>send
 <a class="el" href="structkronknet__poller__s.html">knPoller</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>poller</b></td></tr>
 <tr class="memdesc:a38d1d03a729491ba4d118e885d4dafb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The poller of the server pool. <br /></td></tr>
 <tr class="separator:a38d1d03a729491ba4d118e885d4dafb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26794c97103c141590975058f63d494a" id="r_a26794c97103c141590975058f63d494a"><td class="memItemLeft" align="right" valign="top"><a id="a26794c97103c141590975058f63d494a" name="a26794c97103c141590975058f63d494a"></a>
+<a class="el" href="structkronknet__connection__s.html">knConnection</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>udp_next</b></td></tr>
+<tr class="memdesc:a26794c97103c141590975058f63d494a"><td class="mdescLeft">&#160;</td><td class="mdescRight">UDP: the next connection whose address has the same key (see knServer_udpFind) <br /></td></tr>
+<tr class="separator:a26794c97103c141590975058f63d494a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/connection/<a class="el" href="src_2connection_2connection_8h_source.html">connection.h</a></li>

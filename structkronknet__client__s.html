@@ -85,12 +85,14 @@ Collaboration diagram for kronknet_client_s:</div>
 <div class="dyncontent">
 <div class="center"><img src="structkronknet__client__s__coll__graph.png" border="0" usemap="#akronknet__client__s_coll__map" alt="Collaboration graph"/></div>
 <map name="akronknet__client__s_coll__map" id="akronknet__client__s_coll__map">
-<area shape="rect" title="Client structure, containing necessary data to the client: fd, data." alt="" coords="121,110,258,135"/>
-<area shape="poly" title=" " alt="" coords="272,112,281,116,285,123,277,132,259,136,258,131,274,127,279,122,277,120,270,117"/>
+<area shape="rect" title="Client structure, containing necessary data to the client: fd, data." alt="" coords="197,110,334,135"/>
+<area shape="poly" title=" " alt="" coords="348,112,357,116,361,123,353,132,335,136,334,131,350,127,355,122,353,120,346,117"/>
 <area shape="rect" href="structkronknet__ring__buffer__s.html" title=" " alt="" coords="5,5,176,31"/>
-<area shape="poly" title=" " alt="" coords="114,39,180,108,176,112,110,43"/>
-<area shape="rect" href="structkronknet__logger__data__s.html" title=" " alt="" coords="200,5,379,31"/>
-<area shape="poly" title=" " alt="" coords="270,43,203,112,199,108,266,39"/>
+<area shape="poly" title=" " alt="" coords="123,35,247,107,244,112,121,40"/>
+<area shape="rect" href="structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="200,5,331,31"/>
+<area shape="poly" title=" " alt="" coords="268,45,268,110,263,110,263,45"/>
+<area shape="rect" href="structkronknet__logger__data__s.html" title=" " alt="" coords="355,5,533,31"/>
+<area shape="poly" title=" " alt="" coords="413,40,287,112,284,107,411,35"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -120,10 +122,10 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>user_ptr</b></td></
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>events</b></td></tr>
 <tr class="memdesc:a4bd017c953d1a93de7d9e95330f0b420"><td class="mdescLeft">&#160;</td><td class="mdescRight">The events (KN_POLL*) <br /></td></tr>
 <tr class="separator:a4bd017c953d1a93de7d9e95330f0b420"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5fdecf0bc7e8bdd65c3050a9492756d4" id="r_a5fdecf0bc7e8bdd65c3050a9492756d4"><td class="memItemLeft" align="right" valign="top"><a id="a5fdecf0bc7e8bdd65c3050a9492756d4" name="a5fdecf0bc7e8bdd65c3050a9492756d4"></a>
-struct sockaddr_in&#160;</td><td class="memItemRight" valign="bottom"><b>addr</b></td></tr>
-<tr class="memdesc:a5fdecf0bc7e8bdd65c3050a9492756d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The address of the client. <br /></td></tr>
-<tr class="separator:a5fdecf0bc7e8bdd65c3050a9492756d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a732dd914805bbac44129cb2f87d211bf" id="r_a732dd914805bbac44129cb2f87d211bf"><td class="memItemLeft" align="right" valign="top"><a id="a732dd914805bbac44129cb2f87d211bf" name="a732dd914805bbac44129cb2f87d211bf"></a>
+<a class="el" href="structkronknet__addr__s.html">knAddr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>addr</b></td></tr>
+<tr class="memdesc:a732dd914805bbac44129cb2f87d211bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">The address of the server. <br /></td></tr>
+<tr class="separator:a732dd914805bbac44129cb2f87d211bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3190dfc6a2510136dd0934deb1212e26" id="r_a3190dfc6a2510136dd0934deb1212e26"><td class="memItemLeft" align="right" valign="top"><a id="a3190dfc6a2510136dd0934deb1212e26" name="a3190dfc6a2510136dd0934deb1212e26"></a>
 knClient_OnConnect_t&#160;</td><td class="memItemRight" valign="bottom"><b>onConnection</b></td></tr>
 <tr class="memdesc:a3190dfc6a2510136dd0934deb1212e26"><td class="mdescLeft">&#160;</td><td class="mdescRight">The callback when the client is connected. <br /></td></tr>

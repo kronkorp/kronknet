@@ -102,52 +102,75 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">        #include &lt;ws2tcpip.h&gt;</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">    #else</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">        #include &lt;arpa/inet.h&gt;</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">        #include &lt;netinet/in.h&gt;</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">        #include &lt;sys/socket.h&gt;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">    #endif </span><span class="comment">/* _WIN32 */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">    #define KN_POLLIN  0x01  </span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">    #define KN_POLLOUT 0x02  </span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">    #define KN_POLLERR 0x04  </span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">    #define KN_POLLHUP 0x08  </span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keywordtype">int</span> knSocket_startup(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keywordtype">void</span> knSocket_cleanup(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>knSocket knSocket_open(<span class="keywordtype">int</span> type);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>knSocket knSocket_accept(knSocket listener, <span class="keyword">struct</span> sockaddr_in *addr);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">        #include &lt;netdb.h&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">        #include &lt;netinet/in.h&gt;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">        #include &lt;sys/socket.h&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">    #endif </span><span class="comment">/* _WIN32 */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">    #define KN_POLLIN  0x01  </span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">    #define KN_POLLOUT 0x02  </span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">    #define KN_POLLERR 0x04  </span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">    #define KN_POLLHUP 0x08  </span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="};">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structkronknet__addr__s.html">   41</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structkronknet__addr__s.html">kronknet_addr_s</a> {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">union </span>{</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structkronknet__addr__s.html#abdbce18800d82be41ed094a0a3031776">   44</a></span>        <span class="keyword">struct </span>sockaddr     <a class="code hl_variable" href="structkronknet__addr__s.html#abdbce18800d82be41ed094a0a3031776">any</a>;  </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structkronknet__addr__s.html#ab8da94f6350a8fcbbb8f5aeb6d24da24">   45</a></span>        <span class="keyword">struct </span>sockaddr_in  <a class="code hl_variable" href="structkronknet__addr__s.html#ab8da94f6350a8fcbbb8f5aeb6d24da24">v4</a>;   </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structkronknet__addr__s.html#ad2a40144c5d92232d54f15398b14d900">   46</a></span>        <span class="keyword">struct </span>sockaddr_in6 <a class="code hl_variable" href="structkronknet__addr__s.html#ad2a40144c5d92232d54f15398b14d900">v6</a>;   </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    };</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structkronknet__addr__s.html#a3e35a4949a133e061e947bfcb4768c64">   48</a></span>    socklen_t <a class="code hl_variable" href="structkronknet__addr__s.html#a3e35a4949a133e061e947bfcb4768c64">len</a>;                </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>} <a class="code hl_struct" href="structkronknet__addr__s.html">knAddr</a>;</div>
+</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keywordtype">int</span> knSocket_startup(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="keywordtype">void</span> knSocket_cleanup(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keywordtype">void</span> knSocket_close(knSocket fd);</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keywordtype">int</span> knSocket_setReuseAddr(knSocket fd);</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="keywordtype">int</span> knSocket_ignorePortUnreachable(knSocket fd);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>ssize_t knSocket_send(knSocket fd, <span class="keyword">const</span> <span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>ssize_t knSocket_recv(knSocket fd, <span class="keywordtype">void</span> *buff, <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>ssize_t knSocket_sendTo(knSocket fd, <span class="keyword">const</span> <span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> size, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr_in *addr);</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>ssize_t knSocket_recvFrom(knSocket fd, <span class="keywordtype">void</span> *buff, <span class="keywordtype">size_t</span> size, <span class="keyword">struct</span> sockaddr_in *addr);</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>knBool knSocket_wouldBlock(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>knBool knSocket_inProgress(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span> </div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span><span class="keywordtype">int</span> knSocket_poll(knSocket fd, uint32_t events, <span class="keywordtype">int</span> timeoutMs, uint32_t *revents);</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="preprocessor">#endif </span><span class="comment">/* KRONKNET_PLATFORM_SOCKET_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>knSocket knSocket_open(<span class="keywordtype">int</span> family, <span class="keywordtype">int</span> type);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>knSocket knSocket_accept(knSocket listener, <a class="code hl_struct" href="structkronknet__addr__s.html">knAddr</a> *addr);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keywordtype">void</span> knSocket_close(knSocket fd);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="keywordtype">int</span> knSocket_setReuseAddr(knSocket fd);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="keywordtype">int</span> knSocket_setDualStack(knSocket fd);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="keywordtype">int</span> knSocket_ignorePortUnreachable(knSocket fd);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>ssize_t knSocket_send(knSocket fd, <span class="keyword">const</span> <span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>ssize_t knSocket_recv(knSocket fd, <span class="keywordtype">void</span> *buff, <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>ssize_t knSocket_sendTo(knSocket fd, <span class="keyword">const</span> <span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> size, <span class="keyword">const</span> <a class="code hl_struct" href="structkronknet__addr__s.html">knAddr</a> *addr);</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>ssize_t knSocket_recvFrom(knSocket fd, <span class="keywordtype">void</span> *buff, <span class="keywordtype">size_t</span> size, <a class="code hl_struct" href="structkronknet__addr__s.html">knAddr</a> *addr);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>knBool knSocket_wouldBlock(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>knBool knSocket_inProgress(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="keywordtype">int</span> knSocket_poll(knSocket fd, uint32_t events, <span class="keywordtype">int</span> timeoutMs, uint32_t *revents);</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#endif </span><span class="comment">/* KRONKNET_PLATFORM_SOCKET_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="astructkronknet__addr__s_html"><div class="ttname"><a href="structkronknet__addr__s.html">kronknet_addr_s</a></div><div class="ttdoc">An IPv4 or an IPv6 address, with its port.</div><div class="ttdef"><b>Definition</b> socket.h:41</div></div>
+<div class="ttc" id="astructkronknet__addr__s_html_a3e35a4949a133e061e947bfcb4768c64"><div class="ttname"><a href="structkronknet__addr__s.html#a3e35a4949a133e061e947bfcb4768c64">kronknet_addr_s::len</a></div><div class="ttdeci">socklen_t len</div><div class="ttdoc">The size of the address in use.</div><div class="ttdef"><b>Definition</b> socket.h:48</div></div>
+<div class="ttc" id="astructkronknet__addr__s_html_ab8da94f6350a8fcbbb8f5aeb6d24da24"><div class="ttname"><a href="structkronknet__addr__s.html#ab8da94f6350a8fcbbb8f5aeb6d24da24">kronknet_addr_s::v4</a></div><div class="ttdeci">struct sockaddr_in v4</div><div class="ttdoc">When any.sa_family is AF_INET.</div><div class="ttdef"><b>Definition</b> socket.h:45</div></div>
+<div class="ttc" id="astructkronknet__addr__s_html_abdbce18800d82be41ed094a0a3031776"><div class="ttname"><a href="structkronknet__addr__s.html#abdbce18800d82be41ed094a0a3031776">kronknet_addr_s::any</a></div><div class="ttdeci">struct sockaddr any</div><div class="ttdoc">What the socket API takes.</div><div class="ttdef"><b>Definition</b> socket.h:44</div></div>
+<div class="ttc" id="astructkronknet__addr__s_html_ad2a40144c5d92232d54f15398b14d900"><div class="ttname"><a href="structkronknet__addr__s.html#ad2a40144c5d92232d54f15398b14d900">kronknet_addr_s::v6</a></div><div class="ttdeci">struct sockaddr_in6 v6</div><div class="ttdoc">When any.sa_family is AF_INET6.</div><div class="ttdef"><b>Definition</b> socket.h:46</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
