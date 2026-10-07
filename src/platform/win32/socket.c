@@ -119,14 +119,22 @@ static int __knSocket_length(
     return size > INT_MAX ? INT_MAX : (int)size;
 }
 
-// NOTE: There is no SIGPIPE on Windows, so nothing like MSG_NOSIGNAL is needed
+// NOTE: There is no SIGPIPE on Windows, so nothing like MSG_NOSIGNAL is needed.
+//       While a non-blocking connect() goes on, POSIX says "try again" (EAGAIN) to send(), so
+//       what is sent waits in the out buffer until the socket is writable, i.e. connected.
+//       Windows says "not connected" (WSAENOTCONN): say what POSIX says
 ssize_t knSocket_send(
     knSocket fd,
     const void *data,
     size_t size
 )
 {
-    return send(fd, (const char *)data, __knSocket_length(size), 0);
+    int sent = send(fd, (const char *)data, __knSocket_length(size), 0);
+
+    if (sent == SOCKET_ERROR && WSAGetLastError() == WSAENOTCONN) {
+        WSASetLastError(WSAEWOULDBLOCK);
+    }
+    return sent;
 }
 
 // NOTE: A datagram bigger than the buffer: POSIX gives what fits, Windows gives the same
