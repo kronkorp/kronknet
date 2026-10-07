@@ -94,6 +94,8 @@ Key Features:
 
 - **Multi-protocol support**: Currently, kronknet supports both TCP and UDP. In TCP mode, connections are stored in a dynamic array, whereas in UDP mode, they are kept in a hash table, offering O(1) lookup complexity in most cases.
 
+- **IPv4 and IPv6**: A server takes both on a single dual-stack socket (IPv4 only on a host without IPv6), and a client connects to either: `knClient_connect(client, "::1", 4242)`. IPv4 clients keep showing as IPv4 (`127.0.0.1`).
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 

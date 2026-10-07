@@ -34,10 +34,11 @@ static int __knSocket_nonBlocking(
 }
 
 knSocket knSocket_open(
+    int family,
     int type
 )
 {
-    knSocket fd = socket(AF_INET, type, 0);
+    knSocket fd = socket(family, type, 0);
 
     if (fd == KN_INVALID_SOCKET) {
         return KN_INVALID_SOCKET;
@@ -51,11 +52,13 @@ knSocket knSocket_open(
 
 knSocket knSocket_accept(
     knSocket listener,
-    struct sockaddr_in *addr
+    knAddr *addr
 )
 {
-    socklen_t len = sizeof(*addr);
-    knSocket fd = accept(listener, (struct sockaddr *)addr, &len);
+    knSocket fd;
+
+    addr->len = sizeof(addr->v6);
+    fd = accept(listener, &addr->any, &addr->len);
 
     if (fd == KN_INVALID_SOCKET) {
         return KN_INVALID_SOCKET;
@@ -83,6 +86,19 @@ int knSocket_setReuseAddr(
     int opt = 1;
 
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
+        return KNEVTNET;
+    }
+    return KNEVTOK;
+}
+
+// NOTE: Linux makes an IPv6 socket dual-stack by default, but net.ipv6.bindv6only can say otherwise
+int knSocket_setDualStack(
+    knSocket fd
+)
+{
+    int opt = 0;
+
+    if (setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, sizeof(opt)) == -1) {
         return KNEVTNET;
     }
     return KNEVTOK;
@@ -118,22 +134,21 @@ ssize_t knSocket_sendTo(
     knSocket fd,
     const void *data,
     size_t size,
-    const struct sockaddr_in *addr
+    const knAddr *addr
 )
 {
-    return sendto(fd, data, size, MSG_NOSIGNAL, (const struct sockaddr *)addr, sizeof(*addr));
+    return sendto(fd, data, size, MSG_NOSIGNAL, &addr->any, addr->len);
 }
 
 ssize_t knSocket_recvFrom(
     knSocket fd,
     void *buff,
     size_t size,
-    struct sockaddr_in *addr
+    knAddr *addr
 )
 {
-    socklen_t len = sizeof(*addr);
-
-    return recvfrom(fd, buff, size, 0, (struct sockaddr *)addr, &len);
+    addr->len = sizeof(addr->v6);
+    return recvfrom(fd, buff, size, 0, &addr->any, &addr->len);
 }
 
 knBool knSocket_wouldBlock(void)

@@ -12,7 +12,7 @@
 
 typedef struct kronknet_hashmap_node_s {
 
-    uint64_t                        key;        //!< The unhashed key (ip << 32 | port)
+    uint64_t                        key;        //!< The unhashed key
     uint64_t                        hash;       //!< The hash (to overwring)
     void*                           data;       //!< The connection data ptr
     struct kronknet_hashmap_node_s* next;       //!< The next node
