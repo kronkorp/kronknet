@@ -47,7 +47,7 @@ int main(
         return CHERR;
     }
     // NOTE: Create client
-    knClient *client = knClient_create();
+    knClient *client = knClient_create(knTCP);
     if (!client) {
         printf("Fail to create client...\n");
         return CHERR;
@@ -61,14 +61,18 @@ int main(
     // NOTE: Connect client to server
     if (knClient_connect(client, argv[1], strtol(argv[2], NULL, 10)) != 0) {
         printf("Unable to connect...\n");
+        knClient_destroy(client);
         return CHERR;
     }
     // NOTE: Run the client
     char buff[512];
+    ssize_t len;
     while (knClient_isRunning(client)) {
         knClient_runOnce(client, 15);
-        if (read(0, buff, sizeof(buff)) > 0) {
-            knClient_sendServer(client, buff, strlen(buff));
+        // NOTE: What read() gives is not a string: send the bytes it read
+        len = read(0, buff, sizeof(buff));
+        if (len > 0) {
+            knClient_sendServer(client, buff, (size_t)len);
         }
     }
     // NOTE: Destroy client

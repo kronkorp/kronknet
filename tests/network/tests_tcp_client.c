@@ -50,10 +50,11 @@ static uint8_t pattern(size_t index)
 
 static int g_drained = 0;
 
-static void on_drained(knClient *client)
+static int on_drained(knClient *client)
 {
     (void)client;
     ++g_drained;
+    return KNEVTOK;
 }
 
 Test(tcp_client, create_has_an_out_buffer)
@@ -123,6 +124,50 @@ Test(tcp_client, full_socket_is_buffered)
     AssertEq(wrong, 0, "in order, and intact");
     Assert(knRBuff_isEmpty(client->buff), "and the buffer of the client is empty again");
     AssertGe(g_drained, 1, "which the client said with onWrite");
+    close(peer);
+    close(listener);
+    knClient_destroy(client);
+}
+
+// Once what waited in the buffer of the client is sent, there is nothing to wait for the socket to
+// be writable for: runOnce must sleep until something comes in, or its timeout
+Test(tcp_client, drained_client_waits)
+{
+    int listener = slow_server(CLIENT_PORT + 1);
+    knClient *client = knClient_create(knTCP);
+    struct pollfd writable;
+    uint8_t chunk[CHUNK] = {0};
+    uint8_t buffer[4096];
+    int small = 4096;
+    int peer;
+    timestamp start;
+
+    AssertGe(listener, 0, "The test server should listen");
+    AssertNotNull(client, "TCP client creation should succeed");
+    AssertEq(knClient_connect(client, "127.0.0.1", CLIENT_PORT + 1), KNEVTOK, "Connect should succeed");
+    writable = (struct pollfd){client->fd, POLLOUT, 0};
+    AssertEq(poll(&writable, 1, 2000), 1, "The connection should be made");
+    setsockopt(client->fd, SOL_SOCKET, SO_SNDBUF, &small, sizeof(small));
+
+    // Send until the client has to keep something
+    for (int i = 0; i < 100000 && knRBuff_isEmpty(client->buff); ++i) {
+        AssertEq(knClient_sendServer(client, chunk, CHUNK), KNEVTOK, "The client should take what it is given");
+    }
+    Assert(!knRBuff_isEmpty(client->buff), "The client should keep what its socket refused");
+
+    // The other side reads everything, until the client has sent all it kept
+    peer = accept(listener, NULL, NULL);
+    AssertGe(peer, 0, "The server should accept the client");
+    start = kl_monotonic();
+    while (!knRBuff_isEmpty(client->buff) && kl_monotonic() - start < 5000) {
+        knClient_runOnce(client, 5);
+        while (recv(peer, buffer, sizeof(buffer), MSG_DONTWAIT) > 0);
+    }
+    Assert(knRBuff_isEmpty(client->buff), "The client should send all it kept");
+
+    start = kl_monotonic();
+    AssertEq(knClient_runOnce(client, 200), KNEVTOK, "An idle runOnce should succeed");
+    AssertGe(kl_monotonic() - start, (timestamp)150, "With nothing to send nor to read, runOnce should wait for its timeout");
     close(peer);
     close(listener);
     knClient_destroy(client);

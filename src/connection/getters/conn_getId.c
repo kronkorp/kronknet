@@ -14,7 +14,7 @@ size_t knConnection_getId(
 )
 {
     if (!conn) {
-        return -1UL;
+        return (size_t)-1;
     }
     return conn->id;
 }

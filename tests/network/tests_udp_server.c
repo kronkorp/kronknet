@@ -1,8 +1,8 @@
 #include "net_utils.h"
-// NOTE: The server is opaque: this test looks at its epoll
+// NOTE: The server is opaque: this test looks at its poller
 #include "../../src/server/server.h"
 #include <stdio.h>
-#include <sys/epoll.h>
+#include "../../src/platform/poller.h"
 
 Test(udp_server, create_destroy)
 {
@@ -147,15 +147,15 @@ Test(udp_server, send_does_not_arm_epollout)
 {
     knServer *server = net_server(42209, knUDP);
     int fd = net_udpClient();
-    struct epoll_event events[4];
+    knPollEvent events[4];
     char buf[16];
 
     g_net.echo = knFalse;   // this test sends by hand
     net_udpSend(fd, 42209, "hi", 2);
     NET_PUMP_UNTIL(server, g_net.reads == 1);
-    AssertEq(epoll_wait(server->pool.epollfd, events, 4, 0), 0, "Nothing to report once the datagram was read");
+    AssertEq(knPoller_wait(server->pool.poller, events, 4, 0), 0, "Nothing to report once the datagram was read");
     AssertEq(knConnection_send(g_net.conns[0], "pong", 4), KNEVTOK, "The server should send a datagram");
-    AssertEq(epoll_wait(server->pool.epollfd, events, 4, 0), 0, "Sending should not make epoll wake the server up");
+    AssertEq(knPoller_wait(server->pool.poller, events, 4, 0), 0, "Sending should not make the poller wake the server up");
     AssertEq(recv(fd, buf, sizeof(buf), 0), (ssize_t)4, "The datagram should arrive");
     AssertEq(memcmp(buf, "pong", 4), 0, "and be the one that was sent");
     close(fd);

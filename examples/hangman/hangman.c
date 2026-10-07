@@ -53,11 +53,21 @@ void broadcast_board(GameState *game)
     }
 }
 
+// NOTE: One '_' per letter of the secret word, or the word can never be found
+void new_word(GameState *game)
+{
+    size_t len;
+
+    strcpy(game->secret_word, "FREE");
+    len = strlen(game->secret_word);
+    memset(game->display_word, '_', len);
+    game->display_word[len] = '\0';
+    game->attempts_left = MAX_ATTEMPTS;
+}
+
 void reset_game(GameState *game)
 {
-    strcpy(game->secret_word, "FREE");
-    strcpy(game->display_word, "_______");
-    game->attempts_left = MAX_ATTEMPTS;
+    new_word(game);
     broadcast_message(game, "\r\n\r\n*** NOUVELLE PARTIE ! ***\r\n");
     broadcast_board(game);
 }
@@ -169,20 +179,23 @@ int onDisconnectionCallback(knServer *server, knConnection *conn)
 
 int main(void)
 {
-    knServer *server = knServer_create(4242);
+    knServer *server = knServer_create(4242, knTCP);
     GameState game = {0};
-    
-    strcpy(game.secret_word, "FREE");
-    strcpy(game.display_word, "_______");
-    game.attempts_left = MAX_ATTEMPTS;
+
+    if (!server) {
+        printf("Impossible de demarrer le serveur sur le port 4242.\n");
+        return 84;
+    }
+    new_word(&game);
     game.player_id_counter = 1;
 
     knServer_setUserPtr(server, &game);
-    knServer_setLogging(server, true); // Si tu as une fonction de log
+    knServer_setLogOutput(server, stdout);
+    knServer_setLogLevel(server, knLogWarn);
 
-    knServer_onConnectionCallback(server, &onConnectionCallback);
-    knServer_onReadCallback(server, &onReadCallback);
-    knServer_onDisconnectionCallback(server, &onDisconnectionCallback);
+    knServer_setOnConnect(server, &onConnectionCallback);
+    knServer_setOnRead(server, &onReadCallback);
+    knServer_setOnDisconnect(server, &onDisconnectionCallback);
 
     printf("Serveur Pendu demarre sur le port 4242...\n");
 

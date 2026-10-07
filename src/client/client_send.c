@@ -7,13 +7,8 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/utils/rbuff/rbuff.h"
-#include <asm-generic/errno-base.h>
-#include <asm-generic/errno.h>
-#include <errno.h>
+#include "../platform/socket.h"
 #include <stddef.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include "kronknet/client/client.h"
 #include "client.h"
 
@@ -31,20 +26,20 @@ int knClient_sendServer(
     const uint8_t *byte_ptr = (const uint8_t *)data;
     if (client->flags & knUDP) {
         // A datagram is sent whole, now, or dropped when the socket is full (see knConnection_udpSendHook)
-        written = send(client->fd, data, size, MSG_NOSIGNAL);
-        if (written == -1 && errno != EAGAIN && errno != EWOULDBLOCK) {
+        written = knSocket_send(client->fd, data, size);
+        if (written == -1 && !knSocket_wouldBlock()) {
             return KNEVTKICK;
         }
         return KNEVTOK;
     }
     if (knRBuff_isEmpty(client->buff)) {
-        written = send(client->fd, data, size, MSG_NOSIGNAL);
+        written = knSocket_send(client->fd, data, size);
         if (written > 0) {
             if ((size_t)written == size) {
                 return KNEVTOK;
             }
         } else if (written == -1) {
-            if (errno != EAGAIN && errno != EWOULDBLOCK)  {
+            if (!knSocket_wouldBlock()) {
                 return KNEVTKICK;
             }
             written = 0;
@@ -57,7 +52,6 @@ int knClient_sendServer(
     if (knRBuff_push(client->buff, byte_ptr + written, remaining) == -1) {
         return KNEVTERR;
     }
-    
-    client->events |= POLLOUT;
+    // NOTE: knClient_runOnce waits for the socket to be writable as long as this buffer is not empty
     return KNEVTOK;
 }

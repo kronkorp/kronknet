@@ -107,3 +107,37 @@ jobs:
         run: ctest --test-dir build --output-on-failure
       - name: Cleaning
         run: rm -rf build
+
+  windows_msvc:
+    name: Windows build and tests (MSVC)
+    needs: [detect_build_system]
+    runs-on: windows-latest
+    if: ${{ needs.detect_build_system.outputs.has_cmake == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure project with CMake
+        run: cmake -S . -B build -DBUILD_TESTS=ON
+      - name: Build project with CMake
+        timeout-minutes: 5
+        run: cmake --build build --config Release --parallel
+      - name: Run tests
+        timeout-minutes: 3
+        run: ctest --test-dir build -C Release --output-on-failure
+
+  windows_mingw:
+    name: Windows build (MinGW, cross-compiled)
+    needs: [detect_build_system]
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect_build_system.outputs.has_cmake == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MinGW-w64
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+      - name: Configure project with CMake
+        run: |
+          cmake -S . -B build -DBUILD_TESTS=ON \
+            -DCMAKE_SYSTEM_NAME=Windows \
+            -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc
+      - name: Build project with CMake
+        timeout-minutes: 5
+        run: cmake --build build --parallel

@@ -8,16 +8,12 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/connection/connection.h"
 #include "kronknet/server/server.h"
-#include <fcntl.h>
+#include "../../platform/socket.h"
 #include <kronknet/macros/types.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include "arpa/inet.h"
 #include "kronknet/utils/monotonic.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include "../../server/server.h"
@@ -30,9 +26,8 @@ static void __knConnection_statics(
 {
     static size_t id = 0;
 
-    conn->addr_length = sizeof(conn->addr);
-    conn->fd = -1;
-    conn->epollfd = -1;
+    conn->fd = KN_INVALID_SOCKET;
+    conn->poller = NULL;
     conn->port = ntohs(conn->addr.sin_port);
     conn->id = id++;
     conn->last_data = monotonic();
