@@ -6,7 +6,8 @@
 */
 #ifndef KRONKNET_PLATFORM_POLLER_H
     #define KRONKNET_PLATFORM_POLLER_H
-    #include "socket.h"
+    // NOTE: Who uses the poller gets the KN_POLL* flags too
+    #include "socket.h"  // IWYU pragma: export
     #include <stdint.h>
 
 ///////////////////////////////////////////////////////////////////////////////
