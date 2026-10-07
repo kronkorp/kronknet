@@ -15,6 +15,7 @@
     #include "pool/pool.h"
     #include "kronknet/macros/types.h"
     #include "../utils/logger/logger.h"
+    #include "../platform/socket.h"
 
     #define KN_MAX_EVENTS 1024  //!< Max events returned by one epoll_wait
 

@@ -7,10 +7,8 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
 #include "kronknet/macros/errdef.h"
-#include <errno.h>
+#include "../platform/socket.h"
 #include <stdbool.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include "client.h"
 
 int knClient_receiveData(
@@ -22,7 +20,7 @@ int knClient_receiveData(
     if (!client) {
         return KNEVTARGS;
     }
-    ssize_t reads = recv(client->fd, kronkbuffer, KNBUFFSIZ, 0);
+    ssize_t reads = knSocket_recv(client->fd, kronkbuffer, KNBUFFSIZ);
     if (reads > 0) {
         knInfo(client->logger, "Received: %.*s", (int)reads, kronkbuffer);
         if (client->onRead) {
@@ -40,7 +38,7 @@ int knClient_receiveData(
         client->running = false;
         return KNEVTKICK;
     } else {
-        if (errno != EAGAIN && errno != EWOULDBLOCK) {
+        if (!knSocket_wouldBlock()) {
             knError(client->logger, "Connection lost (Internal Error)");
             client->running = false;
             return KNEVTKICK;

@@ -7,11 +7,9 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
 #include "kronknet/macros/errdef.h"
-#include <arpa/inet.h>
+#include "../../platform/socket.h"
 #include <stdlib.h>
 #include <stddef.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include "../client.h"
 #include "kronknet/macros/types.h"
 
@@ -24,6 +22,10 @@ knClient *knClient_create(
 
     client = calloc(1, sizeof(knClient));
     if (!client) {
+        return NULL;
+    }
+    if (knSocket_startup() != KNEVTOK) {
+        free(client);
         return NULL;
     }
     if (knClient_init(client, flags) != KNEVTOK) {

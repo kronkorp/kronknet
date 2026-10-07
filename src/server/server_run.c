@@ -14,8 +14,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/epoll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 #include "server.h"
 
 KN_HOT

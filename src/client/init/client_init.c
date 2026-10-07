@@ -7,13 +7,10 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
 #include "kronknet/macros/errdef.h"
-#include <arpa/inet.h>
-#include <netinet/in.h>
+#include "../../platform/socket.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
 #include "../client.h"
 #include "kronknet/macros/types.h"
 
@@ -26,8 +23,8 @@ static void __knClient_initStatic(
     client->onWrite = NULL;
     client->onDisconnect = NULL;
     client->running = true;
-    client->fd = -1;
-    client->events = POLLIN;
+    client->fd = KN_INVALID_SOCKET;
+    client->events = KN_POLLIN;
     client->logger = (knLoggerData){
         .log_level = knLogNone,
         .out = NULL,

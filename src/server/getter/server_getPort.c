@@ -8,8 +8,8 @@
 #include "kronknet/macros/types.h"
 #include "kronknet/server/server.h"
 #include <stdint.h>
-#include <netinet/in.h>
 #include "../server.h"
+#include "../../platform/socket.h"
 
 KN_API
 knPort knServer_getPort(

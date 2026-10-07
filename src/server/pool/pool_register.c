@@ -45,7 +45,7 @@ int knPool_registerFd(
         .data.ptr = conn,
     };
 
-    if (!pool || fd == -1) {
+    if (!pool || fd == KN_INVALID_SOCKET) {
         return KNEVTARGS;
     }
     new_count = pool->count + 1;
@@ -76,7 +76,7 @@ int knPool_modifyFd(
         .data.ptr = conn,
     };
 
-    if (!pool || fd == -1) {
+    if (!pool || fd == KN_INVALID_SOCKET) {
         return KNEVTARGS;
     }
     if (epoll_ctl(pool->epollfd, EPOLL_CTL_MOD, fd, &ev) == -1) {

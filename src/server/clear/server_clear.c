@@ -6,7 +6,7 @@
 */
 #include "kronknet/macros/types.h"
 #include "kronknet/server/server.h"
-#include <unistd.h>
+#include "../../platform/socket.h"
 #include "../pool/pool.h"
 #include "../server.h"
 #include "kronknet/utils/hashmap/hashmap.h"
@@ -18,9 +18,8 @@ void knServer_clear(
     if (!server) {
         return;
     }
-    if (server->fd != -1) {
-        close(server->fd);
-    }
+    knSocket_close(server->fd);
+    server->fd = KN_INVALID_SOCKET;
     if (server->onDestroyHook) {
         server->onDestroyHook(server);
     }

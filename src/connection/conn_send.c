@@ -10,9 +10,6 @@
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 
 KN_API
 int knConnection_send(

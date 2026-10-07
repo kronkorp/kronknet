@@ -12,10 +12,7 @@
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include <netinet/in.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <unistd.h>
+#include "../platform/socket.h"
 #include "client.h"
 
 static int __knClient_onPollout(
@@ -29,7 +26,7 @@ static int __knClient_onPollout(
 
     knInfo(client->logger, "Attempting to send some data from ring buffer");
     knRBuff_peek(client->buff, kronkbuffer, usage);
-    ssize_t sends = send(client->fd, kronkbuffer, usage, MSG_NOSIGNAL);
+    ssize_t sends = knSocket_send(client->fd, kronkbuffer, usage);
     if (sends > 0) {
         knRBuff_pop(client->buff, NULL, sends);
         knInfo(client->logger, "Sent %zu bytes, remaining: %zu bytes.", (size_t)sends, knRBuff_usage(client->buff));
@@ -51,28 +48,29 @@ int knClient_runOnce(
     ssize_t timeout
 )
 {
-    struct pollfd p;
+    uint32_t events;
+    uint32_t revents = 0;
     int status = 0;
 
     if (!client) {
         return KNEVTARGS;
     }
-    p = (struct pollfd){client->fd, client->events, 0};
+    events = client->events;
     if (!knRBuff_isEmpty(client->buff)) {
-        p.events |= POLLOUT;
+        events |= KN_POLLOUT;
     }
-    status = poll(&p, 1, timeout);
+    status = knSocket_poll(client->fd, events, (int)timeout, &revents);
     if (status == -1) {
         return KNEVTNET;
     }
-    if (p.revents & POLLIN) {
+    if (revents & KN_POLLIN) {
         knInfo(client->logger, "Data received");
         knClient_receiveData(client);
     }
-    if (p.revents & POLLOUT) {
+    if (revents & KN_POLLOUT) {
         __knClient_onPollout(client);
     }
-    if (p.revents & (POLLHUP | POLLERR | POLLNVAL)) {
+    if (revents & (KN_POLLHUP | KN_POLLERR)) {
         if (client->onDisconnect) {
             client->onDisconnect(client);
         }

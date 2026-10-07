@@ -8,8 +8,7 @@
     #define KRONKNET_POOL_H
     #include <stddef.h>
     #include <stdint.h>
-    #include <sys/socket.h>
-    #include <netinet/in.h>
+    #include "../../platform/socket.h"
     #include <stdbool.h>
 
 typedef struct kronknet_connection_s knConnection;
@@ -46,7 +45,7 @@ typedef struct kronknet_pool_s {
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_registerFd(knPool *pool, int fd, knConnection *conn, uint32_t events);
+int knPool_registerFd(knPool *pool, knSocket fd, knConnection *conn, uint32_t events);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -61,7 +60,7 @@ int knPool_registerFd(knPool *pool, int fd, knConnection *conn, uint32_t events)
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_modifyFd(knPool *pool, int fd, knConnection *conn, uint32_t events);
+int knPool_modifyFd(knPool *pool, knSocket fd, knConnection *conn, uint32_t events);
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -74,7 +73,7 @@ int knPool_modifyFd(knPool *pool, int fd, knConnection *conn, uint32_t events);
  * @return        0 on success, -1 otherwise
  */
 ///////////////////////////////////////////////////////////////////////////////
-int knPool_unregister(knPool *pool, int fd);
+int knPool_unregister(knPool *pool, knSocket fd);
 ///////////////////////////////////////////////////////////////////////////////
 
 

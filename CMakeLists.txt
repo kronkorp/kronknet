@@ -9,6 +9,23 @@ file(GLOB_RECURSE KRONKNET_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
 )
 
+# NOTE: What differs between platforms is written once per platform, in
+#       src/platform/<platform>/: only the ones of the target are built
+list(FILTER KRONKNET_SOURCES EXCLUDE REGEX "/src/platform/")
+
+if(WIN32)
+    set(KRONKNET_PLATFORMS win32)
+elseif(UNIX)
+    set(KRONKNET_PLATFORMS posix)
+else()
+    message(FATAL_ERROR "kronknet does not support ${CMAKE_SYSTEM_NAME}")
+endif()
+
+foreach(platform ${KRONKNET_PLATFORMS})
+    file(GLOB platform_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/${platform}/*.c")
+    list(APPEND KRONKNET_SOURCES ${platform_sources})
+endforeach()
+
 if(MSVC)
     # NOTE: No /O2 here: CMake gives it in Release, and it cannot go with the /RTC1 of Debug
     set(KRONKNET_C_FLAGS /W4)
@@ -36,6 +53,12 @@ function(kronknet_add_library target type)
     )
 
     target_compile_options(${target} PRIVATE ${KRONKNET_C_FLAGS})
+
+    if(WIN32)
+        # NOTE: Windows Vista (0x0600) at least, for WSAPoll, inet_ntop and inet_pton
+        target_compile_definitions(${target} PRIVATE WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
+        target_link_libraries(${target} PRIVATE ws2_32)
+    endif()
 endfunction()
 
 kronknet_add_library(kronknet-static STATIC)

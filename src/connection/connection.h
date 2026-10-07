@@ -11,9 +11,8 @@
     #include "kronknet/utils/rbuff/rbuff.h"
     #include <stdbool.h>
     #include <stddef.h>
-    #include <netinet/in.h>
+    #include "../platform/socket.h"
     #include <stdint.h>
-    #include <sys/socket.h>
 
 typedef int (*knConnection_sendHook)(knConnection *, const void *, size_t);
 
@@ -31,7 +30,6 @@ typedef struct kronknet_connection_s {
     knSocket              fd;                  //!< The fd of the client (or the server in UDP mode)
     knFlags               flags;               //!< The flags
     size_t                id;                  //!< The id of the connection ( !same as fd )
-    socklen_t             addr_length;         //!< The length of the addr
     struct sockaddr_in    addr;                //!< The actual addr
     knPort                port;                //!< The port using by the connection
     char                  ip[INET_ADDRSTRLEN]; //!< The well-formated ip adrr

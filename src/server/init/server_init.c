@@ -9,35 +9,25 @@
 #include "../pool/pool.h"
 #include "../server.h"
 #include "kronknet/macros/types.h"
-#include <arpa/inet.h>
 #include <kronknet/utils/hashmap/hashmap.h>
-#include <netinet/in.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/epoll.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include "../pool/pool.h"
+#include "../../platform/socket.h"
 #include "../hooks/tcp/tcp.h"
 #include "../hooks/udp/udp.h"
 
-static int __knServer_nonBlocking(
-    int fd
+// NOTE: Undo what knServer_init did so far: knServer_clear must not close the socket again
+static int __knServer_abort(
+    knServer *server,
+    int err
 )
 {
-    int flags;
-
-    flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
-        return KNEVTNET;
-    }
-    flags = flags | O_NONBLOCK;
-    if (fcntl(fd, F_SETFL, flags) == -1) {
-        return KNEVTNET;
-    }
-    return KNEVTOK;
+    knPool_clear(&server->pool);
+    knSocket_close(server->fd);
+    server->fd = KN_INVALID_SOCKET;
+    return err;
 }
 
 static int __knServer_bind(
@@ -45,15 +35,13 @@ static int __knServer_bind(
     knPort port
 )
 {
-    int opt = 1;
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
 
     server->addr.sin_family = AF_INET;
     server->addr.sin_port = htons(port);
     server->addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (setsockopt(server->fd, SOL_SOCKET, SO_REUSEADDR,
-        &opt, sizeof(opt)) == -1) {
+    if (knSocket_setReuseAddr(server->fd) != KNEVTOK) {
         return KNEVTNET;
     }
     if (bind(server->fd, (const struct sockaddr *)&server->addr,
@@ -77,6 +65,7 @@ static void __knServer_basics(
 {
     server->flags = flags;
     server->running = true;
+    server->fd = KN_INVALID_SOCKET;
     server->pool.epollfd = -1;
     server->onConnection = NULL;
     server->onWrite = NULL;
@@ -128,48 +117,36 @@ int knServer_init(
     if (flags & knTCP) type = SOCK_STREAM;
     else if (flags & knUDP) type = SOCK_DGRAM;
 
-    server->fd = socket(AF_INET, type, 0);
+    server->fd = knSocket_open(type);
 
-    if (server->fd == -1) {
-        return KNEVTNET;
-    }
-
-    if (__knServer_nonBlocking(server->fd) != KNEVTOK) {
-        close(server->fd);
+    if (server->fd == KN_INVALID_SOCKET) {
         return KNEVTNET;
     }
 
     if (__knServer_bind(server, port) != KNEVTOK) {
-        close(server->fd);
-        return KNEVTNET;
+        return __knServer_abort(server, KNEVTNET);
     }
 
     if (type == SOCK_STREAM) {
         if (listen(server->fd, SOMAXCONN) == -1) {
-            close(server->fd);
-            return KNEVTNET;
+            return __knServer_abort(server, KNEVTNET);
         }
     }
 
     if (knPool_init(&server->pool) != KNEVTOK) {
-        close(server->fd);
-        return KNEVTERR;
+        return __knServer_abort(server, KNEVTERR);
     }
 
     if (server->flags & knUDP) {
         server->on_udp.connections = knMap_create(knMap_basicHash, 8);
         if (!server->on_udp.connections) {
-            knPool_clear(&server->pool);
-            close(server->fd);
-            return KNEVTMEM;
+            return __knServer_abort(server, KNEVTMEM);
         }
     }
 
     // NOTE: The server is registered with a NULL connection (data.ptr)
     if (knPool_registerFd(&server->pool, server->fd, NULL, EPOLLIN) != KNEVTOK) {
-        knPool_clear(&server->pool);
-        close(server->fd);
-        return KNEVTNET;
+        return __knServer_abort(server, KNEVTNET);
     }
     return KNEVTOK;
 }

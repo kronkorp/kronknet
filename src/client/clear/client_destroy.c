@@ -8,6 +8,7 @@
 #include "kronknet/client/client.h"
 #include <stdlib.h>
 #include "../client.h"
+#include "../../platform/socket.h"
 
 KN_API
 void knClient_destroy(
@@ -19,4 +20,5 @@ void knClient_destroy(
     }
     knClient_clear(client);
     free(client);
+    knSocket_cleanup();
 }

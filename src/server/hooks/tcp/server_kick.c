@@ -39,7 +39,7 @@ void knServer_kickAtIndex(
     if (server->onDisconnect) {
         server->onDisconnect(server, conn);
     }
-    knInfo(server->logger, "Connection [%d]: Kicking...", conn->fd);
+    knInfo(server->logger, "Connection [%zu]: Kicking...", conn->id);
     // NOTE: Unregister before destroy, epoll needs the fd to be still open
     knPool_unregisterAtIndex(&server->pool, idx);
     knConnection_destroy(conn);

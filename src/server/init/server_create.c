@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "../server.h"
+#include "../../platform/socket.h"
 
 KN_API
 knServer *knServer_create(
@@ -21,6 +22,10 @@ knServer *knServer_create(
     knServer *server = calloc(1, sizeof(knServer));
 
     if (!server) {
+        return NULL;
+    }
+    if (knSocket_startup() != KNEVTOK) {
+        free(server);
         return NULL;
     }
     if (knServer_init(server, port, flags) != KNEVTOK) {

@@ -11,6 +11,7 @@
 #include "../../../connection/connection.h"
 #include "kronknet/utils/monotonic.h"
 #include "../../../server/server.h"
+#include "../../../platform/socket.h"
 
 int knServer_udpPollinHook(
     knServer* server,
@@ -18,11 +19,9 @@ int knServer_udpPollinHook(
 )
 {
     struct sockaddr_in addr = {0};
-    socklen_t addr_len = sizeof(addr);
     uint8_t buffer[KNBUFFSIZ] = {0};
     knConnection *conn = NULL;
-    ssize_t reads = recvfrom(server->fd, buffer, sizeof(buffer),
-        0, (struct sockaddr *)&addr, &addr_len);
+    ssize_t reads = knSocket_recvFrom(server->fd, buffer, sizeof(buffer), &addr);
 
     if (reads < 0) {
         return KNEVTOK;
