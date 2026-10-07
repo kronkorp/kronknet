@@ -50,10 +50,11 @@ static uint8_t pattern(size_t index)
 
 static int g_drained = 0;
 
-static void on_drained(knClient *client)
+static int on_drained(knClient *client)
 {
     (void)client;
     ++g_drained;
+    return KNEVTOK;
 }
 
 Test(tcp_client, create_has_an_out_buffer)
