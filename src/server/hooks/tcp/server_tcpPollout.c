@@ -5,7 +5,6 @@
 ** Server tcp pollout hook
 */
 #include <stddef.h>
-#include <sys/epoll.h>
 #include "kronknet/macros/errdef.h"
 #include "../../server.h"
 #include "../../../connection/connection.h"
@@ -27,7 +26,7 @@ int knServer_tcpPolloutHook(
         knRBuff_pop(conn->out_buff, NULL, sends);
         knInfo(server->logger, "Connection [%zu]: sent %zu bytes, remaining: %zu bytes.", conn->id, (size_t)sends, knRBuff_usage(conn->out_buff));
         if (knRBuff_isEmpty(conn->out_buff)) {
-            knConnection_setEvents(conn, EPOLLIN);
+            knConnection_setEvents(conn, KN_POLLIN);
             if (server->onWrite) {
                 server->onWrite(conn);
             }

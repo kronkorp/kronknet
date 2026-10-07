@@ -15,10 +15,12 @@ list(FILTER KRONKNET_SOURCES EXCLUDE REGEX "/src/platform/")
 
 if(WIN32)
     set(KRONKNET_PLATFORMS win32)
-elseif(UNIX)
-    set(KRONKNET_PLATFORMS posix)
+    # NOTE: wepoll gives epoll to Windows
+    list(APPEND KRONKNET_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/third_party/wepoll/wepoll.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(KRONKNET_PLATFORMS posix linux)
 else()
-    message(FATAL_ERROR "kronknet does not support ${CMAKE_SYSTEM_NAME}")
+    message(FATAL_ERROR "kronknet has no poller for ${CMAKE_SYSTEM_NAME} yet (Linux and Windows only)")
 endif()
 
 foreach(platform ${KRONKNET_PLATFORMS})
@@ -57,7 +59,13 @@ function(kronknet_add_library target type)
     if(WIN32)
         # NOTE: Windows Vista (0x0600) at least, for WSAPoll, inet_ntop and inet_pton
         target_compile_definitions(${target} PRIVATE WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
+        target_include_directories(${target} PRIVATE "${PROJECT_SOURCE_DIR}/third_party/wepoll")
         target_link_libraries(${target} PRIVATE ws2_32)
+    endif()
+
+    if(MINGW)
+        # NOTE: The printf of msvcrt.dll does not know %zu: MinGW has its own, C99 one
+        target_compile_definitions(${target} PRIVATE __USE_MINGW_ANSI_STDIO=1)
     endif()
 endfunction()
 

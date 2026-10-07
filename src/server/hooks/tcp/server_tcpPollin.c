@@ -6,7 +6,6 @@
 */
 #include "../../../platform/socket.h"
 #include <stddef.h>
-#include <sys/epoll.h>
 #include "kronknet/macros/errdef.h"
 #include "../../server.h"
 #include "../../../connection/connection.h"
@@ -25,7 +24,7 @@ static int __knServer_accept(
     if (!newConn)
         return KNEVTERR;
     knInfo(server->logger, "Connection [%zu] from %s:%d", newConn->id, newConn->ip, newConn->port);
-    if (knPool_registerFd(&server->pool, newConn->fd, newConn, EPOLLIN) != KNEVTOK) {
+    if (knPool_registerFd(&server->pool, newConn->fd, newConn, KN_POLLIN) != KNEVTOK) {
             knError(server->logger, "Connection [%zu]: failed to add to pool", newConn->id);
             knConnection_destroy(newConn);
             return KNEVTERR;

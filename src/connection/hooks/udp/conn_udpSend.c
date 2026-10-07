@@ -26,6 +26,6 @@ int knConnection_udpSendHook(
     if (written == -1 && !knSocket_wouldBlock()) {
         return KNEVTKICK;
     }
-    // (Nothing is kept, so there is nothing to wait for the socket to be writable for: EPOLLOUT is not armed)
+    // (Nothing is kept, so there is nothing to wait for the socket to be writable for: KN_POLLOUT is not armed)
     return KNEVTOK;
 }

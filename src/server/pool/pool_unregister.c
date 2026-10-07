@@ -2,7 +2,7 @@
 ** FREE PROJECT, 2026
 ** KRONKNET
 ** File description:
-** Unregister an fd for the server's epoll
+** Unregister a socket from the server's pool
 */
 #include "kronknet/macros/errdef.h"
 #include "kronknet/macros/types.h"
@@ -10,7 +10,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/epoll.h>
 #include "../../connection/connection.h"
 
 int knPool_unregister(
@@ -38,7 +37,7 @@ int knPool_unregisterAtIndex(
         return KNEVTERR;
     }
     if (pool->conns[index] && pool->conns[index]->fd != KN_INVALID_SOCKET) {
-        epoll_ctl(pool->epollfd, EPOLL_CTL_DEL, pool->conns[index]->fd, NULL);
+        knPoller_remove(pool->poller, pool->conns[index]->fd);
     }
     pool->conns[index] = pool->conns[pool->count - 1];
     pool->conns[pool->count - 1] = NULL;

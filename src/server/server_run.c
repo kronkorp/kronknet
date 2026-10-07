@@ -13,13 +13,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/epoll.h>
 #include "server.h"
+#include "../platform/poller.h"
 
 KN_HOT
 static int __knServer_processEvents(
     knServer *server,
-    const struct epoll_event *events,
+    const knPollEvent *events,
     int nfds
 )
 {
@@ -28,8 +28,8 @@ static int __knServer_processEvents(
 
     for (int i = 0; i < nfds; ++i) {
         // NOTE: NULL means the server socket
-        conn = events[i].data.ptr;
-        if (events[i].events & (EPOLLIN | EPOLLHUP | EPOLLERR) &&
+        conn = events[i].ptr;
+        if (events[i].events & (KN_POLLIN | KN_POLLHUP | KN_POLLERR) &&
             server->onPollinHook) {
             status = server->onPollinHook(server, conn);
             if (status == KNEVTKICK) {
@@ -39,7 +39,7 @@ static int __knServer_processEvents(
                 return KNEVTERR;
             }
         }
-        if (events[i].events & EPOLLOUT &&
+        if (events[i].events & KN_POLLOUT &&
             server->onPolloutHook &&
             server->onPolloutHook(server, conn) != KNEVTOK) {
             return KNEVTERR;
@@ -55,13 +55,13 @@ int knServer_runOnce(
     ssize_t timeoutMs
 )
 {
-    struct epoll_event events[KN_MAX_EVENTS];
+    knPollEvent events[KN_MAX_EVENTS];
     int nfds;
 
     if (!server) {
         return KNEVTARGS;
     }
-    nfds = epoll_wait(server->pool.epollfd, events, KN_MAX_EVENTS, (int)timeoutMs);
+    nfds = knPoller_wait(server->pool.poller, events, KN_MAX_EVENTS, (int)timeoutMs);
     if (nfds == -1) {
         return KNEVTNET;
     }

@@ -11,7 +11,7 @@
     #include "kronknet/utils/rbuff/rbuff.h"
     #include <stdbool.h>
     #include <stddef.h>
-    #include "../platform/socket.h"
+    #include "../platform/poller.h"
     #include <stdint.h>
 
 typedef int (*knConnection_sendHook)(knConnection *, const void *, size_t);
@@ -37,7 +37,7 @@ typedef struct kronknet_connection_s {
     void                 *user_ptr;            //!< The user datas (eg User struct ...)
     knRBuff              *out_buff;            //!< The out buffer    
     knConnection_sendHook sendHook;            //!< The send hook
-    int                   epollfd;             //!< The epoll fd of the server pool
+    knPoller             *poller;              //!< The poller of the server pool
 
 } knConnection;
 ///////////////////////////////////////////////////////////////////////////////

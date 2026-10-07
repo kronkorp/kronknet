@@ -13,7 +13,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/epoll.h>
 #include "../../platform/socket.h"
 #include "../hooks/tcp/tcp.h"
 #include "../hooks/udp/udp.h"
@@ -66,7 +65,7 @@ static void __knServer_basics(
     server->flags = flags;
     server->running = true;
     server->fd = KN_INVALID_SOCKET;
-    server->pool.epollfd = -1;
+    server->pool.poller = NULL;
     server->onConnection = NULL;
     server->onWrite = NULL;
     server->onRead = NULL;
@@ -145,7 +144,7 @@ int knServer_init(
     }
 
     // NOTE: The server is registered with a NULL connection (data.ptr)
-    if (knPool_registerFd(&server->pool, server->fd, NULL, EPOLLIN) != KNEVTOK) {
+    if (knPool_registerFd(&server->pool, server->fd, NULL, KN_POLLIN) != KNEVTOK) {
         return __knServer_abort(server, KNEVTNET);
     }
     return KNEVTOK;

@@ -11,7 +11,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/epoll.h>
 #include "../../connection/connection.h"
 
 static int __knPool_ensureCapacity(
@@ -40,10 +39,6 @@ int knPool_registerFd(
 )
 {
     size_t new_count = 0;
-    struct epoll_event ev = {
-        .events = events,
-        .data.ptr = conn,
-    };
 
     if (!pool || fd == KN_INVALID_SOCKET) {
         return KNEVTARGS;
@@ -53,12 +48,12 @@ int knPool_registerFd(
     if (err != KNEVTOK) {
         return err;
     }
-    if (epoll_ctl(pool->epollfd, EPOLL_CTL_ADD, fd, &ev) == -1) {
+    if (knPoller_add(pool->poller, fd, conn, events) != KNEVTOK) {
         return KNEVTNET;
     }
     pool->conns[pool->count] = conn;
     if (conn) {
-        conn->epollfd = pool->epollfd;
+        conn->poller = pool->poller;
     }
     pool->count = new_count;
     return KNEVTOK;
@@ -71,15 +66,10 @@ int knPool_modifyFd(
     uint32_t events
 )
 {
-    struct epoll_event ev = {
-        .events = events,
-        .data.ptr = conn,
-    };
-
     if (!pool || fd == KN_INVALID_SOCKET) {
         return KNEVTARGS;
     }
-    if (epoll_ctl(pool->epollfd, EPOLL_CTL_MOD, fd, &ev) == -1) {
+    if (knPoller_modify(pool->poller, fd, conn, events) != KNEVTOK) {
         return KNEVTNET;
     }
     return KNEVTOK;

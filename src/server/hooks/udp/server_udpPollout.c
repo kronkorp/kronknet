@@ -11,7 +11,6 @@
 #include "../../../platform/socket.h"
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/epoll.h>
 #include "kronknet/utils/hashmap/hashmap.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include "../../../connection/connection.h"
@@ -68,7 +67,7 @@ int knServer_udpPolloutHook(
     }
     knMap_foreach(server->on_udp.connections, &__pollout, &ctx);
     if (!ctx.packets_remaining) {
-        knPool_modifyFd(&server->pool, server->fd, NULL, EPOLLIN);
+        knPool_modifyFd(&server->pool, server->fd, NULL, KN_POLLIN);
     }
     return KNEVTOK;
 }

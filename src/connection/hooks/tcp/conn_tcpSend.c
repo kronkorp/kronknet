@@ -10,7 +10,6 @@
 #include "../../../platform/socket.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/epoll.h>
 
 KN_API
 int knConnection_tcpSendHook(
@@ -40,6 +39,6 @@ int knConnection_tcpSendHook(
     if (knRBuff_push(conn->out_buff, (const uint8_t *)data + written, remaining) == -1) {
         return KNEVTERR;
     }
-    knConnection_setEvents(conn, EPOLLOUT | EPOLLIN);
+    knConnection_setEvents(conn, KN_POLLOUT | KN_POLLIN);
     return KNEVTOK;
 }

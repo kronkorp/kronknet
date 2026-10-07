@@ -27,7 +27,7 @@ static void __knConnection_statics(
     static size_t id = 0;
 
     conn->fd = KN_INVALID_SOCKET;
-    conn->epollfd = -1;
+    conn->poller = NULL;
     conn->port = ntohs(conn->addr.sin_port);
     conn->id = id++;
     conn->last_data = monotonic();

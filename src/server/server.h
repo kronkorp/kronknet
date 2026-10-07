@@ -17,13 +17,13 @@
     #include "../utils/logger/logger.h"
     #include "../platform/socket.h"
 
-    #define KN_MAX_EVENTS 1024  //!< Max events returned by one epoll_wait
+    #define KN_MAX_EVENTS 1024  //!< Max events returned by one knPoller_wait
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Declararion of pollin hook
  *
- * @note  conn is the epoll data.ptr: NULL means the server socket.
+ * @note  conn is the knPollEvent.ptr: NULL means the server socket.
  *        conn does not serve in UDP mode
  * @return KNEVTKICK if conn has been kicked (and destroyed)
  */
@@ -65,7 +65,7 @@ typedef void (*knServer_onDestructionHook)(knServer *server);
 /**
  * @struct  server_s
  *
- * @brief   Server structure, containing necessary datas: epoll pool, addr, ...
+ * @brief   Server structure, containing necessary datas: pool, addr, ...
  */
 ///////////////////////////////////////////////////////////////////////////////
 typedef struct kronknet_server_s {
@@ -74,7 +74,7 @@ typedef struct kronknet_server_s {
     knBool                  running;              //!< Is the server running
     knSocket                fd;                   //!< The fd of the server socket
     struct sockaddr_in      addr;                 //!< The address of the server
-    knPool                  pool;                 //!< The epoll pool of fds to look on
+    knPool                  pool;                 //!< The pool of sockets to look on
     void*                   user_ptr;             //!< Data like a struct given by the user
 
     knServer_OnConnect_t    onConnection;         //!< onConnection callback

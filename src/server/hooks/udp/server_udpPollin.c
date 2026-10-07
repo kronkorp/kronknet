@@ -33,7 +33,7 @@ int knServer_udpPollinHook(
         if (!conn)
             return KNEVTMEM;
         conn->fd = server->fd;
-        conn->epollfd = server->pool.epollfd;
+        conn->poller = server->pool.poller;
         if (knMap_insert(server->on_udp.connections, key,
             conn, (knMapDeleter)&knConnection_destroy) == -1)
             return KNEVTERR;
