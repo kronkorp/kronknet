@@ -7,8 +7,6 @@
 #include "../../connection.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/utils/rbuff/rbuff.h"
-#include <asm-generic/errno-base.h>
-#include <asm-generic/errno.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -41,7 +39,7 @@ int knConnection_tcpSendHook(
     if (knRBuff_remaining(conn->out_buff) < remaining) {
         return KNEVTKICK;
     }
-    if (knRBuff_push(conn->out_buff, data + written, remaining) == -1) {
+    if (knRBuff_push(conn->out_buff, (const uint8_t *)data + written, remaining) == -1) {
         return KNEVTERR;
     }
     knConnection_setEvents(conn, EPOLLOUT | EPOLLIN);

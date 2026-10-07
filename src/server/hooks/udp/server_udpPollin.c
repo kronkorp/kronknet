@@ -17,7 +17,7 @@ int knServer_udpPollinHook(
     knConnection *evtconn KN_UNUSED
 )
 {
-    struct sockaddr_in addr = {};
+    struct sockaddr_in addr = {0};
     socklen_t addr_len = sizeof(addr);
     uint8_t buffer[KNBUFFSIZ] = {0};
     knConnection *conn = NULL;

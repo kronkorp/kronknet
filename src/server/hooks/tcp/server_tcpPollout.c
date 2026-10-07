@@ -16,7 +16,7 @@ int knServer_tcpPolloutHook(
     knConnection *conn
 )
 {
-    uint8_t tmp[KNBUFFSIZ] = {};
+    uint8_t tmp[KNBUFFSIZ] = {0};
     size_t usage = knRBuff_usage(conn->out_buff);
 
     knInfo(server->logger, "Connection [%d]: Attempting to send some data", conn->id);

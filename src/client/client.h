@@ -33,10 +33,6 @@ typedef struct kronknet_client_s {
     knClient_OnWrite_t      onWrite;       //!< The callback when the client has drained his internal buffer
     knClient_OnDisconnect_t onDisconnect;  //!< The callback when the client disconnect
     knLoggerData            logger;        //!< The logger context
-    union {
-        struct {} on_tcp;
-        struct {} on_udp;
-    };
 
 } knClient;
 ///////////////////////////////////////////////////////////////////////////////

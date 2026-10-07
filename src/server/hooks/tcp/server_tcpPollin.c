@@ -4,7 +4,6 @@
 ** File description:
 ** Server tcp pollin hook
 */
-#include <asm-generic/errno-base.h>
 #include <errno.h>
 #include <stddef.h>
 #include <sys/epoll.h>

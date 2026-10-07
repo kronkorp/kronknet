@@ -33,7 +33,7 @@ static void __pollout(
     knConnection *conn = (knConnection *)value;
     knPolloutContext *ctx = (knPolloutContext *)arg;
     knServer* server = ctx->server;
-    uint8_t tmp[KNBUFFSIZ] = {};
+    uint8_t tmp[KNBUFFSIZ] = {0};
     size_t usage = knRBuff_usage(conn->out_buff);
 
     if (usage == 0)

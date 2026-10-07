@@ -34,7 +34,7 @@ int knPool_unregisterAtIndex(
     size_t index
 )
 {
-    if (!pool || index == -1UL || index >= pool->count) {
+    if (!pool || index == (size_t)-1 || index >= pool->count) {
         return KNEVTERR;
     }
     if (pool->conns[index] && pool->conns[index]->fd != -1) {

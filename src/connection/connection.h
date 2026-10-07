@@ -40,10 +40,6 @@ typedef struct kronknet_connection_s {
     knRBuff              *out_buff;            //!< The out buffer    
     knConnection_sendHook sendHook;            //!< The send hook
     int                   epollfd;             //!< The epoll fd of the server pool
-    union {
-        struct {} on_udp;  //!< On UDP datas
-        struct {} on_tcp;  //!< On tcp datas
-    };
 
 } knConnection;
 ///////////////////////////////////////////////////////////////////////////////

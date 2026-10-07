@@ -88,7 +88,6 @@ typedef struct kronknet_server_s {
 
     union {
 
-        struct {} on_tcp;  //!< Specific on TCP (maybe later were gonna add smth)
         struct {
 
             knMap* connections;  //!< The hashmap that contains knConnections

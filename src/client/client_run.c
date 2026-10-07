@@ -22,7 +22,7 @@ static int __knClient_onPollout(
     knClient *client
 )
 {
-    uint8_t kronkbuffer[KNBUFFSIZ] = {};
+    uint8_t kronkbuffer[KNBUFFSIZ] = {0};
     size_t usage = knRBuff_usage(client->buff);
 
     if (usage == 0) return KNEVTOK;
