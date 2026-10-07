@@ -5,47 +5,91 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     message(FATAL_ERROR "Les builds dans le dossier source sont interdits. Créez un dossier de build (ex: 'build/').")
 endif()
 
-file(GLOB_RECURSE KRONKNET_SOURCES 
+file(GLOB_RECURSE KRONKNET_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
 )
 
-add_library(kronknet-obj OBJECT ${KRONKNET_SOURCES})
+# NOTE: What differs between platforms is written once per platform, in
+#       src/platform/<platform>/: only the ones of the target are built
+list(FILTER KRONKNET_SOURCES EXCLUDE REGEX "/src/platform/")
 
-set_target_properties(kronknet-obj PROPERTIES
-    C_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN ON
-    POSITION_INDEPENDENT_CODE ON
+if(WIN32)
+    set(KRONKNET_PLATFORMS win32)
+    # NOTE: wepoll gives epoll to Windows
+    list(APPEND KRONKNET_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/third_party/wepoll/wepoll.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(KRONKNET_PLATFORMS posix linux)
+else()
+    message(FATAL_ERROR "kronknet has no poller for ${CMAKE_SYSTEM_NAME} yet (Linux and Windows only)")
+endif()
+
+foreach(platform ${KRONKNET_PLATFORMS})
+    file(GLOB platform_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/${platform}/*.c")
+    list(APPEND KRONKNET_SOURCES ${platform_sources})
+endforeach()
+
+if(MSVC)
+    # NOTE: No /O2 here: CMake gives it in Release, and it cannot go with the /RTC1 of Debug
+    set(KRONKNET_C_FLAGS /W4)
+else()
+    set(KRONKNET_C_FLAGS -Wall -Wextra -O3)
+endif()
+
+# NOTE: The static and the shared library are compiled each on their own: on Windows the DLL
+#       exports its API (KRONKNET_BUILD_DLL), so their objects cannot be shared
+function(kronknet_add_library target type)
+    add_library(${target} ${type} ${KRONKNET_SOURCES})
+
+    set_target_properties(${target} PROPERTIES
+        OUTPUT_NAME kronknet
+        C_STANDARD 11
+        C_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN ON
+        POSITION_INDEPENDENT_CODE ON
+    )
+
+    target_include_directories(${target}
+        PUBLIC
+            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>
+    )
+
+    target_compile_options(${target} PRIVATE ${KRONKNET_C_FLAGS})
+
+    if(WIN32)
+        # NOTE: Windows Vista (0x0600) at least, for WSAPoll, inet_ntop and inet_pton
+        target_compile_definitions(${target} PRIVATE WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
+        target_include_directories(${target} PRIVATE "${PROJECT_SOURCE_DIR}/third_party/wepoll")
+        target_link_libraries(${target} PRIVATE ws2_32)
+    endif()
+
+    if(MINGW)
+        # NOTE: The printf of msvcrt.dll does not know %zu: MinGW has its own, C99 one
+        target_compile_definitions(${target} PRIVATE __USE_MINGW_ANSI_STDIO=1)
+    endif()
+endfunction()
+
+kronknet_add_library(kronknet-static STATIC)
+kronknet_add_library(kronknet-shared SHARED)
+
+target_compile_definitions(kronknet-shared
+    PRIVATE KRONKNET_BUILD_DLL
+    INTERFACE KRONKNET_USE_DLL
 )
 
-target_include_directories(kronknet-obj
-    PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
-
-target_compile_options(kronknet-obj PRIVATE
-    -Wall
-    -Wextra
-    -O3
-)
-
-add_library(kronknet-static STATIC $<TARGET_OBJECTS:kronknet-obj>)
-target_link_libraries(kronknet-static PUBLIC kronknet-obj) 
-
-add_library(kronknet-shared SHARED $<TARGET_OBJECTS:kronknet-obj>)
-target_link_libraries(kronknet-shared PUBLIC kronknet-obj)
-target_compile_definitions(kronknet-shared PRIVATE KRONKNET_BUILD_DLL)
+if(MSVC)
+    # NOTE: The import library of the DLL is already kronknet.lib
+    set_target_properties(kronknet-static PROPERTIES OUTPUT_NAME kronknet_static)
+endif()
 
 add_library(kronknet ALIAS kronknet-static)
-
-set_target_properties(kronknet-static PROPERTIES OUTPUT_NAME kronknet)
-set_target_properties(kronknet-shared PROPERTIES OUTPUT_NAME kronknet)
 
 include(GNUInstallDirs)
 
 install(TARGETS kronknet-static kronknet-shared
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/kronknet

@@ -9,7 +9,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include "hashmap.h"
 
 KN_API

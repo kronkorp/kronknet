@@ -8,7 +8,6 @@
 #include "kronknet/callback/callback.h"
 #include "kronknet/utils/hashmap/hashmap.h"
 #include <stdint.h>
-#include <sys/types.h>
 #include "../../../connection/connection.h"
 #include "kronknet/utils/monotonic.h"
 

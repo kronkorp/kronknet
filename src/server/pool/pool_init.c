@@ -8,8 +8,6 @@
 #include "kronknet/macros/errdef.h"
 #include "pool.h"
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/epoll.h>
 
 int knPool_init(
     knPool *pool
@@ -25,8 +23,8 @@ int knPool_init(
         return KNEVTMEM;
     }
     pool->conns[0] = NULL;
-    pool->epollfd = epoll_create1(EPOLL_CLOEXEC);
-    if (pool->epollfd == -1) {
+    pool->poller = knPoller_create();
+    if (!pool->poller) {
         free(pool->conns);
         pool->conns = NULL;
         return KNEVTNET;

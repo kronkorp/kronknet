@@ -7,14 +7,9 @@
 #include "../../connection.h"
 #include "kronknet/macros/errdef.h"
 #include "kronknet/utils/rbuff/rbuff.h"
-#include <asm-generic/errno-base.h>
-#include <asm-generic/errno.h>
-#include <errno.h>
+#include "../../../platform/socket.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/epoll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 
 KN_API
 int knConnection_tcpSendHook(
@@ -25,13 +20,13 @@ int knConnection_tcpSendHook(
 {
     ssize_t written = 0;
     if (knRBuff_isEmpty(conn->out_buff)) {
-        written = send(conn->fd, data, size, MSG_NOSIGNAL);
+        written = knSocket_send(conn->fd, data, size);
         if (written > 0) {
             if ((size_t)written == size) {
                 return KNEVTOK;
             }
         } else if (written == -1) {
-            if (errno != EAGAIN && errno != EWOULDBLOCK) {
+            if (!knSocket_wouldBlock()) {
                 return KNEVTKICK;
             }
             written = 0;
@@ -41,9 +36,9 @@ int knConnection_tcpSendHook(
     if (knRBuff_remaining(conn->out_buff) < remaining) {
         return KNEVTKICK;
     }
-    if (knRBuff_push(conn->out_buff, data + written, remaining) == -1) {
+    if (knRBuff_push(conn->out_buff, (const uint8_t *)data + written, remaining) == -1) {
         return KNEVTERR;
     }
-    knConnection_setEvents(conn, EPOLLOUT | EPOLLIN);
+    knConnection_setEvents(conn, KN_POLLOUT | KN_POLLIN);
     return KNEVTOK;
 }

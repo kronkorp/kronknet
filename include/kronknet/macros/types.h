@@ -32,14 +32,34 @@
 
     ///////////////////////////////////////////////////////////////////////////
     /**
-     * @brief fd definition
+     * @brief Socket definition
+     *
+     * @note    On Windows a socket is a SOCKET (a UINT_PTR), and an invalid one
+     *          is INVALID_SOCKET, not -1. Spelled without <winsock2.h>, which
+     *          has no business in the headers of who uses kronknet
     */
     ///////////////////////////////////////////////////////////////////////////
     #ifdef _WIN32
-        #define knSocket SOCKET
+        typedef uintptr_t knSocket;
+        #define KN_INVALID_SOCKET (~(knSocket)0)
     #else
-        #define knSocket int
+        typedef int knSocket;
+        #define KN_INVALID_SOCKET (-1)
     #endif /* _WIN32 */
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    /**
+     * @brief ssize_t, which MSVC does not have (POSIX and MinGW do)
+     */
+    ///////////////////////////////////////////////////////////////////////////
+    #if defined(_MSC_VER) && !defined(_SSIZE_T_DEFINED)
+        typedef intptr_t ssize_t;
+        #define _SSIZE_T_DEFINED
+    #elif !defined(_MSC_VER)
+        #include <sys/types.h>
+    #endif /* _MSC_VER */
     ///////////////////////////////////////////////////////////////////////////
 
 

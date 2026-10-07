@@ -6,18 +6,17 @@
 */
 #pragma once
 #include "kronknet/macros/optimization.h"
-#include <time.h>
 #include <stdint.h>
 
 typedef uint64_t timestamp;
 
-KN_HOT
-static inline timestamp monotonic(void)
-{
-    struct timespec ts;
-
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) == -1) {
-        return 0;
-    }
-    return (uint64_t)(ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
-}
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief   Get the time in ms from a monotonic clock
+ *
+ * @note    Only the difference between two of them means something
+ *
+ * @return  The time in ms, or 0 on error
+ */
+///////////////////////////////////////////////////////////////////////////////
+KN_API KN_HOT timestamp monotonic(void);

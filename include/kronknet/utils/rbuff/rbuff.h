@@ -9,7 +9,6 @@
     #include "kronknet/macros/optimization.h"
     #include "kronknet/macros/types.h"
     #include <stddef.h>
-    #include <sys/types.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 /**

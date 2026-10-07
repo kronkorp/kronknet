@@ -9,7 +9,7 @@
 #include "kronknet/macros/types.h"
 #include "kronknet/utils/rbuff/rbuff.h"
 #include <stdlib.h>
-#include <unistd.h>
+#include "../../platform/socket.h"
 
 void knConnection_destroy(
     knConnection *conn
@@ -18,9 +18,9 @@ void knConnection_destroy(
     if (!conn) {
         return;
     }
-    if ((conn->flags & knTCP) && conn->fd != -1) {
-        close(conn->fd);
-        conn->fd = -1;
+    if (conn->flags & knTCP) {
+        knSocket_close(conn->fd);
+        conn->fd = KN_INVALID_SOCKET;
     }
     if (conn->out_buff) {
         knRBuff_destroy(conn->out_buff);

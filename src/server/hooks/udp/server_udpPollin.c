@@ -11,18 +11,17 @@
 #include "../../../connection/connection.h"
 #include "kronknet/utils/monotonic.h"
 #include "../../../server/server.h"
+#include "../../../platform/socket.h"
 
 int knServer_udpPollinHook(
     knServer* server,
     knConnection *evtconn KN_UNUSED
 )
 {
-    struct sockaddr_in addr = {};
-    socklen_t addr_len = sizeof(addr);
+    struct sockaddr_in addr = {0};
     uint8_t buffer[KNBUFFSIZ] = {0};
     knConnection *conn = NULL;
-    ssize_t reads = recvfrom(server->fd, buffer, sizeof(buffer),
-        0, (struct sockaddr *)&addr, &addr_len);
+    ssize_t reads = knSocket_recvFrom(server->fd, buffer, sizeof(buffer), &addr);
 
     if (reads < 0) {
         return KNEVTOK;
@@ -34,7 +33,7 @@ int knServer_udpPollinHook(
         if (!conn)
             return KNEVTMEM;
         conn->fd = server->fd;
-        conn->epollfd = server->pool.epollfd;
+        conn->poller = server->pool.poller;
         if (knMap_insert(server->on_udp.connections, key,
             conn, (knMapDeleter)&knConnection_destroy) == -1)
             return KNEVTERR;

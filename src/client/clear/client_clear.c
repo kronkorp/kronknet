@@ -6,10 +6,8 @@
 */
 #include "kronknet/callback/callback.h"
 #include "kronknet/client/client.h"
-#include <arpa/inet.h>
+#include "../../platform/socket.h"
 #include <stddef.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include "../client.h"
 
 void knClient_clear(
@@ -19,10 +17,8 @@ void knClient_clear(
     if (!client) {
         return;
     }
-    if (client->fd != -1) {
-        close(client->fd);
-        client->fd = -1;
-    }
+    knSocket_close(client->fd);
+    client->fd = KN_INVALID_SOCKET;
     knRBuff_destroy(client->buff);
     client->buff = NULL;
 }

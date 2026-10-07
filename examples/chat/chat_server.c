@@ -73,6 +73,10 @@ static int __disconnectCb(
     for (size_t i = 0; i < data->usrcount; ++i) {
         if (data->users[i].socket == connection) {
             data->users[i] = data->users[--data->usrcount];
+            // NOTE: The last user took this place: its connection must point to it
+            if (i < data->usrcount) {
+                knConnection_setUserPtr(data->users[i].socket, &data->users[i]);
+            }
             break;
         }
     }
@@ -93,7 +97,12 @@ static int __readCb(
         knConnection_getIp(connection),
         knConnection_getPort(connection)
     );
-    strncpy(user->lastmsg, (char *)data, length);
+    // NOTE: Keep what fits, as a string
+    if (length >= MAXMSG) {
+        length = MAXMSG - 1;
+    }
+    memcpy(user->lastmsg, data, length);
+    user->lastmsg[length] = '\0';
     user->hasmsg = true;
     return KNEVTOK;
 }
@@ -106,7 +115,7 @@ int main(
     // NOTE: Create context
     struct ctx context = {
         .server = NULL,
-        .users = {0},
+        .users = {{0}},
         .usrcount = 0,
     };
     if (argc < 2) {
@@ -144,7 +153,7 @@ int main(
                 if (context.users[j].socket == context.users[i].socket) continue;
                 knConnection_send(context.users[j].socket, context.users[i].lastmsg, strlen(context.users[i].lastmsg));
             }
-            context.users->hasmsg = false;
+            context.users[i].hasmsg = false;
         }
     }
     // NOTE: Destroy server
