@@ -97,7 +97,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="structkronknet__logger__data__s.html">   13</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structkronknet__logger__data__s.html">kronknet_logger_data_s</a> {</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    FILE *out;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">bool</span> log_level;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    knLogLevel log_level;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>} <a class="code hl_struct" href="structkronknet__logger__data__s.html">knLoggerData</a>;</div>
 </div>
@@ -105,19 +105,19 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">void</span> knLogger_log(<a class="code hl_struct" href="structkronknet__logger__data__s.html">knLoggerData</a> *data, knLogLevel _type, <span class="keyword">const</span> <span class="keywordtype">char</span> *_file, <span class="keywordtype">int</span> _line, <span class="keyword">const</span> <span class="keywordtype">char</span> * restrict _fmt, ...);</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#ifndef KNDEBUG</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">    #define knTrace(data, fmt, ...) knLogger_log(&amp;data, knLogTrace, NULL, 0, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">    #define knDebug(data, fmt, ...) knLogger_log(&amp;data, knLogDebug, NULL, 0, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">    #define knInfo(data, fmt, ...) knLogger_log(&amp;data, knLogInfo,  NULL, 0, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">    #define knWarn(data, fmt, ...) knLogger_log(&amp;data, knLogWarn,  NULL, 0, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">    #define knError(data, fmt, ...) knLogger_log(&amp;data, knLogError, NULL, 0, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">    #define knFatal(data, fmt, ...) knLogger_log(&amp;data, knLogFatal, NULL, 0, fmt, ##__VA_ARGS__)</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">    #define knTrace(data, ...) knLogger_log(&amp;data, knLogTrace, NULL, 0, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">    #define knDebug(data, ...) knLogger_log(&amp;data, knLogDebug, NULL, 0, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">    #define knInfo(data, ...) knLogger_log(&amp;data, knLogInfo,  NULL, 0, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">    #define knWarn(data, ...) knLogger_log(&amp;data, knLogWarn,  NULL, 0, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">    #define knError(data, ...) knLogger_log(&amp;data, knLogError, NULL, 0, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">    #define knFatal(data, ...) knLogger_log(&amp;data, knLogFatal, NULL, 0, __VA_ARGS__)</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">    #define knTrace(data, fmt, ...) knLogger_log(&amp;data, knLogTrace, __FILE__, __LINE__, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">    #define knDebug(data, fmt, ...) knLogger_log(&amp;data, knLogDebug, __FILE__, __LINE__, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">    #define knInfo(data, fmt, ...) knLogger_log(&amp;data, knLogInfo,  __FILE__, __LINE__, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">    #define knWarn(data, fmt, ...) knLogger_log(&amp;data, knLogWarn,  __FILE__, __LINE__, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">    #define knError(data, fmt, ...) knLogger_log(&amp;data, knLogError, __FILE__, __LINE__, fmt, ##__VA_ARGS__)</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">    #define knFatal(data, fmt, ...) knLogger_log(&amp;data, knLogFatal, __FILE__, __LINE__, fmt, ##__VA_ARGS__)</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">    #define knTrace(data, ...) knLogger_log(&amp;data, knLogTrace, __FILE__, __LINE__, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">    #define knDebug(data, ...) knLogger_log(&amp;data, knLogDebug, __FILE__, __LINE__, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">    #define knInfo(data, ...) knLogger_log(&amp;data, knLogInfo,  __FILE__, __LINE__, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">    #define knWarn(data, ...) knLogger_log(&amp;data, knLogWarn,  __FILE__, __LINE__, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">    #define knError(data, ...) knLogger_log(&amp;data, knLogError, __FILE__, __LINE__, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">    #define knFatal(data, ...) knLogger_log(&amp;data, knLogFatal, __FILE__, __LINE__, __VA_ARGS__)</span></div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif </span><span class="comment">/* KNDEBUG */</span><span class="preprocessor"></span></div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#endif </span><span class="comment">/* KRONKNET_LOGGER_H */</span><span class="preprocessor"></span></div>

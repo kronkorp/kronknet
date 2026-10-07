@@ -116,10 +116,10 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>user_ptr</b></td></
 <a class="el" href="structkronknet__ring__buffer__s.html">knRBuff</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>buff</b></td></tr>
 <tr class="memdesc:a8fee3b162203bfdef48819a3b85ba672"><td class="mdescLeft">&#160;</td><td class="mdescRight">The out buffer (when send is not possible) <br /></td></tr>
 <tr class="separator:a8fee3b162203bfdef48819a3b85ba672"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8892cac094316c4d48d0e68139f5798f" id="r_a8892cac094316c4d48d0e68139f5798f"><td class="memItemLeft" align="right" valign="top"><a id="a8892cac094316c4d48d0e68139f5798f" name="a8892cac094316c4d48d0e68139f5798f"></a>
-short&#160;</td><td class="memItemRight" valign="bottom"><b>events</b></td></tr>
-<tr class="memdesc:a8892cac094316c4d48d0e68139f5798f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The events. <br /></td></tr>
-<tr class="separator:a8892cac094316c4d48d0e68139f5798f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bd017c953d1a93de7d9e95330f0b420" id="r_a4bd017c953d1a93de7d9e95330f0b420"><td class="memItemLeft" align="right" valign="top"><a id="a4bd017c953d1a93de7d9e95330f0b420" name="a4bd017c953d1a93de7d9e95330f0b420"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>events</b></td></tr>
+<tr class="memdesc:a4bd017c953d1a93de7d9e95330f0b420"><td class="mdescLeft">&#160;</td><td class="mdescRight">The events (KN_POLL*) <br /></td></tr>
+<tr class="separator:a4bd017c953d1a93de7d9e95330f0b420"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fdecf0bc7e8bdd65c3050a9492756d4" id="r_a5fdecf0bc7e8bdd65c3050a9492756d4"><td class="memItemLeft" align="right" valign="top"><a id="a5fdecf0bc7e8bdd65c3050a9492756d4" name="a5fdecf0bc7e8bdd65c3050a9492756d4"></a>
 struct sockaddr_in&#160;</td><td class="memItemRight" valign="bottom"><b>addr</b></td></tr>
 <tr class="memdesc:a5fdecf0bc7e8bdd65c3050a9492756d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The address of the client. <br /></td></tr>
@@ -144,21 +144,6 @@ knClient_OnDisconnect_t&#160;</td><td class="memItemRight" valign="bottom"><b>on
 <a class="el" href="structkronknet__logger__data__s.html">knLoggerData</a>&#160;</td><td class="memItemRight" valign="bottom"><b>logger</b></td></tr>
 <tr class="memdesc:ae15b72674fc87508b7fd046d7316f55d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The logger context. <br /></td></tr>
 <tr class="separator:ae15b72674fc87508b7fd046d7316f55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3964869f5059ab6645b86fb0a2dd4806" id="r_a3964869f5059ab6645b86fb0a2dd4806"><td class="memItemLeft" ><a id="a3964869f5059ab6645b86fb0a2dd4806" name="a3964869f5059ab6645b86fb0a2dd4806"></a>
-union {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cb37ab77b1660f349b19acea81fca81" id="r_a4cb37ab77b1660f349b19acea81fca81"><td class="memItemLeft" >
-&#160;&#160;&#160;struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a07325dfdf6e8fdc415f864bfd5bed453"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cb37ab77b1660f349b19acea81fca81" id="r_a4cb37ab77b1660f349b19acea81fca81"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<b>on_tcp</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a4cb37ab77b1660f349b19acea81fca81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abde8855d5bb30ef2bb1ac93f1fc398f4" id="r_abde8855d5bb30ef2bb1ac93f1fc398f4"><td class="memItemLeft" >
-&#160;&#160;&#160;struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a438b3a48c40130395c8c9ab182f9c8d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abde8855d5bb30ef2bb1ac93f1fc398f4" id="r_abde8855d5bb30ef2bb1ac93f1fc398f4"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<b>on_udp</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:abde8855d5bb30ef2bb1ac93f1fc398f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3964869f5059ab6645b86fb0a2dd4806" id="r_a3964869f5059ab6645b86fb0a2dd4806"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom">&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a3964869f5059ab6645b86fb0a2dd4806"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Client structure, containing necessary data to the client: fd, data. </p>

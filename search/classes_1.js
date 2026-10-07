@@ -8,7 +8,9 @@ var searchData=
   ['kronknet_5fhashmap_5fnode_5fs_5',['kronknet_hashmap_node_s',['../structkronknet__hashmap__node__s.html',1,'']]],
   ['kronknet_5fhashmap_5fs_6',['kronknet_hashmap_s',['../structkronknet__hashmap__s.html',1,'']]],
   ['kronknet_5flogger_5fdata_5fs_7',['kronknet_logger_data_s',['../structkronknet__logger__data__s.html',1,'']]],
-  ['kronknet_5fpool_5fs_8',['kronknet_pool_s',['../structkronknet__pool__s.html',1,'']]],
-  ['kronknet_5fring_5fbuffer_5fs_9',['kronknet_ring_buffer_s',['../structkronknet__ring__buffer__s.html',1,'']]],
-  ['kronknet_5fserver_5fs_10',['kronknet_server_s',['../structkronknet__server__s.html',1,'']]]
+  ['kronknet_5fpoll_5fevent_5fs_8',['kronknet_poll_event_s',['../structkronknet__poll__event__s.html',1,'']]],
+  ['kronknet_5fpoller_5fs_9',['kronknet_poller_s',['../structkronknet__poller__s.html',1,'']]],
+  ['kronknet_5fpool_5fs_10',['kronknet_pool_s',['../structkronknet__pool__s.html',1,'']]],
+  ['kronknet_5fring_5fbuffer_5fs_11',['kronknet_ring_buffer_s',['../structkronknet__ring__buffer__s.html',1,'']]],
+  ['kronknet_5fserver_5fs_12',['kronknet_server_s',['../structkronknet__server__s.html',1,'']]]
 ];

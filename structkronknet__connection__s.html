@@ -80,10 +80,12 @@ Collaboration diagram for kronknet_connection_s:</div>
 <div class="dyncontent">
 <div class="center"><img src="structkronknet__connection__s__coll__graph.png" border="0" usemap="#akronknet__connection__s_coll__map" alt="Collaboration graph"/></div>
 <map name="akronknet__connection__s_coll__map" id="akronknet__connection__s_coll__map">
-<area shape="rect" title=" " alt="" coords="5,93,177,119"/>
-<area shape="poly" title=" " alt="" coords="192,98,204,106,196,113,178,116,177,111,194,108,199,106,190,103"/>
-<area shape="rect" href="structkronknet__ring__buffer__s.html" title=" " alt="" coords="6,5,177,31"/>
-<area shape="poly" title=" " alt="" coords="94,45,94,93,89,93,89,45"/>
+<area shape="rect" title=" " alt="" coords="94,93,266,119"/>
+<area shape="poly" title=" " alt="" coords="281,98,293,106,284,113,267,116,266,111,282,108,287,106,278,103"/>
+<area shape="rect" href="structkronknet__ring__buffer__s.html" title=" " alt="" coords="5,5,176,31"/>
+<area shape="poly" title=" " alt="" coords="114,38,169,91,166,95,111,42"/>
+<area shape="rect" href="structkronknet__poller__s.html" title=" " alt="" coords="200,5,339,31"/>
+<area shape="poly" title=" " alt="" coords="249,42,194,95,191,91,246,38"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -105,10 +107,6 @@ knFlags&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b></td></tr
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
 <tr class="memdesc:afa11eb69d799c2a28bf64f408db322db"><td class="mdescLeft">&#160;</td><td class="mdescRight">The id of the connection ( !same as fd ) <br /></td></tr>
 <tr class="separator:afa11eb69d799c2a28bf64f408db322db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7b52dea53418774487582703c19bd2a" id="r_ac7b52dea53418774487582703c19bd2a"><td class="memItemLeft" align="right" valign="top"><a id="ac7b52dea53418774487582703c19bd2a" name="ac7b52dea53418774487582703c19bd2a"></a>
-socklen_t&#160;</td><td class="memItemRight" valign="bottom"><b>addr_length</b></td></tr>
-<tr class="memdesc:ac7b52dea53418774487582703c19bd2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The length of the addr. <br /></td></tr>
-<tr class="separator:ac7b52dea53418774487582703c19bd2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace1de196dbf485b1756a1b4c4f0dd654" id="r_ace1de196dbf485b1756a1b4c4f0dd654"><td class="memItemLeft" align="right" valign="top"><a id="ace1de196dbf485b1756a1b4c4f0dd654" name="ace1de196dbf485b1756a1b4c4f0dd654"></a>
 struct sockaddr_in&#160;</td><td class="memItemRight" valign="bottom"><b>addr</b></td></tr>
 <tr class="memdesc:ace1de196dbf485b1756a1b4c4f0dd654"><td class="mdescLeft">&#160;</td><td class="mdescRight">The actual addr. <br /></td></tr>
@@ -138,27 +136,10 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>user_ptr</b></td></
 knConnection_sendHook&#160;</td><td class="memItemRight" valign="bottom"><b>sendHook</b></td></tr>
 <tr class="memdesc:a43ab891abec93e7b23acf59584eb1ffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">The send hook. <br /></td></tr>
 <tr class="separator:a43ab891abec93e7b23acf59584eb1ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8f89a6c1afac68be923b5c84bca2f75" id="r_ad8f89a6c1afac68be923b5c84bca2f75"><td class="memItemLeft" align="right" valign="top"><a id="ad8f89a6c1afac68be923b5c84bca2f75" name="ad8f89a6c1afac68be923b5c84bca2f75"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>epollfd</b></td></tr>
-<tr class="memdesc:ad8f89a6c1afac68be923b5c84bca2f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">The epoll fd of the server pool. <br /></td></tr>
-<tr class="separator:ad8f89a6c1afac68be923b5c84bca2f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a647bb7f2d9147bf09d9b6673feeb62ef" id="r_a647bb7f2d9147bf09d9b6673feeb62ef"><td class="memItemLeft" ><a id="a647bb7f2d9147bf09d9b6673feeb62ef" name="a647bb7f2d9147bf09d9b6673feeb62ef"></a>
-union {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae458f6edd687fbbdcd40b3905aaed5f4" id="r_ae458f6edd687fbbdcd40b3905aaed5f4"><td class="memItemLeft" >
-&#160;&#160;&#160;struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a4abb1c0ebc29b258669da9e321735f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae458f6edd687fbbdcd40b3905aaed5f4" id="r_ae458f6edd687fbbdcd40b3905aaed5f4"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<b>on_udp</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:ae458f6edd687fbbdcd40b3905aaed5f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">On UDP datas. <br /></td></tr>
-<tr class="separator:ae458f6edd687fbbdcd40b3905aaed5f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60f9ab123afd1ca4c1002ea44f732cdf" id="r_a60f9ab123afd1ca4c1002ea44f732cdf"><td class="memItemLeft" >
-&#160;&#160;&#160;struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a9ceab3a530910e6a5a58993e1ed28328"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60f9ab123afd1ca4c1002ea44f732cdf" id="r_a60f9ab123afd1ca4c1002ea44f732cdf"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<b>on_tcp</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a60f9ab123afd1ca4c1002ea44f732cdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">On tcp datas. <br /></td></tr>
-<tr class="separator:a60f9ab123afd1ca4c1002ea44f732cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a647bb7f2d9147bf09d9b6673feeb62ef" id="r_a647bb7f2d9147bf09d9b6673feeb62ef"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom">&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a647bb7f2d9147bf09d9b6673feeb62ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38d1d03a729491ba4d118e885d4dafb4" id="r_a38d1d03a729491ba4d118e885d4dafb4"><td class="memItemLeft" align="right" valign="top"><a id="a38d1d03a729491ba4d118e885d4dafb4" name="a38d1d03a729491ba4d118e885d4dafb4"></a>
+<a class="el" href="structkronknet__poller__s.html">knPoller</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>poller</b></td></tr>
+<tr class="memdesc:a38d1d03a729491ba4d118e885d4dafb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The poller of the server pool. <br /></td></tr>
+<tr class="separator:a38d1d03a729491ba4d118e885d4dafb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/connection/<a class="el" href="src_2connection_2connection_8h_source.html">connection.h</a></li>

@@ -138,14 +138,20 @@ Installation</h3>
 </div><!-- fragment --></li>
 <li>Installing the library <div class="fragment"><div class="line">cd Release/</div>
 <div class="line">sudo make install</div>
-</div><!-- fragment --> </li>
+</div><!-- fragment --></li>
 </ol>
+<h3><a class="anchor" id="autotoc_md5"></a>
+Windows</h3>
+<p>kronknet builds on Windows (Vista or later) with MSVC or MinGW: </p><div class="fragment"><div class="line">cmake -S . -B build</div>
+<div class="line">cmake --build build --config Release</div>
+</div><!-- fragment --><p> You get <code>kronknet.dll</code> (with its import library) and a static library (<code>kronknet_static.lib</code> with MSVC, <code>libkronknet.a</code> with MinGW). The static library needs <code>ws2_32</code>: with CMake, linking the <code>kronknet-static</code> or <code>kronknet-shared</code> target takes care of everything.</p>
+<p align="right">The unit tests need <code>fork()</code>, so Windows only runs the smoke test (<code>-DBUILD_TESTS=ON</code>, then <code>ctest -C Release</code>). </p>
 <p>(<a href="#readme-top">back to top</a>)</p>
-<h2><a class="anchor" id="autotoc_md5"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Usage</h2>
 <p>You can find an exemple of usage <a href="https://github.com/GauthierMalfilatre/kronknet/blob/main/test/server/test.c">here</a></p>
 <p>(<a href="#readme-top">back to top</a>)</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Contributing</h2>
 <p>Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are <b>greatly appreciated</b>.</p>
 <p>If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!</p>
@@ -157,14 +163,14 @@ Contributing</h2>
 <li>Open a Pull Request</li>
 </ol>
 <p>(<a href="#readme-top">back to top</a>)</p>
-<h3><a class="anchor" id="autotoc_md7"></a>
+<h3><a class="anchor" id="autotoc_md8"></a>
 Top contributors:</h3>
 <p><a href="https://github.com/GauthierMalfilatre/kronknet/graphs/contributors"><img src="https://contrib.rocks/image?repo=GauthierMalfilatre/kronknet" alt="contrib.rocks image" class="inline"/> </a></p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 License</h2>
 <p>Distributed under the MIT license. See <code>LICENSE</code> for more information.</p>
 <p>(<a href="#readme-top">back to top</a>)</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Contact</h2>
 <p>Gauthier Malfilatre - <a href="https://www.linkedin.com/in/gauthier-malfilatre-648001339/">@GauthierMalfilatre</a> - <a href="#" onclick="location.href='mai'+'lto:'+'gau'+'th'+'ier'+'.m'+'alf'+'il'+'atr'+'e@'+'epi'+'te'+'ch.'+'eu'; return false;">gauth<span class="obfuscator">.nosp@m.</span>ier.<span class="obfuscator">.nosp@m.</span>malfi<span class="obfuscator">.nosp@m.</span>latr<span class="obfuscator">.nosp@m.</span>e@epi<span class="obfuscator">.nosp@m.</span>tech<span class="obfuscator">.nosp@m.</span>.eu</a></p>
 <p>Project Link: <a href="https://github.com/GauthierMalfilatre/kronknet">https://github.com/GauthierMalfilatre/kronknet</a></p>

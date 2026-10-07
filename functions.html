@@ -73,7 +73,6 @@ $(function() {
 
 <h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
 <li>addr&#160;:&#160;<a class="el" href="structkronknet__client__s.html#a5fdecf0bc7e8bdd65c3050a9492756d4">kronknet_client_s</a>, <a class="el" href="structkronknet__connection__s.html#ace1de196dbf485b1756a1b4c4f0dd654">kronknet_connection_s</a>, <a class="el" href="structkronknet__server__s.html#a760aa9550c310bdc990fbb3b05eeb485">kronknet_server_s</a></li>
-<li>addr_length&#160;:&#160;<a class="el" href="structkronknet__connection__s.html#ac7b52dea53418774487582703c19bd2a">kronknet_connection_s</a></li>
 </ul>
 
 
@@ -98,8 +97,9 @@ $(function() {
 
 
 <h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
-<li>epollfd&#160;:&#160;<a class="el" href="structkronknet__connection__s.html#ad8f89a6c1afac68be923b5c84bca2f75">kronknet_connection_s</a>, <a class="el" href="structkronknet__pool__s.html#a02eba06ca5cea2798cb507b0652b0276">kronknet_pool_s</a></li>
-<li>events&#160;:&#160;<a class="el" href="structkronknet__client__s.html#a8892cac094316c4d48d0e68139f5798f">kronknet_client_s</a></li>
+<li>epfd&#160;:&#160;<a class="el" href="structkronknet__poller__s.html#a2cb86d7509f345bcbd3d99dd24ec991f">kronknet_poller_s</a></li>
+<li>ephnd&#160;:&#160;<a class="el" href="structkronknet__poller__s.html#ab4414fea13ceae0251373a650204d92b">kronknet_poller_s</a></li>
+<li>events&#160;:&#160;<a class="el" href="structkronknet__client__s.html#a4bd017c953d1a93de7d9e95330f0b420">kronknet_client_s</a>, <a class="el" href="structkronknet__poll__event__s.html#a5236c60dc1219492107ae2adaccb8e8c">kronknet_poll_event_s</a>, <a class="el" href="structkronknet__poller__s.html#ac4eee2478b440ff9aae92cafe9a86822">kronknet_poller_s</a></li>
 </ul>
 
 
@@ -143,8 +143,7 @@ $(function() {
 
 
 <h3><a id="index_o" name="index_o"></a>- o -</h3><ul>
-<li>on_tcp&#160;:&#160;<a class="el" href="structkronknet__connection__s.html#a9ceab3a530910e6a5a58993e1ed28328">kronknet_connection_s</a>, <a class="el" href="structkronknet__server__s.html#ace0c6fb3b104b2e86fb5724dd77a6a2e">kronknet_server_s</a></li>
-<li>on_udp&#160;:&#160;<a class="el" href="structkronknet__connection__s.html#a4abb1c0ebc29b258669da9e321735f96">kronknet_connection_s</a>, <a class="el" href="structkronknet__server__s.html#a6cc6b34ba52f1b3666d222e08784d62c">kronknet_server_s</a></li>
+<li>on_udp&#160;:&#160;<a class="el" href="structkronknet__server__s.html#ad7c6ad428e452ade5d9a4a30c34c086f">kronknet_server_s</a></li>
 <li>onCleanupHook&#160;:&#160;<a class="el" href="structkronknet__server__s.html#a219f75ff013ac07583388a83531f13ff">kronknet_server_s</a></li>
 <li>onConnection&#160;:&#160;<a class="el" href="structkronknet__client__s.html#a3190dfc6a2510136dd0934deb1212e26">kronknet_client_s</a>, <a class="el" href="structkronknet__server__s.html#ac3553fb4ecb97a5c3fa853534ecd0ce7">kronknet_server_s</a></li>
 <li>onDestroyHook&#160;:&#160;<a class="el" href="structkronknet__server__s.html#a7f0325fa1229c9dafb3564af9fb1a30b">kronknet_server_s</a></li>
@@ -158,9 +157,11 @@ $(function() {
 
 
 <h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
+<li>poller&#160;:&#160;<a class="el" href="structkronknet__connection__s.html#a38d1d03a729491ba4d118e885d4dafb4">kronknet_connection_s</a>, <a class="el" href="structkronknet__pool__s.html#a6aabe9221d5ccd9580330ff9546c4871">kronknet_pool_s</a></li>
 <li>pool&#160;:&#160;<a class="el" href="structkronknet__server__s.html#ac712034820698e12eb6d9e3f068ddb73">kronknet_server_s</a></li>
 <li>port&#160;:&#160;<a class="el" href="structkronknet__connection__s.html#ad573658a54ef4566cbcb126ddef79e79">kronknet_connection_s</a></li>
 <li>prev&#160;:&#160;<a class="el" href="structkronknet__hashmap__node__s.html#a885bc533f41771613b5573d03ab265fe">kronknet_hashmap_node_s</a></li>
+<li>ptr&#160;:&#160;<a class="el" href="structkronknet__poll__event__s.html#ac8adaf828998c8556e110c7cdd7ad53a">kronknet_poll_event_s</a></li>
 </ul>
 
 
