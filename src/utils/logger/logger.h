@@ -13,7 +13,7 @@
 typedef struct kronknet_logger_data_s {
 
     FILE *out;
-    bool log_level;
+    knLogLevel log_level;
 
 } knLoggerData;
 
