@@ -134,6 +134,19 @@ apt install cmake
     cd Release/
     sudo make install
     ```
+
+### Windows
+
+kronknet builds on Windows (Vista or later) with MSVC or MinGW:
+```sh
+cmake -S . -B build
+cmake --build build --config Release
+```
+You get `kronknet.dll` (with its import library) and a static library
+(`kronknet_static.lib` with MSVC, `libkronknet.a` with MinGW). The static library needs `ws2_32`:
+with CMake, linking the `kronknet-static` or `kronknet-shared` target takes care of everything.
+
+The unit tests need `fork()`, so Windows only runs the smoke test (`-DBUILD_TESTS=ON`, then `ctest -C Release`).
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
