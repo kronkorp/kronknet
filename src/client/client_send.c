@@ -52,7 +52,6 @@ int knClient_sendServer(
     if (knRBuff_push(client->buff, byte_ptr + written, remaining) == -1) {
         return KNEVTERR;
     }
-    
-    client->events |= KN_POLLOUT;
+    // NOTE: knClient_runOnce waits for the socket to be writable as long as this buffer is not empty
     return KNEVTOK;
 }
