@@ -1,6 +1,6 @@
 <map id="kronknet_hashmap_s" name="kronknet_hashmap_s">
-<area shape="rect" id="Node000001" title=" " alt="" coords="25,97,186,123"/>
-<area shape="rect" id="Node000002" href="$structkronknet__hashmap__node__s.html" title=" " alt="" coords="5,7,205,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,46,108,97,103,97,103,46"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="220,12,232,20,224,27,206,30,205,25,222,22,227,20,218,17"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="25,126,185,153"/>
+<area shape="rect" id="Node000002" href="$structkronknet__hashmap__node__s.html" title=" " alt="" coords="5,15,205,43"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,56,108,126,102,125,103,59"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="220,19,231,29,223,38,206,42,204,37,221,33,226,29,219,24"/>
 </map>

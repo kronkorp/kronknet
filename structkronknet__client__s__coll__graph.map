@@ -1,10 +1,10 @@
 <map id="kronknet_client_s" name="kronknet_client_s">
-<area shape="rect" id="Node000001" title="Client structure, containing necessary data to the client: fd, data." alt="" coords="197,110,334,135"/>
-<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="348,112,357,116,361,123,353,132,335,136,334,131,350,127,355,122,353,120,346,117"/>
-<area shape="rect" id="Node000002" href="$structkronknet__ring__buffer__s.html" title=" " alt="" coords="5,5,176,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,35,247,107,244,112,121,40"/>
-<area shape="rect" id="Node000003" href="$structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="200,5,331,31"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="268,45,268,110,263,110,263,45"/>
-<area shape="rect" id="Node000004" href="$structkronknet__logger__data__s.html" title=" " alt="" coords="355,5,533,31"/>
-<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="413,40,287,112,284,107,411,35"/>
+<area shape="rect" id="Node000001" title="Client structure, containing necessary data to the client: fd, data." alt="" coords="196,138,332,166"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="321,134,347,138,355,144,359,152,354,162,341,168,306,169,306,164,340,163,350,158,353,152,351,147,345,143,321,139"/>
+<area shape="rect" id="Node000002" href="$structkronknet__ring__buffer__s.html" title=" " alt="" coords="5,5,176,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,40,249,137,244,139,119,45"/>
+<area shape="rect" id="Node000003" href="$structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="199,5,328,33"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="266,47,266,139,261,137,262,50"/>
+<area shape="rect" id="Node000004" href="$structkronknet__logger__data__s.html" title=" " alt="" coords="352,5,530,33"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="414,42,283,140,280,135,409,43"/>
 </map>

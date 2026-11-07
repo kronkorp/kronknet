@@ -1,10 +1,10 @@
 <map id="kronknet_connection_s" name="kronknet_connection_s">
-<area shape="rect" id="Node000001" title=" " alt="" coords="159,95,331,121"/>
-<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="346,100,358,108,350,116,332,118,331,113,348,111,353,108,343,104"/>
-<area shape="rect" id="Node000002" href="$structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="5,5,136,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,34,224,93,221,98,104,39"/>
-<area shape="rect" id="Node000003" href="$structkronknet__ring__buffer__s.html" title=" " alt="" coords="160,5,331,31"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="248,44,248,95,243,95,243,44"/>
-<area shape="rect" id="Node000004" href="$structkronknet__poller__s.html" title=" " alt="" coords="355,5,493,31"/>
-<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="390,39,270,98,268,93,387,34"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="158,116,329,144"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="345,120,356,130,348,139,330,143,329,137,345,134,350,130,343,125"/>
+<area shape="rect" id="Node000002" href="$structkronknet__addr__s.html" title="An IPv4 or an IPv6 address, with its port." alt="" coords="5,5,135,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,39,225,114,220,117,103,44"/>
+<area shape="rect" id="Node000003" href="$structkronknet__ring__buffer__s.html" title=" " alt="" coords="158,5,328,33"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="245,46,246,117,241,114,241,50"/>
+<area shape="rect" id="Node000004" href="$structkronknet__poller__s.html" title=" " alt="" coords="352,5,489,33"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="389,41,266,118,264,113,384,42"/>
 </map>
