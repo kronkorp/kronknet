@@ -211,8 +211,34 @@ knBool knSocket_inProgress(void)
     return WSAGetLastError() == WSAEWOULDBLOCK;
 }
 
-// NOTE: WSAPoll() is poll(). Before Windows 10 2004 it did not report a connect() that
-//       failed (https://learn.microsoft.com/windows/win32/api/winsock2/nf-winsock2-wsapoll)
+// NOTE: What WSAPoll() called POLLHUP and POLLERR on a stream that is readable: the peer closed it (a read would give 0) or it
+//       was reset. (A datagram of 0 bytes is a datagram: UDP says nothing here)
+static uint32_t __knSocket_streamEnded(
+    knSocket fd
+)
+{
+    int type = 0;
+    int length = (int)sizeof(type);
+    char byte;
+    int peeked;
+
+    if (getsockopt(fd, SOL_SOCKET, SO_TYPE, (char *)&type, &length) == SOCKET_ERROR || type != SOCK_STREAM) {
+        return 0;
+    }
+    peeked = recv(fd, &byte, 1, MSG_PEEK);
+    if (peeked == 0) {
+        return KN_POLLHUP;
+    }
+    if (peeked == SOCKET_ERROR && WSAGetLastError() != WSAEWOULDBLOCK) {
+        return KN_POLLERR;
+    }
+    return 0;
+}
+
+// NOTE: select(), not WSAPoll(): a non-blocking connect() that fails is reported by select() in the exception set,
+//       and WSAPoll() does not tell it on every Windows (before Windows 10 2004 never, and it can still stay silent: the
+//       client of KUGE waited for ever on a port where nobody listens). A socket is in one of the three sets, so
+//       the status counts it once for each set it is in: only "more than 0" means something
 int knSocket_poll(
     knSocket fd,
     uint32_t events,
@@ -220,19 +246,35 @@ int knSocket_poll(
     uint32_t *revents
 )
 {
-    WSAPOLLFD p = { .fd = fd, .events = 0, .revents = 0 };
+    fd_set in;
+    fd_set out;
+    fd_set failed;
+    struct timeval wait = { 0, 0 };
     int status;
 
-    if (events & KN_POLLIN) p.events |= POLLIN;
-    if (events & KN_POLLOUT) p.events |= POLLOUT;
-    status = WSAPoll(&p, 1, timeoutMs);
-    *revents = 0;
-    if (status <= 0) {
-        return status;
+    FD_ZERO(&in);
+    FD_ZERO(&out);
+    FD_ZERO(&failed);
+    if (events & KN_POLLIN) FD_SET(fd, &in);
+    if (events & KN_POLLOUT) FD_SET(fd, &out);
+    FD_SET(fd, &failed);
+    if (timeoutMs >= 0) {
+        wait.tv_sec = timeoutMs / 1000;
+        wait.tv_usec = (timeoutMs % 1000) * 1000;
     }
-    if (p.revents & POLLIN) *revents |= KN_POLLIN;
-    if (p.revents & POLLOUT) *revents |= KN_POLLOUT;
-    if (p.revents & (POLLERR | POLLNVAL)) *revents |= KN_POLLERR;
-    if (p.revents & POLLHUP) *revents |= KN_POLLHUP;
-    return status;
+    status = select(0, &in, &out, &failed, timeoutMs >= 0 ? &wait : NULL);
+    *revents = 0;
+    if (status == SOCKET_ERROR) {
+        return -1;
+    }
+    if (status == 0) {
+        return 0;
+    }
+    if (FD_ISSET(fd, &in)) {
+        *revents |= KN_POLLIN;
+        *revents |= __knSocket_streamEnded(fd);
+    }
+    if (FD_ISSET(fd, &out)) *revents |= KN_POLLOUT;
+    if (FD_ISSET(fd, &failed)) *revents |= KN_POLLERR;
+    return 1;
 }
