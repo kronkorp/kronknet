@@ -13,6 +13,7 @@
 #include "../../src/client/client.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <poll.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -64,6 +65,26 @@ Test(tcp_client, create_has_an_out_buffer)
     AssertNotNull(client, "TCP client creation should succeed");
     AssertNotNull(client->buff, "A TCP client has an out buffer, for when its socket is full");
     AssertEq(knRBuff_usage(client->buff), 0, "which starts empty");
+    knClient_destroy(client);
+}
+
+Test(tcp_client, small_messages_leave_at_once)
+{
+    int listener = slow_server(CLIENT_PORT + 3);
+    knClient *client = knClient_create(knTCP);
+    struct pollfd writable;
+    int flag = 0;
+    socklen_t length = sizeof(flag);
+
+    AssertGe(listener, 0, "The test server should listen");
+    AssertNotNull(client, "TCP client creation should succeed");
+    AssertEq(knClient_connect(client, "127.0.0.1", CLIENT_PORT + 3), KNEVTOK, "Connect should succeed");
+    writable = (struct pollfd){client->fd, POLLOUT, 0};
+    AssertEq(poll(&writable, 1, 2000), 1, "The connection should be made");
+    AssertEq(getsockopt(client->fd, IPPROTO_TCP, TCP_NODELAY, &flag, &length), 0, "TCP_NODELAY can be read");
+    Assert(flag != 0, "Nagle is off on the client: a small message does not wait for an ACK");
+
+    close(listener);
     knClient_destroy(client);
 }
 

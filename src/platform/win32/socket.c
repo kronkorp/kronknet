@@ -42,6 +42,18 @@ static int __knSocket_nonBlocking(
     return KNEVTOK;
 }
 
+// NOTE: A stream sends what it is given at once. With Nagle's algorithm a small send waits for the ACK of the
+//       one before, and a receiver that delays its ACKs (Windows: 200 ms) makes every message wait. A game's
+//       messages are small and want to leave now. Best effort: a stream still works without it
+static void __knSocket_noDelay(
+    knSocket fd
+)
+{
+    BOOL on = TRUE;
+
+    setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char *)&on, sizeof(on));
+}
+
 knSocket knSocket_open(
     int family,
     int type
@@ -55,6 +67,9 @@ knSocket knSocket_open(
     if (__knSocket_nonBlocking(fd) != KNEVTOK) {
         closesocket(fd);
         return KN_INVALID_SOCKET;
+    }
+    if (type == SOCK_STREAM) {
+        __knSocket_noDelay(fd);
     }
     return fd;
 }
@@ -76,6 +91,7 @@ knSocket knSocket_accept(
         closesocket(fd);
         return KN_INVALID_SOCKET;
     }
+    __knSocket_noDelay(fd);
     return fd;
 }
 

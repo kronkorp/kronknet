@@ -1,6 +1,8 @@
 #include "net_utils.h"
+#include "../../src/connection/connection.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <netinet/tcp.h>
 
 Test(tcp_server, create_destroy)
 {
@@ -59,6 +61,21 @@ Test(tcp_server, accept_calls_onConnect)
     AssertStrEq(knConnection_getIp(g_net.conns[0]), "127.0.0.1", "Connection ip should be loopback");
     net_pump(server, 50);
     AssertEq(g_net.connects, 1, "onConnect should be called only once");
+    close(fd);
+    knServer_destroy(server);
+}
+
+Test(tcp_server, what_it_accepts_has_nagle_off)
+{
+    knServer *server = net_server(42190, knTCP);
+    int fd = net_tcpClient(42190);
+    int flag = 0;
+    socklen_t length = sizeof(flag);
+
+    NET_PUMP_UNTIL(server, g_net.connects == 1);
+    AssertNotNull(g_net.conns[0], "onConnect should receive the connection");
+    AssertEq(getsockopt(g_net.conns[0]->fd, IPPROTO_TCP, TCP_NODELAY, &flag, &length), 0, "TCP_NODELAY can be read");
+    Assert(flag != 0, "Nagle is off on what the server accepts: a small answer does not wait for an ACK");
     close(fd);
     knServer_destroy(server);
 }
